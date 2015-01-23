@@ -1572,3 +1572,8 @@ gsdl.cgs.gstype.t.out	.tycoercion
 gsdl.cgs.gstype.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.cgs.gstype.t
+
+gsdl.cgs.gstype.field.t.out	.tycoercion
+gsdl.cgs.gstype.field.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.cgs.gstype.field.t
