@@ -1908,7 +1908,7 @@ test	.closure	_test.upconvert_ubsum_test_c
 _test.upconvert_ubsum_test_c	.expr
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsdl.ags.typeitem.field.t	.tygvar
+gsdl.ags.typeitem.constr.t	.tygvar
 gsdl.sourcepos.t	.tygvar	-- Temp
 _test.upconvert_ubsum_test_k	.subcode
 either.t.out	.cogvar
@@ -1917,7 +1917,7 @@ gsdl.cgs.typeenv.empty	.gvar
 gsdl.ags.typeitem.expr.ubsum	.gvar
 list.nil	.gvar
 pos	.undefined	gsdl.sourcepos.t
-fs	.apply	list.nil	gsdl.ags.typeitem.field.t
+fs	.apply	list.nil	gsdl.ags.typeitem.constr.t
 ty	.apply	gsdl.ags.typeitem.expr.ubsum	|	fs
 	.force	_test.upconvert_ubsum_test_k
 	.coerce	either.t.out	string.t	gsdl.cgs.gstype.t
