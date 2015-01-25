@@ -1197,8 +1197,17 @@ parser.fail	.gvar
 
 _gsdl.cgs.gstype.field.boundvar_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar	-- Temp
+_gsdl.cgs.gstype.field.boundvar_k	.subcode
+gsdl.cgs.gstype.field.t.out	.cogvar
 f	.larg	gsdl.cgs.gstype.field.t
+	.force	_gsdl.cgs.gstype.field.boundvar_k
+	.coerce	gsdl.cgs.gstype.field.t.out
+	.enter	f
+
+_gsdl.cgs.gstype.field.boundvar_k	.forcecont
+gsdl.cgs.gstype.field.prim.u	.tygvar
+gsdl.cgs.symbol.t	.tygvar	-- Temp
+f0	.karg	gsdl.cgs.gstype.field.prim.u
 	.undef	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.field.freevars}
