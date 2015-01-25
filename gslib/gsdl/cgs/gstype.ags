@@ -1208,9 +1208,16 @@ f	.larg	gsdl.cgs.gstype.field.t
 
 _gsdl.cgs.gstype.field.boundvar_k	.forcecont
 gsdl.cgs.gstype.field.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.symbol.t	.tygvar	-- Temp
 f0	.karg	gsdl.cgs.gstype.field.prim.u
-	.undef	gsdl.cgs.symbol.t
+	.analyze	f0	object
+		.case	object
+v		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.undef	gsdl.cgs.symbol.t
+	-- > :: gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.field.freevars}
 
