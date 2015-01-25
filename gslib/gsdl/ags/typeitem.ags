@@ -2618,7 +2618,8 @@ gsdl.ags.typeitem.field.prim.u	.tygvar
 	.tyref	gsdl.ags.typeitem.field.prim.u
 
 gsdl.ags.typeitem.field.prim.u	.tyexpr
-	.typroduct
+gsdl.var.t	.tygvar
+	.typroduct	0	gsdl.var.t
 
 -- §section §gs{gsdl.ags.typeitem.gskind.t}
 
