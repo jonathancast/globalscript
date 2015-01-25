@@ -2100,10 +2100,14 @@ gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gstype.field.object	.gvar
 env	.larg	gsdl.cgs.typeenv.t
 f	.larg	gsdl.ags.typeitem.field.t
-f.cgs	.undefined	gsdl.cgs.gstype.field.t	-- TODO: We've nothing to compile atm
+f.nm	.lfield	0	f
+f.ty.cgs	.undefined	gsdl.cgs.gstype.t
+f.cgs	.apply	gsdl.cgs.gstype.field.object	|	f.nm	f.ty.cgs
 	.app	f.cgs
 	.enter	either.right	string.t	gsdl.cgs.gstype.field.t
 
