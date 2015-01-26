@@ -1530,10 +1530,12 @@ ty1	.apply	gsdl.ags.typeitem.expr.product	|	fs
 _gsdl.ags.typeitem.expr.parser_typroduct.p_field.f_c	.expr
 gsdl.var.t	.tygvar
 string.t	.tygvar
-gsdl.ags.typeitem.field.t	.tygvar	-- Temp
+gsdl.ags.typeitem.field.prim.u	.tygvar
 nm	.larg	gsdl.var.t
 ty	.larg	string.t
-	.undef	gsdl.ags.typeitem.field.t
+r	.record	0	nm	|	gsdl.ags.typeitem.field.prim.u
+	.lift
+	.yield	r
 
 _gsdl.ags.typeitem.expr.parser_tyubproduct.p_c	.expr
 rune.t	.tygvar
