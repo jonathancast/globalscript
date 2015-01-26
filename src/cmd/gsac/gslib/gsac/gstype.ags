@@ -24,6 +24,8 @@ _gsac.gstype.check_dont.think.s	.string	I\sdon't\sthink\s'
 
 gsac.gstype.fields.check	.closure	_gsac.gstype.fields.check_c	_gsac.gstype.fields.check_ty
 
+gsdl.cgs.gstype.field.check	.closure	_gsdl.cgs.gstype.field.check_c	_gsdl.cgs.gstype.field.check_ty
+
 gsac.gstype.compile	.closure	_gsac.gstype.compile_c	_gsac.gstype.compile_ty
 _gsac.gstype.compile_w	.closure	_gsac.gstype.compile_w_c	_gsac.gstype.compile_w_ty
 gsac.gstype.compileToGlobalVar	.closure	_gsac.gstype.compileToGlobalVar_c	_gsac.gstype.compileToGlobalVar_ty
@@ -1522,11 +1524,15 @@ fse	.larg	list.t	gsdl.cgs.gstype.field.t
 	.enter	fsa
 
 _gsac.gstype.fields.check_ka	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 list.prim.u	.tygvar
 _gsac.gstype.fields.check_ke	.subcode
 list.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 fse	.fv	list.t	gsdl.cgs.gstype.field.t
 fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.force	_gsac.gstype.fields.check_ke
@@ -1534,21 +1540,37 @@ fsa0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.enter	fse
 
 _gsac.gstype.fields.check_ke	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gstype.fields.check_:_:_k	.subcode
+either.t.out	.cogvar
+gsdl.cgs.gstype.field.check	.gvar
 either.right	.gvar
 record.empty	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 fsa0	.fv	list.prim.u	gsdl.cgs.gstype.field.t
 fse0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 	.analyze	fse0	:	nil
 		.case	:
 fe0		.fkarg	0	gsdl.cgs.gstype.field.t
 fse1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
-			.undef	either.t	string.t	record.empty
+			.analyze	fsa0	:	nil
+				.case	:
+fa0				.fkarg	0	gsdl.cgs.gstype.field.t
+fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
+					.force	_gsac.gstype.fields.check_:_:_k
+					.coerce	either.t.out	string.t	record.empty
+					.app	pos	env	fa0	fe0
+					.enter	gsdl.cgs.gstype.field.check
+				.case	nil
+					.undef	either.t	string.t	record.empty
 		.case	nil
 			.analyze	fsa0	:	nil
 				.case	:
@@ -1558,6 +1580,29 @@ fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 				.case	nil
 					.app	record.empty
 					.enter	either.right	string.t	record.empty
+
+_gsac.gstype.fields.check_:_:_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+either.t	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	record.empty
+		.undef	either.t	string.t	record.empty
+
+-- §section §gs{gsdl.cgs.gstype.field.check}
+
+_gsdl.cgs.gstype.field.check_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+env	.larg	gsdl.cgs.typeenv.t
+fa	.larg	gsdl.cgs.gstype.field.t
+fe	.larg	gsdl.cgs.gstype.field.t
+	.undef	either.t	string.t	record.empty
 
 -- §section §gs{gsac.gstype.compile}
 
@@ -3585,6 +3630,25 @@ record.empty	.tygvar
 	.tyfun	list.t	gsdl.cgs.gstype.field.t
 	.tylift
 	.tyfun	list.t	gsdl.cgs.gstype.field.t
+	.tyref	either.t	string.t	record.empty
+
+-- §section §gs{gsdl.cgs.gstype.field.check}
+
+_gsdl.cgs.gstype.field.check_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+either.t	.tygvar
+string.t	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.typeenv.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.field.t
+	.tylift
+	.tyfun	gsdl.cgs.gstype.field.t
 	.tyref	either.t	string.t	record.empty
 
 -- §section §gs{gsac.gstype.compile}
