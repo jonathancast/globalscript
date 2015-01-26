@@ -1561,7 +1561,6 @@ fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 
 -- §section §gs{gsac.gstype.compile}
 
--- > either.t string.t ⊕ writer.m (diff.list.t gsdl.ags.typeitem.t)
 _gsac.gstype.compile_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
