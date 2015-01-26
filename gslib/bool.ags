@@ -119,8 +119,9 @@ b0.0	.karg	bool.prim.u
 _bool.compare_k1	.forcecont
 bool.prim.u	.tygvar
 order.total.ord.t	.tygvar
-order.total.ord.eq	.gvar
 order.total.ord.gt	.gvar
+order.total.ord.lt	.gvar
+order.total.ord.eq	.gvar
 b0.0	.fv	bool.prim.u
 b1.0	.karg	bool.prim.u
 	.analyze	b0.0	false	true
@@ -129,7 +130,7 @@ b1.0	.karg	bool.prim.u
 				.case	false
 					.enter	order.total.ord.eq
 				.case	true
-					.undef	order.total.ord.t
+					.enter	order.total.ord.lt
 		.case	true
 			.analyze	b1.0	false	true
 				.case	false
