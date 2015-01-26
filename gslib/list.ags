@@ -735,7 +735,9 @@ xn1.0.1			.apply	list.:	α	|	x1	xn1.0
 			.app	xn1.0.1	xn1.1
 			.enter	k
 		.case	lt
-			.undef	list.t	α
+xn1.1.1			.apply	list.:	α	|	x1	xn1.1
+			.app	xn1.0	xn1.1.1
+			.enter	k
 
 _list.sort_w_:_k_c	.expr
 order.total.t	.tygvar

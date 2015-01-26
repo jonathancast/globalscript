@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_ep_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test_singleton.eq.nil	_test_nil.eq.singleton	_test_compare.singleton.singleton	_test_map.nil	_test_map.:	_test_reverse.nil	_test_reverse.cons	_test_sort_singleton	_test_sort_two.elems
+_ep_tests	.list	test.property.t	_test_nil.eq.nil	_test_singleton.eq.singleton _test_singleton.eq.nil	_test_nil.eq.singleton	_test_compare.singleton.singleton	_test_map.nil	_test_map.:	_test_reverse.nil	_test_reverse.cons	_test_sort_singleton	_test_sort_two.elems	_test_sort_sorted
 
 _test_nil.eq.nil	.closure	_test_nil.eq.nil_c
 _test_nil.eq.nil_label	.string	nil\s≡\snil
@@ -48,6 +48,9 @@ _test_sort_singleton_label	.string	sort\ssingleton
 
 _test_sort_two.elems	.closure	_test_sort_two.elems_c
 _test_sort_two.elems_label	.string	sort\s[\strue,\sfalse,\s]
+
+_test_sort_sorted	.closure	_test_sort_sorted_c
+_test_sort_sorted_label	.string	sort\s[\sfalse,\strue,\s]
 
 _fixture_nil	.closure	_fixture_nil_c
 _fixture_singleton.false	.closure	_fixture_singleton.false_c
@@ -284,6 +287,30 @@ expected1	.apply	list.singleton	bool.t	|	bool.true
 expected	.apply	list.:	bool.t	|	bool.false	expected1
 test	.apply	test.assert.eq	list.bool	|	_fixture_list.bool.≡	_fixture_list.bool.fmtgs	actual	expected
 	.app	_test_sort_two.elems_label	test
+	.enter	test.property.label
+
+-- §section §gs{sort [ false, true, ]}
+
+_test_sort_sorted_c	.expr
+list.t	.tygvar
+bool.t	.tygvar
+test.property.label	.gvar
+_test_sort_sorted_label	.gvar
+test.assert.eq	.gvar
+_fixture_list.bool.≡	.gvar
+_fixture_list.bool.fmtgs	.gvar
+list.sort	.gvar
+bool.compare	.gvar
+list.:	.gvar
+bool.true	.gvar
+list.singleton	.gvar
+bool.false	.gvar
+list.bool	.tylet	list.t	bool.t
+bs1	.apply	list.singleton	bool.t	|	bool.true
+bs	.apply	list.:	bool.t	|	bool.false	bs1
+actual	.apply	list.sort	bool.t	|	bool.compare	bs
+test	.apply	test.assert.eq	list.bool	|	_fixture_list.bool.≡	_fixture_list.bool.fmtgs	actual	bs
+	.app	_test_sort_sorted_label	test
 	.enter	test.property.label
 
 -- §section Test fixtures
