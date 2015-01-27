@@ -1531,7 +1531,7 @@ gsdl.var.t	.tygvar
 gsdl.ags.typeitem.field.prim.u	.tygvar
 nm	.larg	gsdl.var.t
 ty	.larg	gsdl.var.t
-r	.record	0	nm	|	gsdl.ags.typeitem.field.prim.u
+r	.record	0	nm	1	ty	|	gsdl.ags.typeitem.field.prim.u
 	.lift
 	.yield	r
 
@@ -2624,7 +2624,7 @@ gsdl.ags.typeitem.field.prim.u	.tygvar
 
 gsdl.ags.typeitem.field.prim.u	.tyexpr
 gsdl.var.t	.tygvar
-	.typroduct	0	gsdl.var.t
+	.typroduct	0	gsdl.var.t	1	gsdl.var.t
 
 -- §section §gs{gsdl.ags.typeitem.gskind.t}
 
