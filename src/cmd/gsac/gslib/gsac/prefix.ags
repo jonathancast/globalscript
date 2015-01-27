@@ -2098,14 +2098,30 @@ tyy.exp			.apply	list.foldl	gsdl.cgs.gstype.t	gsdl.cgs.typeenv.typeexpansion.t	|
 _gsac.prefix.gstype.field.upconvert_c	.expr
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
+_gsac.prefix.gstype.field.upconvert_k	.subcode
+maybe.t.out	.cogvar
+gsdl.cgs.typeenv.typeexpansion.get	.gvar
+env	.larg	gsdl.cgs.typeenv.t
+f	.larg	gsdl.ags.typeitem.field.t
+f.nm	.lfield	0	f
+f.ty	.lfield	1	f
+	.force	_gsac.prefix.gstype.field.upconvert_k
+	.coerce	maybe.t.out	gsdl.cgs.typeenv.typeexpansion.t
+	.app	f.ty	env
+	.enter	gsdl.cgs.typeenv.typeexpansion.get
+
+_gsac.prefix.gstype.field.upconvert_k	.forcecont
+gsdl.var.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gstype.field.object	.gvar
-env	.larg	gsdl.cgs.typeenv.t
-f	.larg	gsdl.ags.typeitem.field.t
-f.nm	.lfield	0	f
+f.nm	.fv	gsdl.var.t
+mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
 f.ty.cgs	.undefined	gsdl.cgs.gstype.t
 f.cgs	.apply	gsdl.cgs.gstype.field.object	|	f.nm	f.ty.cgs
 	.app	f.cgs
