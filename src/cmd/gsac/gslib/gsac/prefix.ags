@@ -2118,14 +2118,20 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar	-- Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gstype.field.object	.gvar
 f.nm	.fv	gsdl.var.t
 mb0	.karg	maybe.prim.u	gsdl.cgs.typeenv.typeexpansion.t
-f.ty.cgs	.undefined	gsdl.cgs.gstype.t
-f.cgs	.apply	gsdl.cgs.gstype.field.object	|	f.nm	f.ty.cgs
-	.app	f.cgs
-	.enter	either.right	string.t	gsdl.cgs.gstype.field.t
+	.analyze	mb0	just	nothing
+		.case	just
+tye		.fkarg	0	gsdl.cgs.typeenv.typeexpansion.t
+f.ty.cgs			.undefined	gsdl.cgs.gstype.t
+f.cgs			.apply	gsdl.cgs.gstype.field.object	|	f.nm	f.ty.cgs
+			.app	f.cgs
+			.enter	either.right	string.t	gsdl.cgs.gstype.field.t
+		.case	nothing
+			.undef	either.t	string.t	gsdl.cgs.gstype.field.t
 
 -- §section §gs{gsac.prefix.gstype.constr.upconvert}
 
