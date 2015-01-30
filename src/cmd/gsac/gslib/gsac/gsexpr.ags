@@ -2999,13 +2999,13 @@ gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
-gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 gsac.gsexpr.compileToGenRHS	.gvar
 either.right	.gvar
@@ -3033,8 +3033,8 @@ r			.undefined	gsdl.ags.codeitem.alloc.rhs.t
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
-tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToGenRHS_res.ty
 			.app	res
