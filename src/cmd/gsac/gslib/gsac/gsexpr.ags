@@ -3099,7 +3099,18 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToGenRHS_res.ty
-res			.undefined	_gsac.gsexpr.body.compileToGenRHS_res.ty
+cs			.lfield	codeitems	e.r
+cos			.lfield	coercionitems	e.r
+ds			.lfield	dataitems	e.r
+pem1			.lfield	prim.emitted	e.r
+res.r			.lfield	res	e.r
+svs1			.lfield	subvars	e.r
+tyem1			.lfield	ty.emitted	e.r
+tysvs1			.lfield	ty.subvars	e.r
+tgvs			.lfield	tygvars	e.r
+tyls			.lfield	tylets	e.r
+ts			.lfield	typeitems	e.r
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	res.r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tgvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.body.compileToGenRHS_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.body.compileToGenRHS_res.ty
 
