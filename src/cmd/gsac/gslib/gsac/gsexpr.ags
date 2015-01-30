@@ -2998,9 +2998,18 @@ gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 gsac.gsexpr.compileToGenRHS	.gvar
 either.right	.gvar
+diff.list.nil	.gvar
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -3016,7 +3025,18 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsac.gsexpr.compileToGenRHS
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
-res			.undefined	_gsac.gsexpr.compileToGenRHS_res.ty
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
+pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+r			.undefined	gsdl.ags.codeitem.alloc.rhs.t
+svs1			.undefined	list.t	gsdl.var.t
+tyem1			.undefined	ordered.set.t	gsdl.var.t
+tysvs1			.undefined	list.t	gsdl.var.t
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToGenRHS_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
