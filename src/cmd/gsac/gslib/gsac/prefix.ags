@@ -2140,12 +2140,18 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+either.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gstype.field.object	.gvar
 f.nm	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.gstype.t
-f.ty.cgs			.undefined	gsdl.cgs.gstype.t
-f.cgs			.apply	gsdl.cgs.gstype.field.object	|	f.nm	f.ty.cgs
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.cgs.gstype.field.t
+		.case	right
+ty		.fkarg	0	gsdl.cgs.gstype.t
+f.cgs			.apply	gsdl.cgs.gstype.field.object	|	f.nm	ty
 			.app	f.cgs
 			.enter	either.right	string.t	gsdl.cgs.gstype.field.t
 
