@@ -2988,13 +2988,13 @@ svs	.larg	list.t	gsdl.var.t
 	.enter	e
 
 _gsac.gsexpr.compileToGenRHS_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
-gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
@@ -3010,6 +3010,9 @@ gsdl.ags.typeitem.t	.tygvar	-- Temp
 gsac.gsexpr.compileToGenRHS	.gvar
 either.right	.gvar
 diff.list.nil	.gvar
+gsdl.ags.codeitem.alloc.rhs.appty	.gvar
+list.nil	.gvar
+pos	.fv	gsdl.sourcepos.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -3029,7 +3032,8 @@ cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-r			.undefined	gsdl.ags.codeitem.alloc.rhs.t
+nil.vs			.apply	list.nil	gsdl.var.t
+r			.apply	gsdl.ags.codeitem.alloc.rhs.appty	|	pos	v	nil.vs
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
