@@ -534,7 +534,6 @@ v.ty		.fkarg	0	gsdl.cgs.gstype.t
 			-- Hence type of §gs{e} is §gs{app m.ty ty}!
 			.undef	either.t	string.t	_gsac.generator.annotate_res.ty
 		.case	nothing
-			-- Note: No type signature means we have no way to recover on type failure
 			.force	_gsac.generator.annotate_bind_right_nothing_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.annotate_res.ty
 			.app	pos1	env	e
@@ -551,6 +550,7 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	string.t
+			-- Note: No type signature means we have no way to recover on type failure
 			.app	err
 			.enter	either.left	string.t	_gsac.generator.annotate_res.ty
 		.case	right
