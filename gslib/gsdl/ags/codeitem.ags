@@ -112,6 +112,7 @@ _gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.string	.undefined\t
 
 gsdl.ags.codeitem.alloc.rhs.pos	.closure	_gsdl.ags.codeitem.alloc.rhs.pos_c
 
+gsdl.ags.codeitem.alloc.rhs.appty	.closure	_gsdl.ags.codeitem.alloc.rhs.appty_c
 gsdl.ags.codeitem.alloc.rhs.undefined	.closure	_gsdl.ags.codeitem.alloc.rhs.undefined_c
 
 gsdl.ags.codeitem.arg.≡	.closure	_gsdl.ags.codeitem.arg.≡_c
@@ -2581,7 +2582,12 @@ diff.list.concat	.gvar
 list.map	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
-	.analyze	rhs0	undefined
+	.analyze	rhs0	appty	undefined
+		.case	appty
+pos		.fkarg		0	gsdl.sourcepos.t
+f		.fkarg	1	gsdl.var.t
+tyas		.fkarg	2	list.t	gsdl.var.t
+			.undef	diff.list.t	rune.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 tyf		.fkarg	1	gsdl.var.t
@@ -2623,7 +2629,12 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
-	.analyze	rhs0	undefined
+	.analyze	rhs0	appty	undefined
+		.case	appty
+pos		.fkarg	0	gsdl.sourcepos.t
+f		.fkarg	1	gsdl.var.t
+tyas		.fkarg	2	list.t	gsdl.var.t
+			.enter	pos
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 tyf		.fkarg	1	gsdl.var.t
@@ -2632,6 +2643,20 @@ tyas		.fkarg	2	list.t	gsdl.var.t
 	-- > :: gsdl.sourcepos.t
 
 -- §section §gs{gsdl.ags.codeitem.alloc.rhs.t}
+
+_gsdl.ags.codeitem.alloc.rhs.appty_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t.in	.cogvar
+pos	.larg	gsdl.sourcepos.t
+f	.larg	gsdl.var.t
+tyas	.larg	list.t	gsdl.var.t
+res	.constr	gsdl.ags.codeitem.alloc.rhs.prim.u	appty	0	pos	1	f	2	tyas
+	.coerce	gsdl.ags.codeitem.alloc.rhs.t.in
+	.lift
+	.yield	res
 
 _gsdl.ags.codeitem.alloc.rhs.undefined_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -4237,8 +4262,16 @@ gsdl.ags.codeitem.alloc.rhs.prim.u	.tygvar
 	.tyref	gsdl.ags.codeitem.alloc.rhs.prim.u
 
 gsdl.ags.codeitem.alloc.rhs.prim.u	.tyexpr
+_gsdl.ags.codeitem.alloc.rhs.prim.u_appty_ty	.tygvar
 _gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty	.tygvar
-	.tysum	undefined	_gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty
+	.tysum	appty	_gsdl.ags.codeitem.alloc.rhs.prim.u_appty_ty	undefined	_gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty
+
+_gsdl.ags.codeitem.alloc.rhs.prim.u_appty_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
+list.t	.tygvar
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	list.var.ty
 
 _gsdl.ags.codeitem.alloc.rhs.prim.u_undefined_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
