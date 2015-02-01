@@ -1007,7 +1007,7 @@ tye1			.lrecord	0	tyls1	1	e	|	gsdl.cgs.typeenv.typeexpansion.t
 y1			.apply	gsdl.cgs.typeenv.typeexpansion.substty	|	v	ty	tye1
 y.tyls1			.lfield	0	y1
 y.tyls			.apply	list.:	gsdl.cgs.typeenv.typeexpansion.tylambda.t	|	tyl0	y.tyls1
-y.e			.undefined	gsdl.cgs.gstype.t
+y.e			.lfield	1	y1
 r			.record	0	y.tyls	1	y.e	|	gsdl.cgs.typeenv.typeexpansion.prim.u
 			.lift
 			.yield	r
