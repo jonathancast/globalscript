@@ -553,7 +553,10 @@ list.t	.tygvar
 _gsac.gstype.constr.annotate_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.cgs.gstype.constr.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gskind.unlifted	.gvar
+gsdl.cgs.gstype.sum	.gvar
 list.constr.res.ty	.tylet	list.t	_gsac.gstype.constr.annotate_res.ty
 e0	.karg	either.prim.u	string.t	list.constr.res.ty
 	.analyze	e0	left	right
@@ -562,7 +565,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.annotate_res.ty
 		.case	right
 cs.rs		.fkarg	0	list.t	_gsac.gstype.constr.annotate_res.ty
-res			.undefined	_gsac.gstype.annotate_res.ty
+cs1			.undefined	list.t	gsdl.cgs.gstype.constr.t
+ty1			.apply	gsdl.cgs.gstype.sum	|	cs1
+res			.lrecord	gskind	gsdl.cgs.gskind.unlifted	gstype	ty1	|	_gsac.gstype.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.annotate_res.ty
 
