@@ -2142,11 +2142,13 @@ gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_app_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_impfor_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lambda_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_lift_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_pos_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_structure_k_c	.subcode
+gsdl.cgs.gsexpr.arg.t.out	.cogvar
 either.t.out	.cogvar
 gsac.gstype.compileToImpprim	.gvar
 gsac.gstype.compileToApp	.gvar
@@ -2167,7 +2169,9 @@ e0	.karg	gsdl.cgs.gsexpr.prim.u
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.force	_gsac.gsexpr.compileToLambdaExpr_app_k
+			.coerce	gsdl.cgs.gsexpr.arg.t.out
+			.enter	a
 		.case	expr.heavy.cast
 co		.fkarg	0	gsdl.cgs.gscoercion.t
 so		.fkarg	1	gsdl.cgs.gsexpr.cast.source.t
@@ -2227,6 +2231,14 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileToLambdaExpr_app_k	.forcecont
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_impfor_k	.forcecont
 gsdl.sourcepos.t	.tygvar
