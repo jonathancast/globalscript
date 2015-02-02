@@ -202,6 +202,7 @@ _gsac.gsexpr.annotate_app_right_k1	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+f.r	.fv	_gsac.gsexpr.annotate_res.ty
 f.r.ty	.fv	gsdl.cgs.gstype.t
 a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 	.force	_gsac.gsexpr.annotate_app_right_k1
@@ -232,6 +233,7 @@ gsdl.cgs.gstype.unpos	.gvar
 gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+f.r	.fv	_gsac.gsexpr.annotate_res.ty
 a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
 f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	a0	expr	type
@@ -342,17 +344,18 @@ res			.lrecord	argtype	tya	tyres.kind	tyr.ki	|	_gsac.gsexpr.annotate_app_expr_fu
 _gsac.gsexpr.annotate_app_right_expr_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
-_gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_app_right_expr_right_k	.subcode
 either.t.out	.cogvar
 either.left	.gvar
 gsac.gsexpr.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+f.r	.fv	_gsac.gsexpr.annotate_res.ty
 ea	.fv	gsdl.cgs.gsexpr.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 	.analyze	e0	left	right
@@ -371,11 +374,11 @@ tya			.lfield	argtype	tyf.r
 _gsac.gsexpr.annotate_app_right_expr_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
-_gsac.gsexpr.annotate_res.ty	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_expr_right_right_k	.subcode
@@ -384,6 +387,7 @@ either.left	.gvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
+f.r	.fv	_gsac.gsexpr.annotate_res.ty
 tyf.r	.fv	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
 tya	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
@@ -401,17 +405,19 @@ ea.r.ty			.lfield	gstype	ea.r
 			.enter	gsac.gstype.check
 
 _gsac.gsexpr.annotate_app_right_expr_right_right_k	.forcecont
+_gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
-_gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.t	.tygvar	-- Temp
-gsdl.cgs.gskind.t	.tygvar	-- Temp
 gsdl.cgs.gstype.t	.tygvar	-- Temp
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_c	.subcode
 either.right	.gvar
+gsdl.cgs.gsexpr.app	.gvar
+f.r	.fv	_gsac.gsexpr.annotate_res.ty
 tyf.r	.fv	_gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty
+ea.r	.fv	_gsac.gsexpr.annotate_res.ty
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -419,12 +425,42 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-e1			.undefined	gsdl.cgs.gsexpr.t
 ki			.lfield	tyres.kind	tyf.r
+f.r.e			.lfield	expr	f.r
+ea.r.e			.lfield	expr	ea.r
+a1			.closure	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_c
+e1			.apply	gsdl.cgs.gsexpr.app	|	f.r.e	a1
 tyres			.undefined	gsdl.cgs.gstype.t
 res			.lrecord	expr	e1	gskind	ki	gstype	tyres	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
+
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_c	.expr
+gsdl.cgs.gskind.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k	.subcode
+gsdl.cgs.gskind.t.out	.cogvar
+ki	.fv	gsdl.cgs.gskind.t
+ea.r.e	.fv	gsdl.cgs.gsexpr.t
+	.force	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k
+	.coerce	gsdl.cgs.gskind.t.out
+	.enter	ki
+
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k	.forcecont
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gskind.prim.u	.tygvar
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty	.tygvar	-- Temp
+ea.r.e	.fv	gsdl.cgs.gsexpr.t
+ki0	.karg	gsdl.cgs.gskind.prim.u
+	.app	ea.r.e
+	.danalyze	ki0	lifted	unlifted
+		.default
+			.undef	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty
+		.case	lifted
+			.undef	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty
+		.case	unlifted
+			.undef	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty
+	-- > :: gsdl.cgs.gsexpr.t
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
 gsdl.cgs.gstype.t	.tygvar
@@ -3448,6 +3484,13 @@ _gsac.gsexpr.annotate_app_expr_fun.type.check_res.u	.tyexpr
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
 	.typroduct	argtype	gsdl.cgs.gstype.t	tyres.kind	gsdl.cgs.gskind.t
+
+_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	gsdl.cgs.gsexpr.arg.t
 
 _gsac.gsexpr.annotate_impfor_ensure.impprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
