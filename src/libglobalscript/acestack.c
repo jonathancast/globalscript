@@ -262,6 +262,8 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
             src = (uchar*)src - sz;
             downupdate = (struct gsbc_cont_update *)dest;
 
+            neweval->update = downupdate;
+
             is_live = 1;
         } else {
             /* §paragraph{Skip update frame} */
