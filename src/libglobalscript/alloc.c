@@ -313,6 +313,7 @@ gs_sys_block_in_gc_from_space(void *p)
 {
     if (!gs_sys_in_gc) return 0;
     if ((uintptr)p >= (uintptr)what_we_think_is_break) return 0;
+    if ((uintptr)p < (uintptr)bottom_of_data) return 0;
     return BLOCK_TYPE(p) == gs_sys_block_gc_from_space;
 }
 
