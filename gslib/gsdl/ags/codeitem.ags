@@ -108,6 +108,7 @@ gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
 gsdl.ags.codeitem.alloc.rhs.print	.closure	_gsdl.ags.codeitem.alloc.rhs.print_c
+_gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	.string	.appty\t
 _gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.string	.undefined\t
 
 gsdl.ags.codeitem.alloc.rhs.pos	.closure	_gsdl.ags.codeitem.alloc.rhs.pos_c
@@ -2573,27 +2574,33 @@ gsdl.var.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
 diff.list.t	.tygvar
-_gsdl.ags.codeitem.alloc.rhs.print_undefined_tya.print_c	.subcode
+_gsdl.ags.codeitem.alloc.rhs.print_tya.print_c	.subcode
 diff.list.prepend	.gvar
-_gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.gvar
+_gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	.gvar
 diff.list.<>	.gvar
 gsdl.ags.syntax.var.print	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
+_gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 rhs0	.karg	gsdl.ags.codeitem.alloc.rhs.prim.u
+tya.print	.closure	_gsdl.ags.codeitem.alloc.rhs.print_tya.print_c
 	.analyze	rhs0	appty	undefined
 		.case	appty
 pos		.fkarg		0	gsdl.sourcepos.t
 f		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+f.s			.apply	gsdl.ags.syntax.var.print	|	f
+tyas.ss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	tya.print	tyas
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+s1			.apply	diff.list.<>	rune.t	|	f.s	tyas.s
+			.app	_gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	s1
+			.enter	diff.list.prepend	rune.t
 		.case	undefined
 pos		.fkarg	0	gsdl.sourcepos.t
 tyf		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
 tyf.s			.apply	gsdl.ags.syntax.var.print	|	tyf
-tya.print			.closure	_gsdl.ags.codeitem.alloc.rhs.print_undefined_tya.print_c
 tyas.ss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	tya.print	tyas
 tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
 s1			.apply	diff.list.<>	rune.t	|	tyf.s	tyas.s
@@ -2601,7 +2608,7 @@ s1			.apply	diff.list.<>	rune.t	|	tyf.s	tyas.s
 			.enter	diff.list.prepend	rune.t
 	-- > :: diff.list.t	rune.t
 
-_gsdl.ags.codeitem.alloc.rhs.print_undefined_tya.print_c	.expr
+_gsdl.ags.codeitem.alloc.rhs.print_tya.print_c	.expr
 gsdl.var.t	.tygvar
 rune.t	.tygvar
 diff.list.:	.gvar
