@@ -4,6 +4,6 @@
 
 	.type
 
-integer.t	.tyexpr
+integer.t	.tyabstract	*
 	.tylift
 	.tysum
