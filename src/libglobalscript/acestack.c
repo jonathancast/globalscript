@@ -219,17 +219,42 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
     dest = src = thread->stackbot;
     is_live = 0;
     for (update = upupdate; update; update = upupdate) {
+        struct gsheap_item *eval;
+
         upupdate = update->next;
         update->next = downupdate;
 
         srctop = update;
         sz = (uchar*)src - (uchar*)srctop;
 
-        if (!gs_sys_block_in_gc_from_space(update->dest)) {
+        eval = update->dest;
+        if (!gs_sys_block_in_gc_from_space(eval)) {
             gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
             return -1;
-        } else if (update->dest->type == gsgcforward) {
-            update->dest = (struct gsheap_item *)((struct gsgcforward *)update->dest)->gcfwd;
+        } else if (eval->type == gsgcforward) {
+            struct gsgcforward *fwd = (struct gsgcforward *)eval;
+            struct gsheap_item *neweval_hp;
+            struct gseval *neweval;
+
+            if (!gs_sys_block_in_heap(fwd->gcfwd)) {
+                gsstring_builder_print(err, "%P: Update is a forward, but forward points to %p, which is outside dynamic memory!", update->cont.pos, fwd->gcfwd);
+                return -1;
+            }
+            if (!gsisheap_block(BLOCK_CONTAINING(fwd->gcfwd))) {
+                gsstring_builder_print(err, "%P: Update is a forward, but forward points to %p, a %s, not a heap item", update->cont.pos, fwd->gcfwd, CLASS_OF_BLOCK_CONTAINING(fwd->gcfwd)->description);
+                return -1;
+            }
+            neweval_hp = (struct gsheap_item *)fwd->gcfwd;
+            if (neweval_hp->type != gseval) {
+                gsstring_builder_print(err, "%P: Update is a forward, and forward points to a heap item, but heap item is %p, a %d, not an eval", update->cont.pos, neweval_hp, neweval_hp->type);
+                return -1;
+            }
+            if (gs_sys_block_in_gc_from_space(neweval_hp)) {
+                gsstring_builder_print(err, "%P: Update is a forward, and forward points to an eval, but forward is %p, in from-space", update->cont.pos, neweval_hp, neweval_hp->type);
+                return -1;
+            }
+            neweval = (struct gseval *)neweval_hp;
+            update->dest = neweval_hp;
 
             /* §paragraph{Copy update frame up on the stack} */
             dest = (uchar*)dest - sz;
