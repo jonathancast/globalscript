@@ -576,6 +576,7 @@ void gs_sys_gc_done_with_collection(void);
 /* ↓ Pass §ccode{0} to ignore errors */
 int gs_sys_gc_allow_collection(struct gsstringbuilder *);
 
+int gs_sys_block_in_heap(uintptr);
 int gs_sys_block_in_gc_from_space(void *);
 
 typedef void gs_sys_gc_pre_callback(void);

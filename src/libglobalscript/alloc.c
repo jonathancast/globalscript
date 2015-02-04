@@ -303,6 +303,12 @@ gs_sys_gc_allow_collection(struct gsstringbuilder *err)
 }
 
 int
+gs_sys_block_in_heap(uintptr p)
+{
+    return (p >= (uintptr)bottom_of_data && p < (uintptr)what_we_think_is_break);
+}
+
+int
 gs_sys_block_in_gc_from_space(void *p)
 {
     if (!gs_sys_in_gc) return 0;
