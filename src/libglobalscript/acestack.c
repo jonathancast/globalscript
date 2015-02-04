@@ -228,6 +228,14 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
         sz = (uchar*)src - (uchar*)srctop;
 
         eval = update->dest;
+        if (!gs_sys_block_in_heap((uintptr)eval)) {
+            gsstring_builder_print(err, "%P: Update points to %p, which is outside dynamic memory!", update->cont.pos, eval);
+            return -1;
+        }
+        if (!gsisheap_block(BLOCK_CONTAINING(eval))) {
+            gsstring_builder_print(err, "%P: Update points to %p, a %s, not a heap item", update->cont.pos, eval, CLASS_OF_BLOCK_CONTAINING(eval)->description);
+            return -1;
+        }
         if (!gs_sys_block_in_gc_from_space(eval)) {
             gsstring_builder_print(err, UNIMPL("%P: Trace update with live dest"), update->cont.pos);
             return -1;
@@ -265,9 +273,12 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
             neweval->update = downupdate;
 
             is_live = 1;
-        } else {
+        } else if (eval->type == gseval) {
             /* §paragraph{Skip update frame} */
             src = (uchar*)src - sz;
+        } else {
+            gsstring_builder_print(err, "%P: Update doesn't point to an eval, but to %p, which is a %d", update->cont.pos, eval, eval->type);
+            return -1;
         }
         /* §paragraph{Move src down to next update frame or stack top; copy if we've entered the live portion of the stack} */
         srctop = upupdate ? (uchar*)upupdate + sizeof(*upupdate) : (uchar*)thread->stacktop;
