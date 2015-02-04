@@ -3,6 +3,7 @@
 MKSHELL=$PLAN9/bin/rc
 
 LOCAL_TARGETS=\
+	./mdltype2c-core.gsac \
 	./mdl2clib.gsac \
 	`{$GLOBALSCRIPT/bin/gsac-targets ./gslib} \
 
