@@ -2,6 +2,7 @@
 
 "defn ibio.m rune.t rune.t ⌊"Π〈〉⌋ "⊲ ⌊λ i :: ibio.prim.iport rune.t. ⌊λ o :: ibio.prim.oport rune.t. ⌊λ eo :: ibio.prim.oport rune.t.
     ⌊for @ibio.prim.m
+            stdin.fn :: ibio.file.name.t;
         . :: ibio.prim.t ⌊"Π〈〉⌋
     ⌋
 ⌋⌋⌋;
