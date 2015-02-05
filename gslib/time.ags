@@ -4,6 +4,6 @@
 
 	.type
 
-time.t	.tyexpr
+time.t	.tyabstract	*
 	.tylift
 	.tysum
