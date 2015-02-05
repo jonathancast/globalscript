@@ -1,5 +1,7 @@
 #type: document
 
 "defn ibio.m rune.t rune.t ⌊"Π〈〉⌋ "⊲ ⌊λ i :: ibio.prim.iport rune.t. ⌊λ o :: ibio.prim.oport rune.t. ⌊λ eo :: ibio.prim.oport rune.t.
-    :: ibio.prim.t ⌊"Π〈〉⌋
+    ⌊for @ibio.prim.m
+        . :: ibio.prim.t ⌊"Π〈〉⌋
+    ⌋
 ⌋⌋⌋;
