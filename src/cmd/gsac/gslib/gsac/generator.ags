@@ -557,6 +557,7 @@ gsdl.cgs.typeenv.t	.tygvar	-- Temp
 _gsac.generator.annotate_bind_right_nothing_right_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 either.left	.gvar
+gsdl.cgs.gstype.unpos	.gvar
 env	.fv	gsdl.cgs.typeenv.t
 pos1	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
@@ -573,7 +574,8 @@ e.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 e.r.ty			.lfield	gstype	e.r
 			.force	_gsac.generator.annotate_bind_right_nothing_right_k
 			.coerce	gsdl.cgs.gstype.t.out
-			.enter	e.r.ty
+			.app	e.r.ty
+			.enter	gsdl.cgs.gstype.unpos
 
 _gsac.generator.annotate_bind_right_nothing_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
