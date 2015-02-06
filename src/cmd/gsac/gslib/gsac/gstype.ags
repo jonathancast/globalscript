@@ -1596,10 +1596,19 @@ fsa1				.fkarg	1	list.t	gsdl.cgs.gstype.field.t
 					.enter	either.right	string.t	record.empty
 
 _gsac.gstype.fields.check_:_:_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
+gsac.gstype.fields.check	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
+fsa1	.fv	list.t	gsdl.cgs.gstype.field.t
+fse1	.fv	list.t	gsdl.cgs.gstype.field.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
 		.case	left
@@ -1607,7 +1616,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	record.empty
 		.case	right
 r0		.fkarg	0	record.empty
-			.undef	either.t	string.t	record.empty
+			.app	pos	env	fsa1	fse1
+			.enter	gsac.gstype.fields.check
 
 -- §section §gs{gsdl.cgs.gstype.field.check}
 
