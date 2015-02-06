@@ -1601,7 +1601,13 @@ string.t	.tygvar
 record.empty	.tygvar
 either.t	.tygvar	-- Temp
 e0	.karg	either.prim.u	string.t	record.empty
-		.undef	either.t	string.t	record.empty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	record.empty
+		.case	right
+r0		.fkarg	0	record.empty
+			.undef	either.t	string.t	record.empty
 
 -- §section §gs{gsdl.cgs.gstype.field.check}
 
