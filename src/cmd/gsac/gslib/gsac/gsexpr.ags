@@ -236,7 +236,7 @@ env	.fv	gsdl.cgs.typeenv.t
 f.r	.fv	_gsac.gsexpr.annotate_res.ty
 a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
 f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
-	.analyze	a0	expr	type
+	.analyze	a0	expr	expr.unlifted	type
 		.case	expr
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.annotate_app_right_expr_k
@@ -257,6 +257,9 @@ ty1				.fkarg	0	gsdl.cgs.gstype.t
 					.coerce	gsdl.cgs.gstype.t.out
 					.app	ty1
 					.enter	gsdl.cgs.gstype.unpos
+		.case	expr.unlifted
+ea		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
 			.danalyze	f.r.ty0	forall

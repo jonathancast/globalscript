@@ -59,6 +59,7 @@ gsdl.cgs.gsexpr.var	.closure	_gsdl.cgs.gsexpr.var_c
 gsdl.cgs.gsexpr.var.lifted	.closure	_gsdl.cgs.gsexpr.var.lifted_c
 
 gsdl.cgs.gsexpr.arg.expr	.closure	_gsdl.cgs.gsexpr.arg.expr_c
+gsdl.cgs.gsexpr.arg.expr.unlifted	.closure	_gsdl.cgs.gsexpr.arg.expr.unlifted_c
 gsdl.cgs.gsexpr.arg.type	.closure	_gsdl.cgs.gsexpr.arg.type_c
 
 gsdl.cgs.gsexpr.cast.source.missing	.closure	_gsdl.cgs.gsexpr.cast.source.missing_c
@@ -626,11 +627,14 @@ gsdl.cgs.symbol.t	.tygvar	-- Temp
 gsdl.cgs.gstype.freevars	.gvar
 gsdl.cgs.gsexpr.freevars	.gvar
 a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
-	.analyze	a0	expr	type
+	.analyze	a0	expr	expr.unlifted	type
 		.case	expr
 e		.fkarg	0	gsdl.cgs.gsexpr.t
 			.app	e
 			.enter	gsdl.cgs.gsexpr.freevars
+		.case	expr.unlifted
+e		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	ordered.set.t	gsdl.cgs.symbol.t
 		.case	type
 ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	ty
@@ -1434,6 +1438,16 @@ res	.constr	gsdl.cgs.gsexpr.arg.prim.u	expr	0	e
 	.lift
 	.yield	res
 
+_gsdl.cgs.gsexpr.arg.expr.unlifted_c	.expr
+gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+gsdl.cgs.gsexpr.arg.t.in	.cogvar
+e	.larg	gsdl.cgs.gsexpr.t
+res	.constr	gsdl.cgs.gsexpr.arg.prim.u	expr.unlifted	0	e
+	.coerce	gsdl.cgs.gsexpr.arg.t.in
+	.lift
+	.yield	res
+
 _gsdl.cgs.gsexpr.arg.type_c	.expr
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
@@ -1722,10 +1736,15 @@ gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 
 gsdl.cgs.gsexpr.arg.prim.u	.tyexpr
 _gsdl.cgs.gsexpr.arg.prim.u_expr_ty	.tygvar
+_gsdl.cgs.gsexpr.arg.prim.u_expr.unlifted_ty	.tygvar
 _gsdl.cgs.gsexpr.arg.prim.u_type_ty	.tygvar
-	.tysum	expr	_gsdl.cgs.gsexpr.arg.prim.u_expr_ty	type	_gsdl.cgs.gsexpr.arg.prim.u_type_ty
+	.tysum	expr	_gsdl.cgs.gsexpr.arg.prim.u_expr_ty	expr.unlifted	_gsdl.cgs.gsexpr.arg.prim.u_expr.unlifted_ty	type	_gsdl.cgs.gsexpr.arg.prim.u_type_ty
 
 _gsdl.cgs.gsexpr.arg.prim.u_expr_ty	.tyexpr
+gsdl.cgs.gsexpr.t	.tygvar
+	.tyubproduct	0	gsdl.cgs.gsexpr.t
+
+_gsdl.cgs.gsexpr.arg.prim.u_expr.unlifted_ty	.tyexpr
 gsdl.cgs.gsexpr.t	.tygvar
 	.tyubproduct	0	gsdl.cgs.gsexpr.t
 
