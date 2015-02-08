@@ -885,7 +885,13 @@ _gsac.prefix.file.add_gsprefix_tyds.add_closure_k	.subcode
 maybe.t.out	.cogvar
 tyds0	.fv	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 di0	.karg	gsdl.ags.dataitem.prim.u
-	.analyze	di0	cast	closure	string	undefined
+	.analyze	di0	alias	cast	closure	string	undefined
+		.case	alias
+pos		.fkarg	0	gsdl.sourcepos.t
+mbv		.fkarg	1	maybe.t	gsdl.var.t
+sov		.fkarg	2	gsdl.var.t
+tyv		.fkarg	3	gsdl.var.t
+			.undef	ordered.map.t	gsdl.var.t	gsac.prefix.dataitem.t
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
 mbv		.fkarg	1	maybe.t	gsdl.var.t

@@ -205,7 +205,13 @@ ds1	.fv	list.t	gsdl.ags.dataitem.t
 d0.0	.karg	gsdl.ags.dataitem.prim.u
 nil	.apply	diff.list.nil	rune.t
 s1	.apply	_gsdl.ags.file.print_dataitems	|	file0	ds1
-	.analyze	d0.0	cast	closure	string	undefined
+	.analyze	d0.0	alias	cast	closure	string	undefined
+		.case	alias
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+x		.fkarg	2	gsdl.var.t
+ty		.fkarg	3	gsdl.var.t
+			.undef	string.t
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t

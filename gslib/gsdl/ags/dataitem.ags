@@ -17,6 +17,7 @@ gsdl.ags.dataitem.≡	.closure	_gsdl.ags.dataitem.≡_c	_gsdl.ags.dataitem.≡_t
 gsdl.ags.dataitem.fmtgs	.closure	_gsdl.ags.dataitem.fmtgs_c	_gsdl.ags.dataitem.fmtgs_ty
 _gsdl.ags.dataitem.fmtgs_undefined.s	.string	undefined\s
 
+gsdl.ags.dataitem.alias	.closure	_gsdl.ags.dataitem.alias_c
 gsdl.ags.dataitem.undefined	.closure	_gsdl.ags.dataitem.undefined_c
 gsdl.ags.dataitem.cast	.closure	_gsdl.ags.dataitem.cast_c
 gsdl.ags.dataitem.closure	.closure	_gsdl.ags.dataitem.closure_c
@@ -285,7 +286,13 @@ maybe.≡	.gvar
 gsdl.var.≡	.gvar
 di0.0	.fv	gsdl.ags.dataitem.prim.u
 di1.0	.karg	gsdl.ags.dataitem.prim.u
-	.analyze	di0.0	cast	closure	string	undefined
+	.analyze	di0.0	alias	cast	closure	string	undefined
+		.case	alias
+pos0		.fkarg	0	gsdl.sourcepos.t
+nm0		.fkarg	1	maybe.t	gsdl.var.t
+x0		.fkarg	2	gsdl.var.t
+ty0		.fkarg	3	gsdl.var.t
+			.undef	bool.t
 		.case	cast
 pos0		.fkarg	0	gsdl.sourcepos.t
 nm0		.fkarg	1	maybe.t	gsdl.var.t
@@ -364,7 +371,13 @@ rune.space	.gvar
 maybe.fmtgs	.gvar
 gsdl.var.fmtgs	.gvar
 di0	.karg	gsdl.ags.dataitem.prim.u
-	.analyze	di0	cast	closure	string	undefined
+	.analyze	di0	alias	cast	closure	string	undefined
+		.case	alias
+pos		.fkarg	0	gsdl.sourcepos.t
+nm		.fkarg	1	maybe.t	gsdl.var.t
+x		.fkarg	2	gsdl.var.t
+ty		.fkarg	3	gsdl.var.t
+			.undef	fmtgs.printer.t
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
@@ -399,6 +412,21 @@ ds			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.dataitem.fmtgs_undefined.s	ds1
 	-- > :: fmtgs.printer.t
 
 -- §section §gs{gsdl.ags.dataitem.t} Constructors
+
+_gsdl.ags.dataitem.alias_c	.expr
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.dataitem.prim.u	.tygvar
+gsdl.ags.dataitem.t.in	.cogvar
+pos	.arg	gsdl.sourcepos.t
+nm	.arg	maybe.t	gsdl.var.t
+x	.arg	gsdl.var.t
+ty	.arg	gsdl.var.t
+c	.constr	gsdl.ags.dataitem.prim.u	alias	0	pos	1	nm	2	x	3	ty
+	.coerce	gsdl.ags.dataitem.t.in
+	.lift
+	.yield	c
 
 _gsdl.ags.dataitem.undefined_c	.expr
 gsdl.sourcepos.t	.tygvar
@@ -467,11 +495,19 @@ gsdl.ags.dataitem.prim.u	.tygvar
 	.tyref	gsdl.ags.dataitem.prim.u
 
 gsdl.ags.dataitem.prim.u	.tyexpr
+_gsdl.ags.dataitem.prim.u_alias_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_cast_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_closure_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_string_ty	.tygvar
 _gsdl.ags.dataitem.prim.u_undefined_ty	.tygvar
-	.tysum	cast	_gsdl.ags.dataitem.prim.u_cast_ty	closure	_gsdl.ags.dataitem.prim.u_closure_ty	string	_gsdl.ags.dataitem.prim.u_string_ty	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
+	.tysum	alias	_gsdl.ags.dataitem.prim.u_alias_ty	cast	_gsdl.ags.dataitem.prim.u_cast_ty	closure	_gsdl.ags.dataitem.prim.u_closure_ty	string	_gsdl.ags.dataitem.prim.u_string_ty	undefined	_gsdl.ags.dataitem.prim.u_undefined_ty
+
+_gsdl.ags.dataitem.prim.u_alias_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+maybe.var.ty	.tylet	maybe.t	gsdl.var.t
+	.tyubproduct	0	gsdl.sourcepos.t	1	maybe.var.ty	2	gsdl.var.t	3	gsdl.var.t
 
 _gsdl.ags.dataitem.prim.u_cast_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
