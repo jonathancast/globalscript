@@ -3077,12 +3077,12 @@ gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
@@ -3107,7 +3107,7 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsac.gsexpr.compileToGenRHS
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
