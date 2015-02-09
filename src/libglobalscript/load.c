@@ -216,12 +216,17 @@ gsaddfile(char *filename, struct gsfile_symtable **psymtable, struct gspos *pent
     return parsedfile->type;
 }
 
+enum gsparsed_file_section {
+    gsnosection,
+    gsdatasection,
+    gscodesection,
+    gstypesection,
+    gscoercionsection,
+};
+
 static void gsparse_pragma(struct gsparse_input_pos, char *, char **, uint *);
 static long gsgrabline(uint, struct gsparse_input_pos *, struct uxio_ichannel *, char *, char **);
-static long gsparse_data_item(struct gsparse_input_pos *, int, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
-static long gsparse_code_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
-static long gsparse_type_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
-static long gsparse_coercion_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
+static void gsparse_directive(struct gsparse_input_pos *, int, gsparsedfile *, enum gsparsed_file_section *, struct uxio_ichannel *, char *, long, char **, struct gsfile_symtable *);
 
 #define LINE_LENGTH 0x400
 #define NUM_FIELDS 0x100
@@ -240,13 +245,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     long n;
     gsfiletype type;
     struct gsparse_input_pos pos;
-    enum {
-        gsnosection,
-        gsdatasection,
-        gscodesection,
-        gstypesection,
-        gscoercionsection,
-    } section;
+    enum gsparsed_file_section section;
 
     if (!(chan = gsopenfile(filename, OREAD, &real_filename, &pid))) {
         if (is_doc) *is_doc = 0;
@@ -336,61 +335,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         so when the parse function returns, we are ready to read in the next item (or section declaration).
     */
     while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0) {
-        if (n < 2) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
-        if (!strcmp(fields[1], ".data")) {
-            section = gsdatasection;
-            if (parsedfile->data)
-                gsfatal("%s:%d: We already did this section", pos.real_filename, pos.real_lineno)
-            ;
-            parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data));
-            parsedfile->data->first_seg = parsedfile->last_seg;
-            parsedfile->data->numitems = 0;
-        } else if (!strcmp(fields[1], ".code")) {
-            section = gscodesection;
-            if (parsedfile->code)
-                gsfatal("%s:%d: We already did this section", pos.real_filename, pos.real_lineno)
-            ;
-            parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code));
-            parsedfile->code->numitems = 0;
-        } else if (!strcmp(fields[1], ".type")) {
-            section = gstypesection;
-            if (parsedfile->types)
-                gsfatal("%s:%d: We already did this section", pos.real_filename, pos.real_lineno)
-            ;
-            parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types));
-            parsedfile->types->first_seg = parsedfile->last_seg;
-            parsedfile->types->numitems = 0;
-        } else if (!strcmp(fields[1], ".coercion")) {
-            section = gscoercionsection;
-            if (parsedfile->coercions)
-                gsfatal("%s:%d: We already did this section", pos.real_filename, pos.real_lineno)
-            ;
-            parsedfile->coercions = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->coercions));
-            parsedfile->coercions->first_seg = parsedfile->last_seg;
-            parsedfile->coercions->numitems = 0;
-        } else switch (section) {
-            case gsnosection:
-                gsfatal("%s:%d: Missing section directive", pos.real_filename, pos.real_lineno);
-                break;
-            case gsdatasection:
-                if (gsparse_data_item(&pos, is_ags, parsedfile, chan, line, fields, n, symtable) < 0)
-                    gsfatal("%s:%d: Error in reading data item: %r", pos.real_filename, pos.real_lineno);
-                break;
-            case gscodesection:
-                if (gsparse_code_item(&pos, parsedfile, chan, line, fields, n, symtable) < 0)
-                    gsfatal("%s:%d: Error in reading code item: %r", pos.real_filename, pos.real_lineno);
-                break;
-            case gstypesection:
-                if (gsparse_type_item(&pos, parsedfile, chan, line, fields, n, symtable) < 0)
-                    gsfatal("%s:%d: Error in reading type item: %r", pos.real_filename, pos.real_lineno);
-                break;
-            case gscoercionsection:
-                if (gsparse_coercion_item(&pos, parsedfile, chan, line, fields, n, symtable) < 0)
-                    gsfatal("%s:%d: Error in reading coercion item: %r", pos.real_filename, pos.real_lineno);
-                break;
-            default:
-                gsfatal("%s:%d: Parse items in section %d next", __FILE__, __LINE__, section);
-        }
+        gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
     }
     if (n < 0)
         gsfatal("%s:%d: Error in reading data item: %r", pos.real_filename, pos.real_lineno)
@@ -445,6 +390,71 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
         }
     } else {
         gsfatal("%s:%d: Unsupported pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
+    }
+}
+
+static long gsparse_data_item(struct gsparse_input_pos *, int, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
+static long gsparse_code_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
+static long gsparse_type_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
+static long gsparse_coercion_item(struct gsparse_input_pos *, gsparsedfile *, struct uxio_ichannel *, char *, char **, ulong, struct gsfile_symtable *);
+
+void
+gsparse_directive(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parsedfile, enum gsparsed_file_section *psection, struct uxio_ichannel *chan, char *line, long n, char **fields, struct gsfile_symtable *symtable)
+{
+    if (n < 2) gsfatal("%s:%d: Missing directive", pos->real_filename, pos->real_lineno);
+    if (!strcmp(fields[1], ".data")) {
+        *psection = gsdatasection;
+        if (parsedfile->data)
+            gsfatal("%s:%d: We already did this section", pos->real_filename, pos->real_lineno)
+        ;
+        parsedfile->data = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->data));
+        parsedfile->data->first_seg = parsedfile->last_seg;
+        parsedfile->data->numitems = 0;
+    } else if (!strcmp(fields[1], ".code")) {
+        *psection = gscodesection;
+        if (parsedfile->code)
+            gsfatal("%s:%d: We already did this section", pos->real_filename, pos->real_lineno)
+        ;
+        parsedfile->code = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->code));
+        parsedfile->code->numitems = 0;
+    } else if (!strcmp(fields[1], ".type")) {
+        *psection = gstypesection;
+        if (parsedfile->types)
+            gsfatal("%s:%d: We already did this section", pos->real_filename, pos->real_lineno)
+        ;
+        parsedfile->types = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->types));
+        parsedfile->types->first_seg = parsedfile->last_seg;
+        parsedfile->types->numitems = 0;
+    } else if (!strcmp(fields[1], ".coercion")) {
+        *psection = gscoercionsection;
+        if (parsedfile->coercions)
+            gsfatal("%s:%d: We already did this section", pos->real_filename, pos->real_lineno)
+        ;
+        parsedfile->coercions = gsparsed_file_extend(parsedfile, sizeof(*parsedfile->coercions));
+        parsedfile->coercions->first_seg = parsedfile->last_seg;
+        parsedfile->coercions->numitems = 0;
+    } else switch (*psection) {
+        case gsnosection:
+            gsfatal("%s:%d: Missing section directive", pos->real_filename, pos->real_lineno);
+            break;
+        case gsdatasection:
+            if (gsparse_data_item(pos, is_ags, parsedfile, chan, line, fields, n, symtable) < 0)
+                gsfatal("%s:%d: Error in reading data item: %r", pos->real_filename, pos->real_lineno);
+            break;
+        case gscodesection:
+            if (gsparse_code_item(pos, parsedfile, chan, line, fields, n, symtable) < 0)
+                gsfatal("%s:%d: Error in reading code item: %r", pos->real_filename, pos->real_lineno);
+            break;
+        case gstypesection:
+            if (gsparse_type_item(pos, parsedfile, chan, line, fields, n, symtable) < 0)
+                gsfatal("%s:%d: Error in reading type item: %r", pos->real_filename, pos->real_lineno);
+            break;
+        case gscoercionsection:
+            if (gsparse_coercion_item(pos, parsedfile, chan, line, fields, n, symtable) < 0)
+                gsfatal("%s:%d: Error in reading coercion item: %r", pos->real_filename, pos->real_lineno);
+            break;
+        default:
+            gsfatal("%s:%d: Parse items in section %d next", __FILE__, __LINE__, *psection);
     }
 }
 
