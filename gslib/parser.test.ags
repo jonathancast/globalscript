@@ -4,17 +4,17 @@
 
 	.data
 
-	.closure	_epcode
+	.closure	_ep_c
 
-_tests	.list	test.property.t	_test.fail.nil	_test.fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
-_test.fail.nil	.closure	_test.fail.nil_c
-_test.fail.nil_label	.string	parse\sfail\sqq{}
+_test_fail.nil	.closure	_test_fail.nil_c
+_test_fail.nil_label	.string	parse\sfail\sqq{}
 
-_test.fail.msg.nil	.closure	_test.fail.msg.nil_c
-_test.fail.msg.nil_label	.string	parse\sfail.msg\sqq{}
-_test.fail.msg.nil_sample.msg	.string	User-supplied\serror
-_test.fail.msg.nil_err.fmt.expected	.string	./parse-data:$:\sUser-supplied\serror
+_test_fail.msg.nil	.closure	_test_fail.msg.nil_c
+_test_fail.msg.nil_label	.string	parse\sfail.msg\sqq{}
+_test_fail.msg.nil_sample.msg	.string	User-supplied\serror
+_test_fail.msg.nil_err.fmt.expected	.string	./parse-data:$:\sUser-supplied\serror
 
 _test.unit.nil	.closure	_test.unit.nil_c
 _test.unit.nil_label	.string	parse\s(unit\strue)\sqq{}
@@ -158,7 +158,7 @@ _test.pos.fmtgs_expected	.string	〈\s'file\s∝\sfn<./parse-data>;\s'line\s∝\
 
 	.code
 
-_epcode	.expr
+_ep_c	.expr
 test.all	.gvar
 _tests	.gvar
 	.app	_tests
@@ -166,12 +166,12 @@ _tests	.gvar
 
 -- §section §gs{parse fail qq{}}
 
-_test.fail.nil_c	.expr
+_test_fail.nil_c	.expr
 rune.t	.tygvar
 record.empty	.tygvar
-_test.fail.nil_k_c	.subcode
+_test_fail.nil_k_c	.subcode
 test.property.label	.gvar
-_test.fail.nil_label	.gvar
+_test_fail.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
@@ -180,12 +180,12 @@ parser.fail	.gvar
 list.nil	.gvar
 fail	.apply	parser.fail	rune.t	record.empty
 nil	.apply	list.nil	rune.t
-k	.closure	_test.fail.nil_k_c
+k	.closure	_test_fail.nil_k_c
 test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	fail	nil	k
-	.app	_test.fail.nil_label	test
+	.app	_test_fail.nil_label	test
 	.enter	test.property.label
 
-_test.fail.nil_k_c	.expr
+_test_fail.nil_k_c	.expr
 parser.err.t	.tygvar
 test.assert.eq	.gvar
 parser.err.≡	.gvar
@@ -202,27 +202,27 @@ expected	.apply	parser.err.simple.failure	|	pos	bool.true
 
 -- §section §gs{parse fail.msg qq{}}
 
-_test.fail.msg.nil_c	.expr
+_test_fail.msg.nil_c	.expr
 rune.t	.tygvar
 record.empty	.tygvar
-_test.fail.msg.nil_k_c	.subcode
+_test_fail.msg.nil_k_c	.subcode
 test.property.label	.gvar
-_test.fail.msg.nil_label	.gvar
+_test_fail.msg.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 record.empty.fmtgs	.gvar
 parser.fail.msg	.gvar
-_test.fail.msg.nil_sample.msg	.gvar
+_test_fail.msg.nil_sample.msg	.gvar
 list.nil	.gvar
-parser	.apply	parser.fail.msg	rune.t	record.empty	|	_test.fail.msg.nil_sample.msg
+parser	.apply	parser.fail.msg	rune.t	record.empty	|	_test_fail.msg.nil_sample.msg
 nil	.apply	list.nil	rune.t
-k	.closure	_test.fail.msg.nil_k_c
+k	.closure	_test_fail.msg.nil_k_c
 test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	parser	nil	k
-	.app	_test.fail.msg.nil_label	test
+	.app	_test_fail.msg.nil_label	test
 	.enter	test.property.label
 
-_test.fail.msg.nil_k_c	.expr
+_test_fail.msg.nil_k_c	.expr
 parser.err.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
@@ -232,13 +232,13 @@ rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 parser.err.fmt	.gvar
-_test.fail.msg.nil_err.fmt.expected	.gvar
+_test_fail.msg.nil_err.fmt.expected	.gvar
 string.ty	.tylet	list.t	rune.t
 err	.larg	parser.err.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 err.fmt	.apply	parser.err.fmt	|	err
-	.app	string.≡	string.fmtgs	err.fmt	_test.fail.msg.nil_err.fmt.expected
+	.app	string.≡	string.fmtgs	err.fmt	_test_fail.msg.nil_err.fmt.expected
 	.enter	test.assert.eq	string.ty
 
 -- §section §gs{parse unit qq{}}
