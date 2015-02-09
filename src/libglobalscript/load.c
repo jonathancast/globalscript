@@ -279,28 +279,6 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
         if (n == 1) gsfatal("%s:$: EOF before .document or .prefix", pos.real_filename);
     }
-
-    if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
-        gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
-    ;
-    if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
-    if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
-    if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
-
-    if (!strcmp(fields[1], ".document")) {
-        if (skip_docs) {
-            if (gsclosefile(chan, pid) < 0)
-                gsfatal("%s: Error in closing file: %r", filename);
-            *is_doc = 1;
-            return 0;
-        }
-        type = gsfiledocument;
-    } else if (!strcmp(fields[1], ".prefix")) {
-        type = gsfileprefix;
-    } else {
-        gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
-        return 0;
-    }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
     if (!strcmp(calculus_version, "0.5")) {
         static int should_disable_string_code_0_5, should_disable_string_code_0_5_initialized;
@@ -322,6 +300,28 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         }
     decided_on_disabling:
         if (should_disable_string_code_0_5) gsfatal("%s: Illegally old calculus string code 0.5", pos.real_filename);
+    }
+
+    if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
+        gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
+    ;
+    if (n > NUM_FIELDS) gsfatal("%s:%d: Too many fields; max is %d", pos.real_filename, pos.real_lineno, NUM_FIELDS - 1);
+    if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
+    if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
+
+    if (!strcmp(fields[1], ".document")) {
+        if (skip_docs) {
+            if (gsclosefile(chan, pid) < 0)
+                gsfatal("%s: Error in closing file: %r", filename);
+            *is_doc = 1;
+            return 0;
+        }
+        type = gsfiledocument;
+    } else if (!strcmp(fields[1], ".prefix")) {
+        type = gsfileprefix;
+    } else {
+        gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
+        return 0;
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
