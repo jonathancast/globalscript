@@ -3144,7 +3144,7 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 nil.vs			.apply	list.nil	gsdl.var.t
