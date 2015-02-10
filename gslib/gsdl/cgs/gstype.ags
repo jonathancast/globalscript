@@ -563,8 +563,11 @@ gsdl.cgs.gstype.tyforall.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 gsdl.cgs.gstype.constr.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
 _gsdl.cgs.gstype.substty_forall_k	.subcode
+_gsdl.cgs.gstype.substty_product_k	.subcode
 _gsdl.cgs.gstype.substty_var_k	.subcode
 gsdl.cgs.gstype.t.in	.cogvar
 bool.t.out	.cogvar
@@ -573,8 +576,12 @@ gsdl.cgs.gstype.substty	.gvar
 gsdl.cgs.gstype.fun	.gvar
 gsdl.cgs.gstype.lift	.gvar
 gsdl.cgs.gstype.pos	.gvar
-gsdl.cgs.gstype.sum	.gvar
+ordered.set.elem	.gvar
+gsdl.cgs.symbol.compare	.gvar
 list.map	.gvar
+gsdl.cgs.gstype.field.boundvar	.gvar
+ordered.set.fromlist	.gvar
+gsdl.cgs.gstype.sum	.gvar
 gsdl.cgs.gstype.constr.substty	.gvar
 gsdl.var.≡	.gvar
 v	.fv	gsdl.var.t
@@ -648,7 +655,13 @@ ty1.2			.apply	gsdl.cgs.gstype.substty	|	v	ty0	ty1.1
 			.enter	gsdl.cgs.gstype.pos
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
-			.undef	gsdl.cgs.gstype.t
+tyvar.v			.undefined	gsdl.cgs.symbol.t
+fs.bvs.list			.apply	list.map	gsdl.cgs.gstype.field.t	gsdl.cgs.symbol.t	|	gsdl.cgs.gstype.field.boundvar	fs
+fs.bvs			.apply	ordered.set.fromlist	gsdl.cgs.symbol.t	|	gsdl.cgs.symbol.compare	fs.bvs.list
+			.force	_gsdl.cgs.gstype.substty_product_k
+			.coerce	bool.t.out
+			.app	gsdl.cgs.symbol.compare	tyvar.v	fs.bvs
+			.enter	ordered.set.elem	gsdl.cgs.symbol.t
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
 constr.substty			.apply	gsdl.cgs.gstype.constr.substty	|	v	ty0
@@ -716,6 +729,16 @@ b0	.karg	bool.prim.u	-- §gs{fa #0 `elem` fvs ty0}
 tyb1			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyb
 			.app	fa	tyb1
 			.enter	gsdl.cgs.gstype.forall
+		.case	true
+			.undef	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.substty_product_k	.forcecont
+bool.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	gsdl.cgs.gstype.t
 		.case	true
 			.undef	gsdl.cgs.gstype.t
 
