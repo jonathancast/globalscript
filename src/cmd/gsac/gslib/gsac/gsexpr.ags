@@ -3050,13 +3050,16 @@ gsdl.sourcepos.t	.tygvar
 maybe.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 string.t	.tygvar
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
+gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 _gsac.gstype.compileToApp_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.generator.imp.compile_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.generator.imp.compile_bind_k	.subcode
 _gsac.gsexpr.generator.imp.compile_undef_k	.subcode
 either.t.out	.cogvar
+gsac.gsexpr.compileToGenRHS	.gvar
 gsac.gstype.compileToApp	.gvar
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3070,7 +3073,10 @@ v		.fkarg	1	gsdl.var.t
 mbty		.fkarg	2	maybe.t	gsdl.cgs.gstype.t
 pos1		.fkarg	3	gsdl.sourcepos.t
 e		.fkarg	4	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
+			.force	_gsac.gsexpr.generator.imp.compile_bind_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+			.app	pos1	e	tyem	pem	tysvs	svs
+			.enter	gsac.gsexpr.compileToGenRHS
 		.case	typesyn
 pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
@@ -3087,6 +3093,48 @@ ty		.fkarg	3	gsdl.cgs.gstype.t
 			.app	pos2	ty	tyem	pem	tysvs
 			.enter	gsac.gstype.compileToApp
 	-- > :: either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
+
+_gsac.gsexpr.generator.imp.compile_bind_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
+_gsac.gsexpr.generator.imp.compile_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.dataitem.t	.tygvar	-- Temp
+ordered.map.t	.tygvar	-- Temp
+_gsac.gstype_primname.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+gsdl.ags.codeitem.impgen.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
+		.case	right
+e.r		.fkarg	0	_gsac.gsexpr.compileToGenRHS_res.ty
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+r			.undefined	gsdl.ags.codeitem.impgen.t
+svs1			.undefined	list.t	gsdl.var.t
+tyem1			.undefined	ordered.set.t	gsdl.var.t
+tysvs1			.undefined	list.t	gsdl.var.t
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.generator.imp.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 
 _gsac.gsexpr.generator.imp.compile_undef_k	.forcecont
 list.t	.tygvar
