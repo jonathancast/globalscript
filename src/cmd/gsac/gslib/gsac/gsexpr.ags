@@ -3102,7 +3102,6 @@ _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
 _gsac.gsexpr.generator.imp.compile_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.dataitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
@@ -3122,7 +3121,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.generator.imp.compile_res.ty
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToGenRHS_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.lfield	codeitems	e.r
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	e.r
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
