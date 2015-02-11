@@ -3128,7 +3128,7 @@ pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 r			.undefined	gsdl.ags.codeitem.impgen.t
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
-tysvs1			.undefined	list.t	gsdl.var.t
+tysvs1			.lfield	ty.subvars	e.r
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
