@@ -556,7 +556,8 @@ string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 _gsac.generator.annotate_res.ty	.tygvar
 gsdl.cgs.typeenv.t	.tygvar	-- Temp
-_gsac.generator.annotate_bind_right_nothing_right_k	.subcode
+_gsac.generator.annotate_bind_right_nothing_right_k0	.subcode
+_gsac.generator.annotate_bind_right_nothing_right_k1	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 either.left	.gvar
 gsdl.cgs.gstype.unpos	.gvar
@@ -576,12 +577,28 @@ err		.fkarg	0	string.t
 e.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
 e.r.e			.lfield	expr	e.r
 e.r.ty			.lfield	gstype	e.r
-			.force	_gsac.generator.annotate_bind_right_nothing_right_k
+			.force	_gsac.generator.annotate_bind_right_nothing_right_k1
+			.coerce	gsdl.cgs.gstype.t.out
+			.force	_gsac.generator.annotate_bind_right_nothing_right_k0
 			.coerce	gsdl.cgs.gstype.t.out
 			.app	e.r.ty
 			.enter	gsdl.cgs.gstype.unpos
 
-_gsac.generator.annotate_bind_right_nothing_right_k	.forcecont
+_gsac.generator.annotate_bind_right_nothing_right_k0	.forcecont
+gsdl.cgs.gstype.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.unpos	.gvar
+e.r.ty0	.karg	gsdl.cgs.gstype.prim.u
+	.danalyze	e.r.ty0	lift
+		.default
+			.undef	gsdl.cgs.gstype.t
+		.case	lift
+ty1		.fkarg	0	gsdl.cgs.gstype.t
+			.app	ty1
+			.enter	gsdl.cgs.gstype.unpos
+	-- > :: gsdl.cgs.gstype.t
+
+_gsac.generator.annotate_bind_right_nothing_right_k1	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
