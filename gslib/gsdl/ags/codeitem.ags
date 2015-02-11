@@ -99,6 +99,7 @@ gsdl.ags.codeitem.impgens.parser	.closure	_gsdl.ags.codeitem.impgens.parser_c
 _gsdl.ags.codeitem.impgens.parser_bind.two.words.p_bind.re	.regex	.bind
 
 gsdl.ags.codeitem.impgen.print	.closure	_gsdl.ags.codeitem.impgen.print_c
+_gsdl.ags.codeitem.impgen.print_bind_bind.s	.string	\t.bind
 
 gsdl.ags.codeitem.impgen.fmtgs	.closure	_gsdl.ags.codeitem.impgen.fmtgs_c
 
@@ -2476,6 +2477,8 @@ rune.tab	.gvar
 diff.list.snoc	.gvar
 gsdl.ags.codeitem.alloc.rhs.print	.gvar
 rune.new.line	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.codeitem.impgen.print_bind_bind.s	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 g0	.karg	gsdl.ags.codeitem.impgen.prim.u
 nil	.apply	diff.list.nil	rune.t
@@ -2498,7 +2501,12 @@ mbv		.fkarg	0	maybe.t	gsdl.var.t
 rhs		.fkarg	1	gsdl.ags.codeitem.alloc.rhs.t
 pos	.apply	gsdl.ags.codeitem.alloc.rhs.pos	|	rhs
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
-s0			.undefined	diff.list.t	rune.t
+mbv.s			.apply	maybe.var.print	|	mbv
+rhs.s			.apply	gsdl.ags.codeitem.alloc.rhs.print	|	rhs
+s3			.apply	diff.list.snoc	rune.t	|	rhs.s	rune.new.line
+s2			.apply	diff.list.:	rune.t	|	rune.tab	s3
+s1			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.impgen.print_bind_bind.s	s2
+s0			.apply	diff.list.<>	rune.t	|	mbv.s	s1
 			.app	pos.s	s0
 			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
