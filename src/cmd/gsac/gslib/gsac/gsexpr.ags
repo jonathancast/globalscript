@@ -3257,11 +3257,10 @@ nil.vs			.apply	list.nil	gsdl.var.t
 r			.apply	gsdl.ags.codeitem.alloc.rhs.appty	|	pos	v	nil.vs
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
-tysvs1			.undefined	list.t	gsdl.var.t
 tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 ts			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToGenRHS_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToGenRHS_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
