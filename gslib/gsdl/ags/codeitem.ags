@@ -103,6 +103,7 @@ gsdl.ags.codeitem.impgen.print	.closure	_gsdl.ags.codeitem.impgen.print_c
 gsdl.ags.codeitem.impgen.fmtgs	.closure	_gsdl.ags.codeitem.impgen.fmtgs_c
 
 gsdl.ags.codeitem.impgen.alloc	.closure	_gsdl.ags.codeitem.impgen.alloc_c
+gsdl.ags.codeitem.impgen.bind	.closure	_gsdl.ags.codeitem.impgen.bind_c
 
 gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_c
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
@@ -2477,7 +2478,7 @@ gsdl.ags.codeitem.alloc.rhs.print	.gvar
 rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 g0	.karg	gsdl.ags.codeitem.impgen.prim.u
-	.analyze	g0	alloc
+	.analyze	g0	alloc	bind
 		.case	alloc
 mbv		.fkarg	0	maybe.t	gsdl.var.t
 rhs		.fkarg	1	gsdl.ags.codeitem.alloc.rhs.t
@@ -2491,6 +2492,10 @@ s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
 s0			.apply	diff.list.<>	rune.t	|	mbv.s	s1
 			.app	pos.s	s0
 			.enter	diff.list.<>	rune.t
+		.case	bind
+mbv		.fkarg	0	maybe.t	gsdl.var.t
+rhs		.fkarg	1	gsdl.ags.codeitem.alloc.rhs.t
+			.undef	diff.list.t	rune.t
 	-- > :: diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.impgen.fmtgs}
@@ -2512,6 +2517,19 @@ gsdl.ags.codeitem.impgen.t.in	.cogvar
 mbv	.larg	maybe.t	gsdl.var.t
 rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
 res	.constr	gsdl.ags.codeitem.impgen.prim.u	alloc	0	mbv	1	rhs
+	.coerce	gsdl.ags.codeitem.impgen.t.in
+	.lift
+	.yield	res
+
+_gsdl.ags.codeitem.impgen.bind_c	.expr
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+gsdl.ags.codeitem.impgen.prim.u	.tygvar
+gsdl.ags.codeitem.impgen.t.in	.cogvar
+mbv	.larg	maybe.t	gsdl.var.t
+rhs	.larg	gsdl.ags.codeitem.alloc.rhs.t
+res	.constr	gsdl.ags.codeitem.impgen.prim.u	bind	0	mbv	1	rhs
 	.coerce	gsdl.ags.codeitem.impgen.t.in
 	.lift
 	.yield	res
@@ -4264,9 +4282,17 @@ gsdl.ags.codeitem.impgen.prim.u	.tygvar
 
 gsdl.ags.codeitem.impgen.prim.u	.tyexpr
 _gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tygvar
-	.tysum	alloc	_gsdl.ags.codeitem.impgen.prim.u_alloc_ty
+_gsdl.ags.codeitem.impgen.prim.u_bind_ty	.tygvar
+	.tysum	alloc	_gsdl.ags.codeitem.impgen.prim.u_alloc_ty	bind	_gsdl.ags.codeitem.impgen.prim.u_bind_ty
 
 _gsdl.ags.codeitem.impgen.prim.u_alloc_ty	.tyexpr
+maybe.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+maybe.var.ty	.tylet	maybe.t	gsdl.var.t
+	.tyubproduct	0	maybe.var.ty	1	gsdl.ags.codeitem.alloc.rhs.t
+
+_gsdl.ags.codeitem.impgen.prim.u_bind_ty	.tyexpr
 maybe.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar
