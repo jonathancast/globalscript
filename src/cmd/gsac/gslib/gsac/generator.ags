@@ -587,11 +587,14 @@ e.r.ty			.lfield	gstype	e.r
 _gsac.generator.annotate_bind_right_nothing_right_k0	.forcecont
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.t.in	.cogvar
 gsdl.cgs.gstype.unpos	.gvar
 e.r.ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	e.r.ty0	lift
 		.default
-			.undef	gsdl.cgs.gstype.t
+			.coerce	gsdl.cgs.gstype.t.in
+			.lift
+			.yield	e.r.ty0
 		.case	lift
 ty1		.fkarg	0	gsdl.cgs.gstype.t
 			.app	ty1
