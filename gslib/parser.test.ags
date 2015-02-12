@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test.unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test_fail.nil	.closure	_test_fail.nil_c
 _test_fail.nil_label	.string	parse\sfail\sqq{}
@@ -16,8 +16,8 @@ _test_fail.msg.nil_label	.string	parse\sfail.msg\sqq{}
 _test_fail.msg.nil_sample.msg	.string	User-supplied\serror
 _test_fail.msg.nil_err.fmt.expected	.string	./parse-data:$:\sUser-supplied\serror
 
-_test.unit.nil	.closure	_test.unit.nil_c
-_test.unit.nil_label	.string	parse\s(unit\strue)\sqq{}
+_test_unit.nil	.closure	_test_unit.nil_c
+_test_unit.nil_label	.string	parse\s(unit\strue)\sqq{}
 
 _test.symbol.nil	.closure	_test.symbol.nil_c
 _test.symbol.nil_label	.string	parse\ssymbol\sqq{}
@@ -243,12 +243,12 @@ err.fmt	.apply	parser.err.fmt	|	err
 
 -- §section §gs{parse unit qq{}}
 
-_test.unit.nil_c	.expr
+_test_unit.nil_c	.expr
 rune.t	.tygvar
 bool.t	.tygvar
-_test.unit.nil_k_c	.subcode
+_test_unit.nil_k_c	.subcode
 test.property.label	.gvar
-_test.unit.nil_label	.gvar
+_test_unit.nil_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
@@ -257,12 +257,12 @@ bool.true	.gvar
 list.nil	.gvar
 parser	.apply	parser.unit	rune.t	bool.t	|	bool.true
 nil	.apply	list.nil	rune.t
-k	.closure	_test.unit.nil_k_c
+k	.closure	_test_unit.nil_k_c
 test	.apply	parser.test.assert.passes	rune.t	bool.t	|	parser.rune.advance	rune.print	parser	nil	k
-	.app	_test.unit.nil_label	test
+	.app	_test_unit.nil_label	test
 	.enter	test.property.label
 
-_test.unit.nil_k_c	.expr
+_test_unit.nil_k_c	.expr
 bool.t	.tygvar
 test.assert.eq	.gvar
 bool.≡	.gvar
