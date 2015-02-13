@@ -3243,7 +3243,9 @@ _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 string.t	.tygvar
+_gsac.gsexpr.compileToApp_res.ty	.tygvar
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
@@ -3253,6 +3255,9 @@ gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_app_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compileToApp	.gvar
 gsac.gsexpr.compileToGenRHS	.gvar
 either.right	.gvar
 diff.list.nil	.gvar
@@ -3264,9 +3269,16 @@ pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.danalyze	e0	pos	var.lifted
+	.danalyze	e0	app	pos	var.lifted
 		.default
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+		.case	app
+f		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+			.force	_gsac.gsexpr.compileToGenRHS_app_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToApp_res.ty
+			.app	pos	f	tyem	pem	tysvs	svs
+			.enter	gsac.gsexpr.compileToApp
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 e1		.fkarg	1	gsdl.cgs.gsexpr.t
@@ -3289,6 +3301,15 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+
+_gsac.gsexpr.compileToGenRHS_app_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToApp_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToApp_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
