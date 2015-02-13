@@ -1,0 +1,6 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.undefined	rune.t	-- This is a source-style comment

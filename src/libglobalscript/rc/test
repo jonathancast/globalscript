@@ -175,3 +175,7 @@ ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:13: undefined' ./$O.test-gsexec body-undefined.ags
 
 ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags
+
+echo '# Version 0.7 and up:'
+
+ok_diff_fail '-- type as a pragma --' ./$O.test-gsi undef-type-pragma.ags

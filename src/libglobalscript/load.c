@@ -224,7 +224,7 @@ enum gsparsed_file_section {
     gscoercionsection,
 };
 
-static void gsparse_pragma(struct gsparse_input_pos, char *, char **, uint *);
+static void gsparse_pragma(struct gsparse_input_pos, char *, char **, uint *, gsfiletype *);
 static long gsgrabline(uint, struct gsparse_input_pos *, struct uxio_ichannel *, char *, char **);
 static void gsparse_directive(struct gsparse_input_pos *, int, gsparsedfile *, enum gsparsed_file_section *, struct uxio_ichannel *, char *, long, char **, struct gsfile_symtable *);
 
@@ -243,7 +243,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     uint features;
     int pid;
     long n;
-    gsfiletype type;
+    gsfiletype type = gsfileunknown;
     struct gsparse_input_pos pos;
     enum gsparsed_file_section section;
 
@@ -268,7 +268,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     features = 0;
     while (line[0] == '#' || line[0] == '\n') {
         if (line[0] == '#') {
-            gsparse_pragma(pos, line, &calculus_version, &features);
+            gsparse_pragma(pos, line, &calculus_version, &features, &type);
         } else if (line[0] == '\n') {
         } else {
             gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
@@ -308,18 +308,23 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
     if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
 
-    if (!strcmp(fields[1], ".document")) {
-        if (skip_docs) {
-            if (gsclosefile(chan, pid) < 0)
-                gsfatal("%s: Error in closing file: %r", filename);
-            *is_doc = 1;
+    if (features & gsstring_code_type_as_pragma) {
+        if (type == gsfileunknown) gsfatal("%s: Missing type: pragma", pos.real_filename);
+    } else {
+        if (!strcmp(fields[1], ".document")) {
+            type = gsfiledocument;
+        } else if (!strcmp(fields[1], ".prefix")) {
+            type = gsfileprefix;
+        } else {
+            gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
             return 0;
         }
-        type = gsfiledocument;
-    } else if (!strcmp(fields[1], ".prefix")) {
-        type = gsfileprefix;
-    } else {
-        gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
+    }
+    if (type == gsfiledocument && skip_docs) {
+        if (gsclosefile(chan, pid) < 0)
+            gsfatal("%s: Error in closing file: %r", filename)
+        ;
+        *is_doc = 1;
         return 0;
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
@@ -334,11 +339,17 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         It is always un-ambiguous whether more lines are needed;
         so when the parse function returns, we are ready to read in the next item (or section declaration).
     */
-    while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0) {
-        gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
+    if (features & gsstring_code_type_as_pragma) {
+        do {
+            gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
+        } while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0);
+    } else {
+        while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0) {
+            gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
+        }
     }
     if (n < 0)
-        gsfatal("%s:%d: Error in reading data item: %r", pos.real_filename, pos.real_lineno)
+        gsfatal("%s:%d: Error in reading item: %r", pos.real_filename, pos.real_lineno)
     ;
 
     if (!gsbio_idevice_at_eof(chan))
@@ -353,7 +364,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
 }
 
 void
-gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_version, uint *pfeatures)
+gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_version, uint *pfeatures, gsfiletype *ptype)
 {
     char *pragma = line + 1;
     char *s = pragma;
@@ -362,7 +373,7 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
     if (*s != ':') gsfatal("%s:%d: Can't find argument to pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
     *s++ = 0;
 
-    if (!strcmp("calculus", pragma)) {
+    if (!strcmp(pragma, "calculus")) {
         char *calculus;
 
         while(*s && isspace(*s)) s++;
@@ -382,11 +393,29 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (!strcmp(version, "0.6")) {
                 *pcalculus_version = "0.6";
                 *pfeatures = 0;
+            } else if (!strcmp(version, "0.7")) {
+                *pcalculus_version = "0.7";
+                *pfeatures = gsstring_code_type_as_pragma;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
         } else {
             gsfatal("%s:%d: Unknown calculus '%s'", pos.real_filename, pos.real_lineno, calculus);
+        }
+    } else if ((*pfeatures & gsstring_code_type_as_pragma) && !strcmp(pragma, "type")) {
+        char *type;
+
+        while(*s && isspace(*s)) s++;
+        if (!*s) gsfatal("%s:%d: Missing type", pos.real_filename, pos.real_lineno);
+        type = s;
+        while (*s && !isspace(*s)) s++;
+        if (*s) *s++ = 0;
+        while (*s && isspace(*s)) s++;
+        if (*s) gsfatal("%s:%d: Junk after type", pos.real_filename, pos.real_lineno);
+        if (!strcmp(type, "document")) {
+            *ptype = gsfiledocument;
+        } else {
+            gsfatal("%s:%d: Unknown file type '%s'", pos.real_filename, pos.real_lineno, type);
         }
     } else {
         gsfatal("%s:%d: Unsupported pragma '%s'", pos.real_filename, pos.real_lineno, pragma);
