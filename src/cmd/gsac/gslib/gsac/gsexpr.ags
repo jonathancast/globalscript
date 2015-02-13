@@ -30,6 +30,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.closure	_gsac.gsexpr
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr_c
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	.closure	_gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog_c
 
+gsac.gsexpr.compileToApp	.closure	_gsac.gsexpr.compileToApp_c	_gsac.gsexpr.compileToApp_ty
+
 gsac.gsexpr.compileToVar	.closure	_gsac.gsexpr.compileToVar_c	_gsac.gsexpr.compileToVar_ty
 
 gsac.gsexpr.generator.imp.compile	.closure	_gsac.gsexpr.generator.imp.compile_c	_gsac.gsexpr.generator.imp.compile_ty
@@ -2880,6 +2882,27 @@ res	.constr	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	impprog	0	ps	1	
 	.lift
 	.yield	res
 
+-- §section §gs{gsac.gsexpr.compileToApp}
+
+_gsac.gsexpr.compileToApp_c	.expr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToApp_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+e	.larg	gsdl.cgs.gsexpr.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.gsexpr.compileToApp_res.ty
+
 -- §section §gs{gsac.gsexpr.compileToVar}
 
 _gsac.gsexpr.compileToVar_c	.expr
@@ -3912,6 +3935,32 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.cgs.gsexpr.body.t
 	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+-- §section §gs{gsac.gsexpr.compileToApp}
+
+_gsac.gsexpr.compileToApp_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+_gsac.gsexpr.compileToApp_res_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	gsdl.cgs.gsexpr.t
+	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToApp_res_res.ty
+
+_gsac.gsexpr.compileToApp_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+_gsac.gsexpr.compileToApp_res_res.ty	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	_gsac.gsexpr.compileToApp_res_res.ty
+
+_gsac.gsexpr.compileToApp_res_res.ty	.tyexpr
+_gsac.gsexpr.compileToApp_res_res.u	.tygvar
+	.tylift
+	.tyref	_gsac.gsexpr.compileToApp_res_res.u
+
+_gsac.gsexpr.compileToApp_res_res.u	.tyexpr
+	.typroduct
 
 -- §section §gs{gsac.gsexpr.compileToVar}
 
