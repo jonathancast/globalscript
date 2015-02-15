@@ -733,13 +733,36 @@ tyb1			.apply	gsdl.cgs.gstype.substty	|	v	ty0	tyb
 			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_product_k	.forcecont
+list.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 bool.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar	-- Temp
-b0	.karg	bool.prim.u
+_gsdl.cgs.gstype.substty_product_false_p_c	.subcode
+_gsdl.cgs.gstype.substty_product_false_k	.subcode
+bool.t.out	.cogvar
+list.any	.gvar
+fs.bvs.list	.fv	list.t	gsdl.cgs.symbol.t
+b0	.karg	bool.prim.u	-- Is this variable bound by any generator in the signature?
 	.analyze	b0	false	true
 		.case	false
-			.undef	gsdl.cgs.gstype.t
+p			.closure	_gsdl.cgs.gstype.substty_product_false_p_c
+			.force	_gsdl.cgs.gstype.substty_product_false_k
+			.coerce	bool.t.out
+			.app	p	fs.bvs.list
+			.enter	list.any	gsdl.cgs.symbol.t
 		.case	true
+			.undef	gsdl.cgs.gstype.t
+
+_gsdl.cgs.gstype.substty_product_false_p_c	.expr
+gsdl.cgs.symbol.t	.tygvar
+bool.t	.tygvar	-- Temp
+sy	.larg	gsdl.cgs.symbol.t
+	.undef	bool.t
+
+_gsdl.cgs.gstype.substty_product_false_k	.forcecont
+bool.prim.u	.tygvar
+gsdl.cgs.gstype.t	.tygvar	-- Temp
+b0	.karg	bool.prim.u	-- Does the type being substituted in contain free the bound variable of any generator in the signature?
 			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_var_k	.forcecont
