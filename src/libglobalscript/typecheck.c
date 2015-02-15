@@ -2538,7 +2538,7 @@ static void gsbc_check_api_free_variable_decls(struct gsbc_typecheck_code_or_api
 struct gstype *
 gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typecheck_code_or_api_expr_closure *pcl, struct gsbc_typecheck_impprog_closure *pimpcl, int isalloc)
 {
-    static gsinterned_string gssymclosure, gssymundefined, gssymapply;
+    static gsinterned_string gssymclosure, gssymundefined, gssymapply, gssymappty;
 
     int i;
     struct gstype *type;
@@ -2609,6 +2609,18 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
         }
         gsbc_typecheck_check_boxed(p->pos, type);
         if (isalloc) gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
+    } else if (gssymceq(directive, gssymappty, gssymcodeop, ".appty")) {
+        int first_arg;
+
+        gsargcheck(p, offset + 0, "Function");
+        type = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[offset + 0])];
+        for (i = offset + 1; i < p->numarguments; i++) {
+            struct gstype *tyarg;
+
+            tyarg = pcl->tyregs[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            type = gstype_instantiate(p->pos, type, tyarg);
+        }
+        gsbc_typecheck_check_boxed(p->pos, type);
     } else {
         return 0;
     }

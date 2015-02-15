@@ -1333,7 +1333,7 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
-    static gsinterned_string gssymclosure, gssymundefined, gssymapply;
+    static gsinterned_string gssymclosure, gssymundefined, gssymapply, gssymappty;
 
     int i;
 
@@ -1374,6 +1374,15 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         }
         for (; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
+        ;
+    } else if (gssymceq(directive, gssymappty, gssymcodeop, ".appty")) {
+        if (offset == 0) STORE_ALLOC_OP_LABEL(".appty");
+        if (n < offset + 3)
+            gsfatal("%P: Missing function on .appty", p->pos)
+        ;
+        p->arguments[offset + 2 - 2] = gsintern_string(gssymdatalable, fields[offset + 2]);
+        for (i = offset + 3; i < n; i++)
+            p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
     } else {
         return 0;
