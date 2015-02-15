@@ -211,7 +211,9 @@ pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
 x		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	gsdl.var.t
-			.undef	string.t
+s0			.undefined	string.t
+			.app	pos	s0
+			.enter	gsdl.ags.sourcepos.print
 		.case	cast
 pos		.fkarg	0	gsdl.sourcepos.t
 nm		.fkarg	1	maybe.t	gsdl.var.t
