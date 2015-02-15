@@ -20,6 +20,8 @@ list.reverse	.closure	_list.reverse_c
 
 list.scanl	.closure	_list.scanl_c	_list.scanl_ty
 
+list.any	.closure	_list.any_c	_list.any_ty
+
 list.singleton	.closure	_list.singleton_c
 list.<>	.closure	_list.<>_c	_list.<>_ty
 
@@ -486,6 +488,17 @@ xn1	.fv	list.t	α
 z1	.karg	β
 	.app	f	z1	xn1
 	.enter	list.scanl	α	β
+
+-- §section §gs{list.any}
+
+_list.any_c	.expr
+_list.any_p_ty	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+α	.tyarg	*
+p	.larg	_list.any_p_ty	α
+xn	.larg	list.t	α
+	.undef	bool.t
 
 -- §section §gs{list.singleton}
 
@@ -1155,6 +1168,26 @@ list.t	.tygvar
 	.tylift
 	.tyfun	list.t	α
 	.tyref	list.t	β
+
+-- §section §gs{list.any}
+
+_list.any_ty	.tyexpr	*
+_list.any_p_ty	.tygvar
+list.t	.tygvar
+bool.t	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	_list.any_p_ty	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	bool.t
+
+_list.any_p_ty	.tyexpr
+bool.t	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	bool.t
 
 -- §section §gs{list.<>}
 
