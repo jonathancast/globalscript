@@ -6,7 +6,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test.symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test_symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test_fail.nil	.closure	_test_fail.nil_c
 _test_fail.nil_label	.string	parse\sfail\sqq{}
@@ -19,9 +19,9 @@ _test_fail.msg.nil_err.fmt.expected	.string	./parse-data:$:\sUser-supplied\serro
 _test_unit.nil	.closure	_test_unit.nil_c
 _test_unit.nil_label	.string	parse\s(unit\strue)\sqq{}
 
-_test.symbol.nil	.closure	_test.symbol.nil_c
-_test.symbol.nil_label	.string	parse\ssymbol\sqq{}
-_test.symbol.nil_expected	.string	./parse-data:$:\sUn-expected\sEOF;\sexpected\ssymbol
+_test_symbol.nil	.closure	_test_symbol.nil_c
+_test_symbol.nil_label	.string	parse\ssymbol\sqq{}
+_test_symbol.nil_expected	.string	./parse-data:$:\sUn-expected\sEOF;\sexpected\ssymbol
 
 _test.symbol.cons	.closure	_test.symbol.cons_c
 _test.symbol.cons_label	.string	parse\ssymbol\sqq{n}
@@ -274,11 +274,11 @@ x	.larg	bool.t
 
 -- §section §gs{parse symbol qq{}}
 
-_test.symbol.nil_c	.expr
+_test_symbol.nil_c	.expr
 rune.t	.tygvar
-_test.symbol.nil_k_c	.subcode
+_test_symbol.nil_k_c	.subcode
 test.property.label	.gvar
-_test.symbol.nil_label	.gvar
+_test_symbol.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
@@ -287,12 +287,12 @@ parser.symbol	.gvar
 list.nil	.gvar
 sym	.apply	parser.symbol	rune.t
 nil	.apply	list.nil	rune.t
-k	.closure	_test.symbol.nil_k_c
+k	.closure	_test_symbol.nil_k_c
 test	.apply	parser.test.assert.fails	rune.t	rune.t	|	parser.rune.advance	rune.print	rune.fmtgs	sym	nil	k
-	.app	_test.symbol.nil_label	test
+	.app	_test_symbol.nil_label	test
 	.enter	test.property.label
 
-_test.symbol.nil_k_c	.expr
+_test_symbol.nil_k_c	.expr
 parser.err.t	.tygvar
 list.t	.tygvar
 rune.t	.tygvar
@@ -302,13 +302,13 @@ rune.≡	.gvar
 list.fmtgs	.gvar
 rune.fmtgs.list	.gvar
 parser.err.fmt	.gvar
-_test.symbol.nil_expected	.gvar
+_test_symbol.nil_expected	.gvar
 string.ty	.tylet	list.t	rune.t
 err	.larg	parser.err.t
 string.≡	.apply	list.≡	rune.t	|	rune.≡
 string.fmtgs	.apply	list.fmtgs	rune.t	|	rune.fmtgs.list
 err.s	.apply	parser.err.fmt	|	err
-	.app	string.≡	string.fmtgs	err.s	_test.symbol.nil_expected
+	.app	string.≡	string.fmtgs	err.s	_test_symbol.nil_expected
 	.enter	test.assert.eq	string.ty
 
 -- §section §gs{parse symbol qq{n}}
