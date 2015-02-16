@@ -3008,6 +3008,7 @@ v		.fkarg	0	gsdl.var.t
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToVar_structure_k1_c	.expr
+gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsac.generator.varmap.t	.tygvar
 ordered.set.t	.tygvar
@@ -3016,6 +3017,7 @@ ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 _gsac.gsexpr.compileToVar_structure_k1_k	.subcode
 list.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
 vs	.larg	list.t	gsac.generator.varmap.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3026,6 +3028,7 @@ svs	.larg	list.t	gsdl.var.t
 	.enter	svs
 
 _gsac.gsexpr.compileToVar_structure_k1_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 list.prim.u	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
@@ -3050,6 +3053,8 @@ either.right	.gvar
 diff.list.nil	.gvar
 list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
+gsdl.ags.codeitem.expr.yield	.gvar
+pos	.fv	gsdl.sourcepos.t
 svs0	.karg	list.prim.u	gsdl.var.t
 	.analyze	svs0	:	nil
 		.case	:
@@ -3061,7 +3066,8 @@ ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 r.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 r.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
-r.b.e			.undefined	gsdl.ags.codeitem.expr.t
+nil.vs			.apply	list.nil	gsdl.var.t
+r.b.e			.apply	gsdl.ags.codeitem.expr.yield	|	pos	sv0	nil.vs
 r.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	r.b.as	r.b.e
 r			.lrecord	args	r.as	body	r.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 tyem1			.undefined	ordered.set.t	gsdl.var.t
