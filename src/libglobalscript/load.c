@@ -414,6 +414,8 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
         if (*s) gsfatal("%s:%d: Junk after type", pos.real_filename, pos.real_lineno);
         if (!strcmp(type, "document")) {
             *ptype = gsfiledocument;
+        } else if (!strcmp(type, "prefix")) {
+            *ptype = gsfileprefix;
         } else {
             gsfatal("%s:%d: Unknown file type '%s'", pos.real_filename, pos.real_lineno, type);
         }
