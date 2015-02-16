@@ -3289,9 +3289,8 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToGenRHS_k	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 f	.larg	gsdl.cgs.gsexpr.t
 as	.larg	list.t	gsdl.cgs.gsexpr.arg.t
@@ -3299,6 +3298,16 @@ tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
+	.force	_gsac.gsexpr.compileFunToGenRHS_k
+	.coerce	gsdl.cgs.gsexpr.t.out
+	.enter	f
+
+_gsac.gsexpr.compileFunToGenRHS_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+f0	.karg	gsdl.cgs.gsexpr.prim.u
 	.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
