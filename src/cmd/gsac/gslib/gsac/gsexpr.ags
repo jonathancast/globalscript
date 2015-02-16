@@ -459,6 +459,7 @@ _gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k	.forcecont
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gskind.prim.u	.tygvar
 _gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty	.tygvar	-- Temp
+gsdl.cgs.gsexpr.arg.expr.unlifted	.gvar
 ea.r.e	.fv	gsdl.cgs.gsexpr.t
 ki0	.karg	gsdl.cgs.gskind.prim.u
 	.app	ea.r.e
@@ -468,7 +469,7 @@ ki0	.karg	gsdl.cgs.gskind.prim.u
 		.case	lifted
 			.undef	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty
 		.case	unlifted
-			.undef	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_f_ty
+			.enter	gsdl.cgs.gsexpr.arg.expr.unlifted
 	-- > :: gsdl.cgs.gsexpr.t
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
