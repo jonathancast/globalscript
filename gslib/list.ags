@@ -494,10 +494,20 @@ z1	.karg	β
 _list.any_c	.expr
 _list.any_p_ty	.tygvar
 list.t	.tygvar
-bool.t	.tygvar
+_list.any_k	.subcode
+list.t.out	.cogvar
 α	.tyarg	*
 p	.larg	_list.any_p_ty	α
 xn	.larg	list.t	α
+	.force	_list.any_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_list.any_k	.forcecont
+list.prim.u	.tygvar
+bool.t	.tygvar	-- Temp
+α	.tyfv	*
+xn0	.karg	list.prim.u	α
 	.undef	bool.t
 
 -- §section §gs{list.singleton}
