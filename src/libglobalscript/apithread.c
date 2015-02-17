@@ -533,6 +533,22 @@ api_update_promise(struct api_promise *promise, gsvalue v)
 
 static struct api_promise *api_alloc_promise(void);
 
+#define CHECK_NSTATEMENTS() \
+    do { \
+        if (nstatements >= MAX_NUM_REGISTERS) { \
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many statemetns", pinstr->pos, pinstr->instr); \
+            return; \
+        } \
+    } while (0)
+
+#define CHECK_REG(regno) \
+    do { \
+        if (regno >= nregs) { \
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: register %d out of bounds; %d registers so far", pinstr->pos, pinstr->instr, regno, nregs); \
+            return; \
+        } \
+    } while (0)
+
 static
 void
 api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
@@ -711,6 +727,14 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
             }
             case gsbc_op_body_undefined: {
                 rhss[nstatements] = (gsvalue)gsundefined(pinstr->pos);
+                poss[nstatements] = pinstr->pos;
+                nstatements++;
+                goto got_statements;
+            }
+            case gsbc_op_body_alias: {
+                CHECK_NSTATEMENTS();
+                CHECK_REG(ACE_BODY_ALIAS_SOURCE(pinstr));
+                rhss[nstatements] = regs[ACE_BODY_ALIAS_SOURCE(pinstr)];
                 poss[nstatements] = pinstr->pos;
                 nstatements++;
                 goto got_statements;

@@ -1,0 +1,28 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+_ep_body_f	.closure	_ep_body_f_c
+
+	.code
+
+_ep_c	.impprog	test.sequence	m
+record.empty	.tygvar
+_ep_body_f	.gvar
+	.body	.appty	_ep_body_f	record.empty
+
+_ep_body_f_c	.expr
+_ep_body_f_res.ty	.tygvar
+α	.tyarg	*
+	.undef	_ep_body_f_res.ty	α
+
+	.type
+
+_ep_body_f_res.ty	.tyexpr
+sequence.m	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	sequence.m	α

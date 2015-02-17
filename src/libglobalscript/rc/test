@@ -176,6 +176,7 @@ ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-
 ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
 
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:13: undefined' ./$O.test-gsexec body-undefined.ags
+ok_grep_errors '-- .body .appty in .impprogs --' 'body-appty.ags:20: undefined' ./$O.test-gsexec body-appty.ags
 
 ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags
 

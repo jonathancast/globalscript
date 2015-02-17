@@ -37,6 +37,7 @@ enum {
     gsbc_op_bind_apply,
     gsbc_op_body_closure,
     gsbc_op_body_undefined,
+    gsbc_op_body_alias,
 };
 
 #define GS_NTH_ARG_OFFSET(n) (offsetof(struct gsbc, args) + n)
@@ -187,6 +188,10 @@ enum {
 
 #define ACE_BODY_UNDEFINED_SIZE() GS_SIZE_BYTECODE(0)
 #define ACE_BODY_UNDEFINED_SKIP(ip) GS_NEXT_BYTECODE((ip), 0)
+
+#define ACE_BODY_ALIAS_SIZE() GS_SIZE_BYTECODE(1)
+#define ACE_BODY_ALIAS_SOURCE(ip) ((ip)->args[0])
+#define ACE_BODY_ALIAS_SKIP(ip) GS_NEXT_BYTECODE((ip), 1)
 
 void *gsreservebytecode(ulong);
 

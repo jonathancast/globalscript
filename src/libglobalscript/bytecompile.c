@@ -967,6 +967,13 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         && gssymceq((*pp)->arguments[0], gssymopundefined, gssymcodeop, ".undefined")
     ) {
         pcl->size += ACE_BODY_UNDEFINED_SIZE();
+    } else if (
+        gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq((*pp)->arguments[0], gssymopappty, gssymcodeop, ".appty")
+    ) {
+        pcl->size += ACE_BODY_ALIAS_SIZE();
+    } else if (gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")) {
+        gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), (*pp)->pos, (*pp)->arguments[0]);
     } else {
         return 0;
     }
@@ -2753,6 +2760,22 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         pcode->instr = gsbc_op_body_undefined;
 
         cl.pout = ACE_BODY_UNDEFINED_SKIP(pcode);
+    } else if (
+        gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq(p->arguments[0], gssymopappty, gssymcodeop, ".appty")
+    ) {
+        int regarg;
+
+        pcode = (struct gsbc *)cl.pout;
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_body_alias;
+        regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[1]);
+        ACE_BODY_ALIAS_SOURCE(pcode) = (uchar)regarg;
+
+        cl.pout = ACE_BODY_ALIAS_SKIP(pcode);
+    } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
+        gsfatal(UNIMPL("%P: API op %y"), p->pos, p->arguments[0]);
     } else {
         gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
     }
