@@ -187,6 +187,7 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 f.r		.fkarg	0	_gsac.gsexpr.annotate_res.ty
+f.r.e			.lfield	expr	f.r
 f.r.ty			.lfield	gstype	f.r
 			.force	_gsac.gsexpr.annotate_app_right_k
 			.coerce	gsdl.cgs.gsexpr.arg.t.out
@@ -195,18 +196,19 @@ f.r.ty			.lfield	gstype	f.r
 _gsac.gsexpr.annotate_app_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_k1	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 f.r	.fv	_gsac.gsexpr.annotate_res.ty
+f.r.e	.fv	gsdl.cgs.gsexpr.t
 f.r.ty	.fv	gsdl.cgs.gstype.t
 a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 	.force	_gsac.gsexpr.annotate_app_right_k1
@@ -216,16 +218,16 @@ a0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 _gsac.gsexpr.annotate_app_right_k1	.forcecont
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
+_gsac.gsexpr.annotate_res.ty	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.cgs.gstype.tyforall.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_app_expr_fun.type.check_res.ty	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.annotate_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.annotate_app_right_expr_lift_k	.subcode
 _gsac.gsexpr.annotate_app_right_expr_k	.subcode
 _gsac.gsexpr.annotate_app_right_type_forall_k	.subcode
@@ -238,6 +240,7 @@ gsac.gstype.annotate	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 f.r	.fv	_gsac.gsexpr.annotate_res.ty
+f.r.e	.fv	gsdl.cgs.gsexpr.t
 a0	.fv	gsdl.cgs.gsexpr.arg.prim.u
 f.r.ty0	.karg	gsdl.cgs.gstype.prim.u
 	.analyze	a0	expr	expr.lifted	expr.unlifted	type
@@ -476,6 +479,7 @@ ki0	.karg	gsdl.cgs.gskind.prim.u
 	-- > :: gsdl.cgs.gsexpr.t
 
 _gsac.gsexpr.annotate_app_right_type_forall_k	.forcecont
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
@@ -489,6 +493,7 @@ _gsac.gsexpr.annotate_app_right_type_forall_right_k	.subcode
 either.t.out	.cogvar
 either.left	.gvar
 gsac.gskind.check	.gvar
+f.r.e	.fv	gsdl.cgs.gsexpr.t
 tyb	.fv	gsdl.cgs.gstype.t
 fa.v	.fv	gsdl.var.t
 fa.ki	.fv	gsdl.cgs.gskind.t
@@ -508,6 +513,7 @@ tya.r.ki			.lfield	gskind	tya.r
 			.enter	gsac.gskind.check
 
 _gsac.gsexpr.annotate_app_right_type_forall_right_k	.forcecont
+gsdl.cgs.gsexpr.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
@@ -515,10 +521,12 @@ string.t	.tygvar
 record.empty	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.t	.tygvar	-- Temp
+gsdl.cgs.gsexpr.arg.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gsexpr.app	.gvar
 gsdl.cgs.gstype.substty	.gvar
+f.r.e	.fv	gsdl.cgs.gsexpr.t
 fa.v	.fv	gsdl.var.t
 tya.r.ty	.fv	gsdl.cgs.gstype.t
 tyb	.fv	gsdl.cgs.gstype.t
@@ -529,7 +537,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-e			.undefined	gsdl.cgs.gsexpr.t
+a			.undefined	gsdl.cgs.gsexpr.arg.t
+e			.apply	gsdl.cgs.gsexpr.app	|	f.r.e	a
 ki			.undefined	gsdl.cgs.gskind.t
 ty			.apply	gsdl.cgs.gstype.substty	|	fa.v	tya.r.ty	tyb
 res			.lrecord	expr	e	gskind	ki	gstype	ty	|	_gsac.gsexpr.annotate_res.ty
