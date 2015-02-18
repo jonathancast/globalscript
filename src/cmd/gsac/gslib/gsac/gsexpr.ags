@@ -104,7 +104,7 @@ gsdl.cgs.typeenv.gstype.get	.gvar
 pos	.fv	gsdl.sourcepos.t
 env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted	var.unlifted
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -161,6 +161,9 @@ v		.fkarg	0	gsdl.var.t
 			.app	v	env
 			.enter	gsdl.cgs.typeenv.gstype.get
 		.case	var.lifted
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
+		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.annotate_res.ty
@@ -2245,7 +2248,7 @@ pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tyvs	.fv	list.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
 e0	.karg	gsdl.cgs.gsexpr.prim.u
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted	var.unlifted
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -2310,6 +2313,9 @@ ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	res.r	subvars	svs		ty.emitted	tyem	ty.subvars	tyvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	var.unlifted
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToLambdaExpr_app_k	.forcecont
@@ -2983,7 +2989,7 @@ tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
-	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted
+	.analyze	e0	app	expr.heavy.cast	impfor	lambda	lift	pos	structure	var	var.lifted	var.unlifted
 		.case	app
 f		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
@@ -3018,6 +3024,9 @@ k1			.closure	_gsac.gsexpr.compileToVar_structure_k1_c
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	var.lifted
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
