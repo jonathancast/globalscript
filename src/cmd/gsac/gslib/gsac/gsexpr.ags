@@ -1405,6 +1405,7 @@ gsdl.cgs.gsexpr.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t.in	.cogvar
 either.right	.gvar
 gsdl.cgs.gsexpr.var.lifted	.gvar
+gsdl.cgs.gsexpr.var.unlifted	.gvar
 v	.fv	gsdl.var.t
 v.ty	.fv	gsdl.cgs.gstype.t
 v.ki0	.karg	gsdl.cgs.gskind.prim.u
@@ -1423,7 +1424,7 @@ res			.lrecord	expr	e	gskind	v.ki0.cl	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
 		.case	unknown
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	unlifted
-e			.undefined	gsdl.cgs.gsexpr.t	-- > .apply	gsdl.cgs.gsexpr.var	|	v	-- Needs to be either §gs{var.lifted} or §gs{var.unlifted} (because they compile to different code)
+e			.apply	gsdl.cgs.gsexpr.var.unlifted	|	v
 res			.lrecord	expr	e	gskind	v.ki0.cl	gstype	v.ty	|	_gsac.gsexpr.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.annotate_res.ty
