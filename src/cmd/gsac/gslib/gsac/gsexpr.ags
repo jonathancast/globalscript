@@ -40,6 +40,8 @@ gsac.gsexpr.compileToGenRHS	.closure	_gsac.gsexpr.compileToGenRHS_c	_gsac.gsexpr
 
 gsac.gsexpr.compileFunToGenRHS	.closure	_gsac.gsexpr.compileFunToGenRHS_c	_gsac.gsexpr.compileFunToGenRHS_ty
 
+gsac.gsexpr.compileTyArgsToGenRHS	.closure	_gsac.gsexpr.compileTyArgsToGenRHS_c	_gsac.gsexpr.compileTyArgsToGenRHS_ty
+
 gsac.gsexpr.body.compileToGenRHS	.closure	_gsac.gsexpr.body.compileToGenRHS_c	_gsac.gsexpr.body.compileToGenRHS_ty
 
 gsac.gsexpr.compile.mapM	.closure	_gsac.gsexpr.compile.mapM_c	_gsac.gsexpr.compile.mapM_ty
@@ -3425,6 +3427,29 @@ v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
+-- §section §gs{gsac.gsexpr.compileTyArgsToGenRHS}
+
+_gsac.gsexpr.compileTyArgsToGenRHS_c	.expr
+gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+k	.larg	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
+as	.larg	list.t	gsdl.cgs.gsexpr.arg.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
 _gsac.gsexpr.body.compileToGenRHS_c	.expr
@@ -4164,6 +4189,33 @@ gsdl.ags.codeitem.alloc.rhs.t	.tygvar
 	.tylift
 	.tyfun	list.t	gsdl.cgs.gsexpr.arg.t
 	.tyref	gsac.gsexpr.compile.m	gsdl.ags.codeitem.alloc.rhs.t
+
+-- §section §gs{gsac.gsexpr.compileTyArgsToGenRHS}
+
+_gsac.gsexpr.compileTyArgsToGenRHS_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
+	.tylift
+	.tyfun	list.t	gsdl.cgs.gsexpr.arg.t
+	.tyref	gsac.gsexpr.compile.m	gsdl.ags.codeitem.alloc.rhs.t
+
+_gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tyexpr
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar
+	.tylift
+	.tyfun	list.t	gsdl.var.t
+	.tylift
+	.tyfun	list.t	gsdl.var.t
+	.tyref	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
