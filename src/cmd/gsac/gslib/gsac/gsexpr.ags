@@ -3376,12 +3376,44 @@ svs	.larg	list.t	gsdl.var.t
 	.enter	f
 
 _gsac.gsexpr.compileFunToGenRHS_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+gsac.gsexpr.compileFunToGenRHS	.gvar
+pos	.fv	gsdl.sourcepos.t
+as	.fv	list.t	gsdl.cgs.gsexpr.arg.t
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 f0	.karg	gsdl.cgs.gsexpr.prim.u
-	.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+	.danalyze	f0	app	pos	var.lifted
+		.default
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+		.case	app
+f1		.fkarg	0	gsdl.cgs.gsexpr.t
+a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
+as1			.undefined	list.t	gsdl.cgs.gsexpr.arg.t
+			.app	pos	f1	as1	tyem	pem	tysvs	svs
+			.enter	gsac.gsexpr.compileFunToGenRHS
+		.case	pos
+pos1		.fkarg	0	gsdl.sourcepos.t
+f1		.fkarg	1	gsdl.cgs.gsexpr.t
+			.app	pos1	f1	as	tyem	pem	tysvs	svs
+			.enter	gsac.gsexpr.compileFunToGenRHS
+		.case	var.lifted
+v		.fkarg	0	gsdl.var.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+	-- > :: either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
