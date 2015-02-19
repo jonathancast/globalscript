@@ -14,6 +14,7 @@ _gsdl.ags.file.print_datasection	.closure	_gsdl.ags.file.print_datasection_c
 _gsdl.ags.file.print_datasection_gsdata.s	.string	\n\t.data\n
 
 _gsdl.ags.file.print_dataitems	.closure	_gsdl.ags.file.print_dataitems_c	_gsdl.ags.file.print_dataitems_ty
+_gsdl.ags.file.print_dataitems_:_alias_alias.s	.string	\t.alias\t
 _gsdl.ags.file.print_dataitems_:_cast_cast.s	.string	\t.cast\t
 _gsdl.ags.file.print_dataitems_:_closure_closure.s	.string	\t.closure\t
 _gsdl.ags.file.print_dataitems_:_undef.s	.string	\t.undefined\t
@@ -193,6 +194,7 @@ gsdl.ags.sourcepos.print	.gvar
 list.<>	.gvar
 maybe.elim	.gvar
 gsdl.ags.syntax.var.print	.gvar
+_gsdl.ags.file.print_dataitems_:_alias_alias.s	.gvar
 _gsdl.ags.file.print_dataitems_:_cast_cast.s	.gvar
 list.:	.gvar
 rune.tab	.gvar
@@ -212,7 +214,8 @@ nm		.fkarg	1	maybe.t	gsdl.var.t
 x		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	gsdl.var.t
 nm.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
-s0.1			.undefined	string.t
+s0.2			.undefined	string.t
+s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_alias_alias.s	s0.2
 s0			.apply	nm.s	|	s0.1
 			.app	pos	s0
 			.enter	gsdl.ags.sourcepos.print
