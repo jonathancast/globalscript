@@ -149,6 +149,7 @@ _gsdl.ags.codeitem.expr.parser_yield.p_yield.re	.regex	.yield
 
 gsdl.ags.codeitem.expr.print	.closure	_gsdl.ags.codeitem.expr.print_c	_gsdl.ags.codeitem.expr.print_ty
 _gsdl.ags.codeitem.expr.print_undef_undef.s	.string	\t.undef
+_gsdl.ags.codeitem.expr.print_yield_yield.s	.string	\t.yield
 
 gsdl.ags.codeitem.expr.≡	.closure	_gsdl.ags.codeitem.expr.≡_c
 
@@ -3716,6 +3717,7 @@ diff.list.concat	.gvar
 list.map	.gvar
 diff.list.singleton	.gvar
 rune.new.line	.gvar
+_gsdl.ags.codeitem.expr.print_yield_yield.s	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 e0	.karg	gsdl.ags.codeitem.expr.prim.u
 cons.tab	.apply	diff.list.:	rune.t	|	rune.tab
@@ -3765,7 +3767,9 @@ s0			.apply	diff.list.:	rune.t	|	rune.tab	s1
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+s0			.undefined	diff.list.t	rune.t
+			.app	_gsdl.ags.codeitem.expr.print_yield_yield.s	s0
+			.enter	diff.list.prepend	rune.t
 	-- > :: diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.expr.≡}
