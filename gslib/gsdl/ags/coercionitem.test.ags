@@ -1,6 +1,5 @@
-#calculus: gsdl.string-code 0.6
-
-	.document
+#calculus: gsdl.string-code 0.7
+#type: document
 
 	.data
 
