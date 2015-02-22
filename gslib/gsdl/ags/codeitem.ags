@@ -3767,7 +3767,10 @@ s0			.apply	diff.list.:	rune.t	|	rune.tab	s1
 pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
-s0			.undefined	diff.list.t	rune.t
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
+s2			.undefined	diff.list.t	rune.t
+s1			.apply	diff.list.<>	rune.t	|	v.s	s2
+s0			.apply	diff.list.:	rune.t	|	rune.tab	s1
 			.app	_gsdl.ags.codeitem.expr.print_yield_yield.s	s0
 			.enter	diff.list.prepend	rune.t
 	-- > :: diff.list.t	rune.t
