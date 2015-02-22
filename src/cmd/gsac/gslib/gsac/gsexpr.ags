@@ -2353,7 +2353,9 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	expr.lifted
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+as			.apply	list.singleton	gsdl.cgs.gsexpr.arg.t	|	a0.cl
+			.app	pos	f	as	tyem	pem	tyvs	svs
+			.enter	gsac.gsexpr.compileFunToExpr
 		.case	expr.unlifted
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
 as			.apply	list.singleton	gsdl.cgs.gsexpr.arg.t	|	a0.cl
