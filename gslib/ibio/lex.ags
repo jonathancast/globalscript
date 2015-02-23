@@ -18,6 +18,8 @@ ibio.lex.lexeme.<*>	.closure	_ibio.lex.lexeme.<*>_c
 
 ibio.lex.<|>	.closure	_ibio.lex.<|>_c
 
+ibio.lex.optional	.closure	_ibio.lex.optional_c
+
 ibio.lex.many	.closure	_ibio.lex.many_c	_ibio.lex.many_ty
 
 -- §section Receivers
@@ -429,6 +431,18 @@ ip	.larg	ibio.prim.iptr.t	s
 ek1	.apply	l1	β	|	ek	sk	ip
 	.app	ek1	sk	ip
 	.enter	l0	β
+
+-- §section §gs{ibio.lex.optional}
+
+_ibio.lex.optional_c	.expr
+ibio.lex.lexeme.t	.tygvar
+ibio.lex.lexer.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
+s	.tyarg	*
+α	.tyarg	*
+l	.larg	ibio.lex.lexeme.t	s	α
+maybe.α.ty	.tylet	maybe.t	α
+	.undef	ibio.lex.lexer.t	s	maybe.α.ty
 
 -- §section §gs{ibio.lex.many}
 
