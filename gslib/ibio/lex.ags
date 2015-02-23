@@ -37,6 +37,8 @@ ibio.lex.receiver.lexeme.lift.2	.closure	_ibio.lex.receiver.lexeme.lift.2_c
 
 ibio.lex.receiver.<|>	.closure	_ibio.lex.receiver.<|>_c
 
+ibio.lex.receiver.optional	.closure	_ibio.lex.receiver.optional_c
+
 ibio.lex.receiver.many	.closure	_ibio.lex.receiver.many_c
 
 	.code
@@ -907,6 +909,18 @@ a1	.lfield	1	r1
 a1r	.apply	a1	|	k
 	.app	a0r	a1r
 	.enter	ibio.acceptor.prim.<|>	s	record.empty
+
+-- §section §gs{ibio.lex.receiver.optional}
+
+_ibio.lex.receiver.optional_c	.expr
+ibio.lex.receiver.lexeme.t	.tygvar
+ibio.lex.receiver.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
+s	.tyarg	*
+α	.tyarg	*
+p	.larg	ibio.lex.receiver.lexeme.t	s	α
+maybe.α.ty	.tylet	maybe.t	α	-- Temp
+	.undef	ibio.lex.receiver.t	s	maybe.α.ty
 
 -- §section §gs{ibio.lex.receiver.many}
 
