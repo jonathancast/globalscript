@@ -23,6 +23,8 @@ ibio.acceptor.symbol.prim	.closure	_ibio.acceptor.symbol.prim_c
 
 ibio.acceptor.optional.prim	.closure	_ibio.acceptor.optional.prim_c
 
+ibio.acceptor.optional.void.prim	.closure	_ibio.acceptor.optional.void.prim_c
+
 ibio.acceptor.many.prim	.closure	_ibio.acceptor.many.prim_c	_ibio.acceptor.many.prim_ty
 
 ibio.acceptor.many.void.prim	.closure	_ibio.acceptor.many.void.prim_c	_ibio.acceptor.many.void.prim_ty
@@ -143,6 +145,20 @@ _ibio.acceptor.optional.prim_jr_k1_jx_c	.expr
 maybe.t	.tygvar
 α	.tyfv	*
 	.undef	maybe.t	α
+
+-- §section §gs{ibio.acceptor.optional.void.prim}
+
+_ibio.acceptor.optional.void.prim_c	.expr
+ibio.acceptor.prim.cont.t	.tygvar
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+ibio.acceptor.prim.t	.tygvar	-- Temp
+s	.tyarg	*
+α	.tyarg	*
+β	.tyarg	*
+p	.larg	ibio.acceptor.prim.cont.t	s	α	β
+k	.larg	ibio.acceptor.prim.kt	s	record.empty	β
+	.undef	ibio.acceptor.prim.t	s	β
 
 -- §section §gs{ibio.acceptor.many}
 
