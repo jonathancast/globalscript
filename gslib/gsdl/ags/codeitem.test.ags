@@ -512,9 +512,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.tygvar_input	.gvar
 k	.closure	_test.parse_expr.tygvar_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.tygvar_input	k
 	.app	_test.parse_expr.tygvar_label	test
@@ -581,9 +582,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.subcode_input	.gvar
 k	.closure	_test.parse_expr.subcode_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.subcode_input	k
 	.app	_test.parse_expr.subcode_label	test
@@ -644,9 +646,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.cogvar_input	.gvar
 k	.closure	_test.parse_expr.cogvar_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.cogvar_input	k
 	.app	_test.parse_expr.cogvar_label	test
@@ -707,9 +710,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.gvar_input	.gvar
 k	.closure	_test.parse_expr.gvar_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.gvar_input	k
 	.app	_test.parse_expr.gvar_label	test
@@ -775,9 +779,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.rune_input	.gvar
 k	.closure	_test.parse_expr.rune_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.rune_input	k
 	.app	_test.parse_expr.rune_label	test
@@ -802,9 +807,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.larg_input	.gvar
 k	.closure	_test.parse_expr.larg_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.larg_input	k
 	.app	_test.parse_expr.larg_label	test
@@ -873,9 +879,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.alloc_input	.gvar
 k	.closure	_test.parse_expr.alloc_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.alloc_input	k
 	.app	_test.parse_expr.alloc_label	test
@@ -900,9 +907,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.impprim_input	.gvar
 k	.closure	_test.parse_expr.impprim_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.impprim_input	k
 	.app	_test.parse_expr.impprim_label	test
@@ -927,9 +935,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.impprim.args_input	.gvar
 k	.closure	_test.parse_expr.impprim.args_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.impprim.args_input	k
 	.app	_test.parse_expr.impprim.args_label	test
@@ -954,9 +963,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.undefined_input	.gvar
 k	.closure	_test.parse_expr.undefined_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.undefined_input	k
 	.app	_test.parse_expr.undefined_label	test
@@ -981,9 +991,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.field_input	.gvar
 k	.closure	_test.parse_expr.field_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.field_input	k
 	.app	_test.parse_expr.field_label	test
@@ -1008,9 +1019,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.record_input	.gvar
 k	.closure	_test.parse_expr.record_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.record_input	k
 	.app	_test.parse_expr.record_label	test
@@ -1035,9 +1047,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.record.typesig_input	.gvar
 k	.closure	_test.parse_expr.record.typesig_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.record.typesig_input	k
 	.app	_test.parse_expr.record.typesig_label	test
@@ -1062,9 +1075,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.prim_input	.gvar
 k	.closure	_test.parse_expr.prim_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim_input	k
 	.app	_test.parse_expr.prim_label	test
@@ -1089,9 +1103,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.prim.tyargs_input	.gvar
 k	.closure	_test.parse_expr.prim.tyargs_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim.tyargs_input	k
 	.app	_test.parse_expr.prim.tyargs_label	test
@@ -1116,9 +1131,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.prim.args_input	.gvar
 k	.closure	_test.parse_expr.prim.args_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_expr.prim.args_input	k
 	.app	_test.parse_expr.prim.args_label	test
@@ -1381,9 +1397,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_impprog_input	.gvar
 k	.closure	_test.parse_impprog_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog_input	k
 	.app	_test.parse_impprog_label	test
@@ -1408,9 +1425,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_impprog.bind_input	.gvar
 k	.closure	_test.parse_impprog.bind_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog.bind_input	k
 	.app	_test.parse_impprog.bind_label	test
@@ -1435,9 +1453,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.parser	.gvar
+bool.false	.gvar
 _test.parse_impprog.lift_input	.gvar
 k	.closure	_test.parse_impprog.lift_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 ci.p	.apply	gsdl.ags.codeitem.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.t	|	parser.rune.advance	rune.print	ci.p	_test.parse_impprog.lift_input	k
 	.app	_test.parse_impprog.lift_label	test
@@ -1509,10 +1528,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
 _test.parse_gvars_minus.gvar_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvars_minus.gvar_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvars.p	_test.parse_gvars_minus.gvar_input	k
 	.app	_test.parse_gvars_minus.gvar_label	test
@@ -1539,10 +1559,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.gvars.parser	.gvar
+bool.false	.gvar
 _test.parse_gvars_natural_input	.gvar
 list.gvar.ty	.tylet	list.t	gsdl.ags.codeitem.gvar.t
 k	.closure	_test.parse_gvars_natural_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.gvar.ty	|	parser.rune.advance	rune.print	gvars.p	_test.parse_gvars_natural_input	k
 	.app	_test.parse_gvars_natural_label	test
@@ -1580,10 +1601,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.allocs.parser	.gvar
+bool.false	.gvar
 _test.parse_alloc_closure_input	.gvar
 list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
 k	.closure	_test.parse_alloc_closure_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	allocs.p	_test.parse_alloc_closure_input	k
 	.app	_test.parse_alloc_closure_label	test
@@ -1621,10 +1643,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.impgens.parser	.gvar
+bool.false	.gvar
 _test.parse_impgens_bind.closure_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_bind.closure_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_bind.closure_input	k
 	.app	_test.parse_impgens_bind.closure_label	test
@@ -1651,10 +1674,11 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.impgens.parser	.gvar
+bool.false	.gvar
 _test.parse_impgens_bind.closure.no.label_input	.gvar
 list.impgen.ty	.tylet	list.t	gsdl.ags.codeitem.impgen.t
 k	.closure	_test.parse_impgens_bind.closure.no.label_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 impgens.p	.apply	gsdl.ags.codeitem.impgens.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	list.impgen.ty	|	parser.rune.advance	rune.print	impgens.p	_test.parse_impgens_bind.closure.no.label_input	k
 	.app	_test.parse_impgens_bind.closure.no.label_label	test
@@ -2002,9 +2026,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.analyze.fkarg_input	.gvar
 k	.closure	_test.parse_expr.analyze.fkarg_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.analyze.fkarg_input	k
 	.app	_test.parse_expr.analyze.fkarg_label	test
@@ -2029,9 +2054,10 @@ parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
+bool.false	.gvar
 _test.parse_expr.gsanalyze.apply_input	.gvar
 k	.closure	_test.parse_expr.gsanalyze.apply_k_c
-fs	.lrecord	|	gsdl.ags.syntax.features.t
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.codeitem.expr.t	|	parser.rune.advance	rune.print	expr.p	_test.parse_expr.gsanalyze.apply_input	k
 	.app	_test.parse_expr.gsanalyze.apply_label	test
