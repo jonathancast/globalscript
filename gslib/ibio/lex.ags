@@ -942,12 +942,14 @@ ibio.lex.receiver.u	.tygvar
 maybe.t	.tygvar
 ibio.lex.lexer.t	.tygvar	-- Temp
 ibio.acceptor.prim.cont.t	.tygvar	-- Temp
+ibio.lex.optional	.gvar
 ibio.acceptor.optional.void.prim	.gvar
 s	.tyfv	*
 α	.tyfv	*
 maybe.α.ty	.tylet	maybe.t	α
 p0	.karg	ibio.lex.receiver.lexeme.u	s	α
-lex	.undefined	ibio.lex.lexer.t	s	maybe.α.ty
+p.lex	.field	0	p0
+lex	.apply	ibio.lex.optional	s	α	|	p.lex
 p.acc	.field	1	p0
 acc	.apply	ibio.acceptor.optional.void.prim	s	α	record.empty	|	p.acc
 r	.record	0	lex	1	acc	|	ibio.lex.receiver.u	s	maybe.α.ty
