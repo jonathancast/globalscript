@@ -436,13 +436,37 @@ ek1	.apply	l1	β	|	ek	sk	ip
 
 _ibio.lex.optional_c	.expr
 ibio.lex.lexeme.t	.tygvar
-ibio.lex.lexer.t	.tygvar	-- Temp
-maybe.t	.tygvar	-- Temp
+ibio.prim.iptr.t	.tygvar
+_ibio.lex.lexer.t_res.t	.tygvar
+maybe.t	.tygvar
+_ibio.lex.optional_justk_c	.subcode
+maybe.nothing	.gvar
 s	.tyarg	*
 α	.tyarg	*
 l	.larg	ibio.lex.lexeme.t	s	α
+ip	.larg	ibio.prim.iptr.t	s
 maybe.α.ty	.tylet	maybe.t	α
-	.undef	ibio.lex.lexer.t	s	maybe.α.ty
+res.ty	.tylet	_ibio.lex.lexer.t_res.t	s	maybe.α.ty
+nothing	.appty	maybe.nothing	α
+nothingk	.lrecord	0	nothing	1	ip	|	_ibio.lex.lexer.t_res.t	s	maybe.α.ty
+justk	.closure	_ibio.lex.optional_justk_c
+	.app	nothingk	justk	ip
+	.enter	l	res.ty
+
+_ibio.lex.optional_justk_c	.expr
+ibio.prim.iptr.t	.tygvar
+_ibio.lex.lexer.t_res.u	.tygvar
+maybe.t	.tygvar
+maybe.just	.gvar
+s	.tyfv	*
+α	.tyfv	*
+x	.larg	α
+ip1	.larg	ibio.prim.iptr.t	s
+maybe.α.ty	.tylet	maybe.t	α
+just.x	.apply	maybe.just	α	|	x
+r	.record	0	just.x	1	ip1	|	_ibio.lex.lexer.t_res.u	s	maybe.α.ty
+	.lift
+	.yield	r
 
 -- §section §gs{ibio.lex.many}
 
