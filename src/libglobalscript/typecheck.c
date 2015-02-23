@@ -2936,6 +2936,7 @@ gsbc_typecheck_api_expr(struct gspos pos, struct gsfile_symtable *symtable, uint
 
     while (
         gsbc_typecheck_cast_op(p, &cl)
+        || gsbc_typecheck_code_type_let_op(p, &cl)
         || gsbc_typecheck_data_arg_op(p, &cl)
     )
         p = gsinput_next_line(ppseg, p)
