@@ -152,13 +152,31 @@ _ibio.acceptor.optional.void.prim_c	.expr
 ibio.acceptor.prim.cont.t	.tygvar
 ibio.acceptor.prim.kt	.tygvar
 record.empty	.tygvar
-ibio.acceptor.prim.t	.tygvar	-- Temp
+_ibio.acceptor.optional.void.prim_jr.k_c	.subcode
+ibio.acceptor.prim.<|>	.gvar
+record.empty	.gvar
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
 p	.larg	ibio.acceptor.prim.cont.t	s	α	β
 k	.larg	ibio.acceptor.prim.kt	s	record.empty	β
-	.undef	ibio.acceptor.prim.t	s	β
+nr	.apply	k	|	record.empty
+jr.k	.closure	_ibio.acceptor.optional.void.prim_jr.k_c
+jr	.apply	p	|	jr.k
+	.app	nr	jr
+	.enter	ibio.acceptor.prim.<|>	s	β
+
+_ibio.acceptor.optional.void.prim_jr.k_c	.expr
+ibio.acceptor.prim.kt	.tygvar
+record.empty	.tygvar
+record.empty	.gvar
+s	.tyfv	*
+α	.tyfv	*
+β	.tyfv	*
+k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
+x	.larg	α
+	.app	record.empty
+	.enter	k
 
 -- §section §gs{ibio.acceptor.many}
 
