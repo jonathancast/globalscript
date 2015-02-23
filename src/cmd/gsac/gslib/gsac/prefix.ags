@@ -316,44 +316,21 @@ string.t	.tygvar
 list.t	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.syntax.features.t	.tygvar	-- Temp
-_gsac.prefix.file.load_body_cv_just_:_true_0.5_k	.subcode
+_gsac.prefix.file.load_body_cv_just_:_true_0.6_k	.subcode
 bool.t.out	.cogvar
 string.≡	.gvar
-_gsac.prefix.file.load_body_cv_0.5.s	.gvar
+_gsac.prefix.file.load_body_cv_0.6.s	.gvar
 pr1.0	.karg	list.prim.u	string.t
 	.analyze	pr1.0	:	nil
 		.case	:
 v		.fkarg	0	string.t
 pr2		.fkarg	1	list.t	string.t
-			.force	_gsac.prefix.file.load_body_cv_just_:_true_0.5_k
-			.coerce	bool.t.out
-			.app	v	_gsac.prefix.file.load_body_cv_0.5.s
-			.enter	string.≡
-		.case	nil
-			.undef	either.t	string.t	gsdl.ags.syntax.features.t
-
-_gsac.prefix.file.load_body_cv_just_:_true_0.5_k	.forcecont
-string.t	.tygvar
-bool.prim.u	.tygvar
-gsdl.ags.syntax.features.t	.tygvar
-_gsac.prefix.file.load_body_cv_just_:_true_0.6_k	.subcode
-bool.t.out	.cogvar
-string.≡	.gvar
-_gsac.prefix.file.load_body_cv_0.6.s	.gvar
-either.right	.gvar
-bool.false	.gvar
-v	.fv	string.t
-b0	.karg	bool.prim.u
-	.analyze	b0	false	true
-		.case	false
 			.force	_gsac.prefix.file.load_body_cv_just_:_true_0.6_k
 			.coerce	bool.t.out
 			.app	v	_gsac.prefix.file.load_body_cv_0.6.s
 			.enter	string.≡
-		.case	true
-fs			.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
-			.app	fs
-			.enter	either.right	string.t	gsdl.ags.syntax.features.t
+		.case	nil
+			.undef	either.t	string.t	gsdl.ags.syntax.features.t
 
 _gsac.prefix.file.load_body_cv_just_:_true_0.6_k	.forcecont
 bool.prim.u	.tygvar
