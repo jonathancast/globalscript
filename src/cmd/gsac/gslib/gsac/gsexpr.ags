@@ -1646,7 +1646,7 @@ e1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.app	pos1	mbv	e1	ty	tyem	pem	tyvs	svs
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	var.lifted
-v		.fkarg	0	gsdl.var.t
+x		.fkarg	0	gsdl.var.t
 			.force	_gsac.gsexpr.compileToDataItem_var.lifted_k
 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 			.app	pos	v.ty.v	ty
@@ -1891,7 +1891,7 @@ either.right	.gvar
 gsdl.ags.dataitem.alias	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
-v	.fv	gsdl.var.t
+x	.fv	gsdl.var.t
 v.ty.v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
@@ -1904,7 +1904,7 @@ cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-d			.apply	gsdl.ags.dataitem.alias	|	pos	mbv	v	v.ty.v
+d			.apply	gsdl.ags.dataitem.alias	|	pos	mbv	x	v.ty.v
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
