@@ -664,7 +664,11 @@ ft1.0	.karg	gsdl.ags.file.filetype.prim.u
 				.case	gsdocument
 					.enter	bool.true
 		.case	gsprefix
-			.undef	bool.t
+			.danalyze	ft1.0	gsprefix
+				.default
+					.undef	bool.t
+				.case	gsprefix
+					.enter	bool.true
 	-- > :: bool.t
 
 -- §section §gs{gsdl.ags.file.filetype.fmtgs}
