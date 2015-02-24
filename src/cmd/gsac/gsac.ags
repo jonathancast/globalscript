@@ -867,7 +867,6 @@ _prefix.load.var_w_file_ty	.tygvar
 ibio.file.name.t	.tygvar
 bool.t	.tygvar
 _prefix.load.file_file.parsed_c	.subcode
-_prefix.load.file_pr0.1_c	.subcode
 _prefix.load.file_prn3_c	.subcode
 _prefix.load.file_body_c	.subcode
 eo	.larg	ibio.prim.oport	rune.t
@@ -878,8 +877,7 @@ files1	.larg	list.t	_prefix.load.var_w_file_ty
 fn	.larg	ibio.file.name.t
 isags	.larg	bool.t
 	.lift
-file.parsed	.bind	.closure	_prefix.load.file_file.parsed_c
-pr0.1	.closure	_prefix.load.file_pr0.1_c
+mb.file.parsed	.bind	.closure	_prefix.load.file_file.parsed_c
 prn3	.bind	.closure	_prefix.load.file_prn3_c
 	.body	.closure	_prefix.load.file_body_c
 
@@ -896,15 +894,80 @@ isags	.fv	bool.t
 	.app	eo	isags	fn
 	.enter	gsac.prefix.file.load
 
--- §paragraph{Add the file to §gs{pr0}}
-_prefix.load.file_pr0.1_c	.expr
-gsdl.ags.file.t	.tygvar
+-- §paragraph{Recursively search for the free variables of §gs{file.parsed}'s interface}
+_prefix.load.file_prn3_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 _real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+maybe.t	.tygvar
+gsdl.ags.file.t	.tygvar
+ordered.set.t	.tygvar	-- Temp
+_prefix.load.file_prn3_k	.subcode
+maybe.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
+pr0	.fv	_real.entry_prefix_ty
+prn1	.fv	list.t	_real.entry_prefix_ty
+fn	.fv	ibio.file.name.t
+mb.file.parsed	.fv	maybe.t	gsdl.ags.file.t
+	.force	_prefix.load.file_prn3_k
+	.coerce	maybe.t.out	gsdl.ags.file.t
+	.enter	mb.file.parsed
+
+_prefix.load.file_prn3_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_real.entry_prefix_ty	.tygvar
+list.t	.tygvar
+ibio.file.name.t	.tygvar
+maybe.prim.u	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+_prefix.load.file_prn3_pr0.1_c	.subcode
+_prefix.load	.gvar
+ordered.set.tolist	.gvar
+gsac.prefix.file.interface.freevars	.gvar
+list.:	.gvar
+ibio.prim.unit	.gvar
+ordered.set.insert	.gvar
+ibio.file.name.compare	.gvar
+list.prefix.ty	.tylet	list.t	_real.entry_prefix_ty
+eo	.fv	ibio.prim.oport	rune.t
+pr0	.fv	_real.entry_prefix_ty
+prn1	.fv	list.t	_real.entry_prefix_ty
+fn	.fv	ibio.file.name.t
+mb0	.karg	maybe.prim.u	gsdl.ags.file.t
+	.analyze	mb0	just	nothing
+		.case	just
+file.parsed		.fkarg	0	gsdl.ags.file.t
+pr0.1			.closure	_prefix.load.file_prn3_pr0.1_c
+fvs.set			.apply	gsac.prefix.file.interface.freevars	|	file.parsed
+fvs			.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	fvs.set
+prn2			.apply	list.:	_real.entry_prefix_ty	|	pr0.1	prn1
+			.app	eo	fvs	prn2
+			.enter	_prefix.load
+		.case	nothing
+pr0.bvs			.lfield	bvs	pr0
+pr0.filename			.lfield	filename	pr0
+pr0.files.loaded			.lfield	files.loaded	pr0
+files.loaded.1			.apply	ordered.set.insert	ibio.file.name.t	|	ibio.file.name.compare	fn	pr0.files.loaded
+id			.lfield	isdir	pr0
+pr0.prefix			.lfield	prefix	pr0
+pr0.1			.lrecord	bvs	pr0.bvs	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	prefix	pr0.prefix	|	_real.entry_prefix_ty
+prn2			.apply	list.:	_real.entry_prefix_ty	|	pr0.1	prn1
+			.lift
+			.app	prn2
+			.yield	ibio.prim.unit	list.prefix.ty
+
+-- §paragraph{Add the file to §gs{pr0}}
+_prefix.load.file_prn3_pr0.1_c	.expr
+_real.entry_prefix_ty	.tygvar
+ibio.file.name.t	.tygvar
+gsdl.ags.file.t	.tygvar
+gsdl.cgs.symbol.t	.tygvar
 _real.entry_prefix_u	.tygvar
-gsdl.cgs.symbol.t	.tygvar	-- Temp
-ordered.set.t	.tygvar 	-- Temp
-ibio.file.name.t	.tygvar	-- Temp
-gsac.prefix.t	.tygvar	-- Temp
 ordered.set.union	.gvar
 gsdl.cgs.symbol.compare	.gvar
 gsac.prefix.file.boundvars	.gvar
@@ -926,29 +989,6 @@ prefix	.apply	gsac.prefix.file.add	|	file.parsed	pr0.prefix
 r	.record	bvs	bvs1	filename	pr0.filename	files.loaded	files.loaded.1	isdir	id	prefix	prefix	|	_real.entry_prefix_u
 	.lift
 	.yield	r
-
--- §paragraph{Recursively search for the free variables of §gs{file.parsed}'s interface}
-_prefix.load.file_prn3_c	.expr
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-list.t	.tygvar
-_real.entry_prefix_ty	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.cgs.symbol.t	.tygvar
-ordered.set.t	.tygvar	-- Temp
-_prefix.load	.gvar
-ordered.set.tolist	.gvar
-list.:	.gvar
-gsac.prefix.file.interface.freevars	.gvar
-eo	.fv	ibio.prim.oport	rune.t
-prn1	.fv	list.t	_real.entry_prefix_ty
-file.parsed	.fv	gsdl.ags.file.t
-pr0.1	.fv	_real.entry_prefix_ty
-fvs.set	.apply	gsac.prefix.file.interface.freevars	|	file.parsed
-fvs	.apply	ordered.set.tolist	gsdl.cgs.symbol.t	|	fvs.set
-prn2	.apply	list.:	_real.entry_prefix_ty	|	pr0.1	prn1
-	.app	eo	fvs	prn2
-	.enter	_prefix.load
 
 -- §paragraph{Loop with the updated §gs{pr0.1} and the remaining files}
 _prefix.load.file_body_c	.expr

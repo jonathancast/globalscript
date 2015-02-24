@@ -38,23 +38,20 @@ _tests	.gvar
 
 _test.parser.nil_c	.expr
 rune.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.file.filetype.t	.tygvar
 _test.parser.nil_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.nil_label	.gvar
 parser.test.assert.fails	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.ags.file.fmtgs	.gvar
-gsdl.ags.file.parser	.gvar
+gsdl.ags.file.filetype.fmtgs	.gvar
+gsdl.ags.file.filetype.parser	.gvar
 bool.false	.gvar
 list.nil	.gvar
 nil	.apply	list.nil	rune.t
 k0	.closure	_test.parser.nil_k0_c
-fs	.undefined	gsdl.ags.syntax.features.t
-fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
-test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	gsdl.ags.file.fmtgs	fp	nil	k0
+test	.apply	parser.test.assert.fails	rune.t	gsdl.ags.file.filetype.t	|	parser.rune.advance	rune.print	gsdl.ags.file.filetype.fmtgs	gsdl.ags.file.filetype.parser	nil	k0
 	.app	_test.parser.nil_label	test
 	.enter	test.property.label
 
@@ -68,115 +65,56 @@ err	.larg	parser.err.t
 
 _test.parser.empty.prefix_c	.expr
 rune.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.file.filetype.t	.tygvar
 _test.parser.empty.prefix_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.empty.prefix_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.ags.file.parser	.gvar
-bool.false	.gvar
+gsdl.ags.file.filetype.parser	.gvar
 _test.parser.empty.prefix_input	.gvar
 k0	.closure	_test.parser.empty.prefix_k0_c
-fs	.undefined	gsdl.ags.syntax.features.t
-fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.prefix_input	k0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.filetype.t	|	parser.rune.advance	rune.print	gsdl.ags.file.filetype.parser	_test.parser.empty.prefix_input	k0
 	.app	_test.parser.empty.prefix_label	test
 	.enter	test.property.label
 
 _test.parser.empty.prefix_k0_c	.expr
-gsdl.ags.file.t	.tygvar
-list.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
-gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
-gsdl.ags.coercionitem.t	.tygvar
-test.property.∧	.gvar
-test.property.label	.gvar
-_test.parser.nil_ds_label	.gvar
+gsdl.ags.file.filetype.t	.tygvar
 test.assert.eq	.gvar
-list.≡	.gvar
-gsdl.ags.dataitem.≡	.gvar
-list.fmtgs.byDefault	.gvar
-gsdl.ags.dataitem.fmtgs	.gvar
-list.nil	.gvar
-_test.parser.nil_cs_label	.gvar
-gsdl.ags.codeitem.≡	.gvar
-gsdl.ags.codeitem.fmtgs	.gvar
-_test.parser.nil_ts_label	.gvar
-gsdl.ags.typeitem.≡	.gvar
-gsdl.ags.typeitem.fmtgs	.gvar
-_test.parser.nil_tcs_label	.gvar
-gsdl.ags.coercionitem.≡	.gvar
-gsdl.ags.coercionitem.fmtgs	.gvar
-list.dataitem.ty	.tylet	list.t	gsdl.ags.dataitem.t
-list.codeitem.ty	.tylet	list.t	gsdl.ags.codeitem.t
-list.typeitem.ty	.tylet	list.t	gsdl.ags.typeitem.t
-list.coercionitem.ty	.tylet	list.t	gsdl.ags.coercionitem.t
-file	.larg	gsdl.ags.file.t
-list.dataitem.≡	.apply	list.≡	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.≡
-list.dataitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.dataitem.t	|	gsdl.ags.dataitem.fmtgs
-ds	.lfield	datasection	file
-ds.nil	.apply	list.nil	gsdl.ags.dataitem.t
-ds.test.0	.apply	test.assert.eq	list.dataitem.ty	|	list.dataitem.≡	list.dataitem.fmtgs	ds	ds.nil
-ds.test	.apply	test.property.label	|	_test.parser.nil_ds_label	ds.test.0
-list.codeitem.≡	.apply	list.≡	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.≡
-list.codeitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.codeitem.t	|	gsdl.ags.codeitem.fmtgs
-cs	.lfield	codesection	file
-cs.nil	.apply	list.nil	gsdl.ags.codeitem.t
-cs.test.0	.apply	test.assert.eq	list.codeitem.ty	|	list.codeitem.≡	list.codeitem.fmtgs	cs	cs.nil
-cs.test	.apply	test.property.label	|	_test.parser.nil_cs_label	cs.test.0
-list.typeitem.≡	.apply	list.≡	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.≡
-list.typeitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.typeitem.t	|	gsdl.ags.typeitem.fmtgs
-ts	.lfield	typesection	file
-ts.nil	.apply	list.nil	gsdl.ags.typeitem.t
-ts.test.0	.apply	test.assert.eq	list.typeitem.ty	|	list.typeitem.≡	list.typeitem.fmtgs	ts	ts.nil
-ts.test	.apply	test.property.label	|	_test.parser.nil_ts_label	ts.test.0
-list.coercionitem.≡	.apply	list.≡	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.≡
-list.coercionitem.fmtgs	.apply	list.fmtgs.byDefault	gsdl.ags.coercionitem.t	|	gsdl.ags.coercionitem.fmtgs
-tcs	.lfield	coercionsection	file
-tcs.nil	.apply	list.nil	gsdl.ags.coercionitem.t
-tcs.test.0	.apply	test.assert.eq	list.coercionitem.ty	|	list.coercionitem.≡	list.coercionitem.fmtgs	tcs	tcs.nil
-tcs.test	.apply	test.property.label	|	_test.parser.nil_tcs_label	tcs.test.0
-test2	.apply	test.property.∧	|	ts.test	tcs.test
-test1	.apply	test.property.∧	|	cs.test	test2
-	.app	ds.test	test1
-	.enter	test.property.∧
+gsdl.ags.file.filetype.fmtgs	.gvar
+gsdl.ags.file.filetype.≡	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+ty	.larg	gsdl.ags.file.filetype.t
+	.app	gsdl.ags.file.filetype.≡	gsdl.ags.file.filetype.fmtgs	ty	gsdl.ags.file.filetype.gsprefix
+	.enter	test.assert.eq	gsdl.ags.file.filetype.t
 
 -- §section §gs{parser =~ qq{\\t.document\\n}}
 
 _test.parser.empty.doc_c	.expr
 rune.t	.tygvar
-gsdl.ags.file.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar	-- Temp
+gsdl.ags.file.filetype.t	.tygvar
 _test.parser.empty.doc_k0_c	.subcode
 test.property.label	.gvar
 _test.parser.empty.doc_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
-gsdl.ags.file.parser	.gvar
-bool.false	.gvar
+gsdl.ags.file.filetype.parser	.gvar
 _test.parser.empty.doc_input	.gvar
 k0	.closure	_test.parser.empty.doc_k0_c
-fs	.undefined	gsdl.ags.syntax.features.t
-fp	.apply	gsdl.ags.file.parser	|	fs	bool.false
-test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.t	|	parser.rune.advance	rune.print	fp	_test.parser.empty.doc_input	k0
+test	.apply	parser.test.assert.passes	rune.t	gsdl.ags.file.filetype.t	|	parser.rune.advance	rune.print	gsdl.ags.file.filetype.parser	_test.parser.empty.doc_input	k0
 	.app	_test.parser.empty.doc_label	test
 	.enter	test.property.label
 
 _test.parser.empty.doc_k0_c	.expr
-gsdl.ags.file.t	.tygvar
 gsdl.ags.file.filetype.t	.tygvar
 test.assert.eq	.gvar
 gsdl.ags.file.filetype.≡	.gvar
 gsdl.ags.file.filetype.fmtgs	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
-file	.larg	gsdl.ags.file.t
-filety	.lfield	filetype	file
-	.app	gsdl.ags.file.filetype.≡	gsdl.ags.file.filetype.fmtgs	filety	gsdl.ags.file.filetype.gsdocument
+ty	.larg	gsdl.ags.file.filetype.t
+	.app	gsdl.ags.file.filetype.≡	gsdl.ags.file.filetype.fmtgs	ty	gsdl.ags.file.filetype.gsdocument
 	.enter	test.assert.eq	gsdl.ags.file.filetype.t
 
 -- §section §gs{fmtgs 〈 'filetype ∝ gsdocument; 'datasection ∝ []; 'typesection ∝ []; 〉}

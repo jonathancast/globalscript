@@ -359,8 +359,10 @@ either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.ags.syntax.features.t	.tygvar
 ibio.prim.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
 gsdl.ags.file.t	.tygvar	-- Temp
 _gsac.prefix.file.load_body_res_c	.subcode
+maybe.file.ty	.tylet	maybe.t	gsdl.ags.file.t	-- Temp
 eo	.fv	ibio.prim.oport	rune.t
 isags	.fv	bool.t
 fn	.fv	ibio.file.name.t
@@ -370,7 +372,7 @@ mbfs	.karg	either.prim.u	string.t	gsdl.ags.syntax.features.t
 	.analyze	mbfs	left	right
 		.case	left
 err		.fkarg	0	string.t
-			.undef	ibio.prim.t	gsdl.ags.file.t
+			.undef	ibio.prim.t	maybe.file.ty
 		.case	right
 fs		.fkarg	0	gsdl.ags.syntax.features.t
 res			.closure	_gsac.prefix.file.load_body_res_c
@@ -384,7 +386,7 @@ ibio.file.name.t	.tygvar
 ibio.prim.iport	.tygvar
 gsdl.ags.syntax.features.t	.tygvar
 parser.pos.t	.tygvar
-_gsac.prefix.file.load_body_res_s_c	.subcode
+_gsac.prefix.file.load_body_res_pos1.ty_c	.subcode
 _gsac.prefix.file.load_body_res_body_c	.subcode
 eo	.fv	ibio.prim.oport	rune.t
 isags	.fv	bool.t
@@ -393,10 +395,205 @@ if	.fv	ibio.prim.iport	rune.t
 fs	.fv	gsdl.ags.syntax.features.t
 pos	.fv	parser.pos.t
 	.lift
-s	.bind	.closure	_gsac.prefix.file.load_body_res_s_c
+pos1.ty	.bind	.closure	_gsac.prefix.file.load_body_res_pos1.ty_c	-- Read in .document / .prefix (if necessary) and return (pos, filetype)
 	.body	.closure	_gsac.prefix.file.load_body_res_body_c
 
-_gsac.prefix.file.load_body_res_s_c	.expr
+_gsac.prefix.file.load_body_res_pos1.ty_c	.expr
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_k	.subcode
+bool.t.out	.cogvar
+if	.fv	ibio.prim.iport	rune.t
+pos	.fv	parser.pos.t
+fs	.fv	gsdl.ags.syntax.features.t
+fs.type.pragma	.lfield	type.pragma	fs
+	.force	_gsac.prefix.file.load_body_res_pos1.ty_k
+	.coerce	bool.t.out
+	.enter	fs.type.pragma
+
+_gsac.prefix.file.load_body_res_pos1.ty_k	.forcecont
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+bool.prim.u	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_c	.subcode
+if	.fv	ibio.prim.iport	rune.t
+pos	.fv	parser.pos.t
+b0	.karg	bool.prim.u	-- Should there be a §ags{\#type:} pragma?
+	.analyze	b0	false	true
+		.case	false
+res			.closure	_gsac.prefix.file.load_body_res_pos1.ty_false_res_c
+			.enter	res
+		.case	true
+			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty	-- File type: gsdl.ags.file.filetype.t
+
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_c	.impprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+parser.pos.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_c	.subcode
+ibio.lex.receive	.gvar
+ibio.lex.receiver.optional	.gvar
+ibio.lex.receiver.line.non.empty	.gvar
+if	.fv	ibio.prim.iport	rune.t
+pos	.fv	parser.pos.t
+maybe.string.ty	.tylet	maybe.t	string.t
+	.lift
+ol	.apply	ibio.lex.receiver.optional	rune.t	string.t	|	ibio.lex.receiver.line.non.empty
+mb.l	.bind	.apply	ibio.lex.receive	rune.t	maybe.string.ty	|	ol	if
+	.body	.closure	_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_c
+
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_c	.expr
+parser.pos.t	.tygvar
+maybe.t	.tygvar
+string.t	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_k	.subcode
+maybe.t.out	.cogvar
+pos	.fv	parser.pos.t
+mb.l	.fv	maybe.t	string.t
+	.force	_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_k
+	.coerce	maybe.t.out	string.t
+	.enter	mb.l
+
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_k	.forcecont
+parser.pos.t	.tygvar
+maybe.prim.u	.tygvar
+string.t	.tygvar
+rune.t	.tygvar
+gsdl.ags.file.filetype.t	.tygvar
+parser.err.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_just_k	.subcode
+either.t.out	.cogvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.file.filetype.parser	.gvar
+pos	.fv	parser.pos.t
+mb0	.karg	maybe.prim.u	string.t
+	.analyze	mb0	just	nothing
+		.case	just
+l		.fkarg	0	string.t
+			.force	_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_just_k
+			.coerce	either.t.out	parser.err.t	gsdl.ags.file.filetype.t
+			.app	parser.rune.advance	rune.print	pos	gsdl.ags.file.filetype.parser	l
+			.enter	parser.parse	rune.t	gsdl.ags.file.filetype.t
+		.case	nothing
+			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty	-- File type: gsdl.ags.file.filetype.t
+
+_gsac.prefix.file.load_body_res_pos1.ty_false_res_body_just_k	.forcecont
+parser.pos.t	.tygvar
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+gsdl.ags.file.filetype.t	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.unit	.gvar
+parser.pos.next.line	.gvar
+pos	.fv	parser.pos.t
+e0	.karg	either.prim.u	parser.err.t	gsdl.ags.file.filetype.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty
+		.case	right
+ty		.fkarg	0	gsdl.ags.file.filetype.t
+pos1			.apply	parser.pos.next.line	|	pos
+res			.lrecord	0	ty	1	pos1	|	_gsac.prefix.file.load_body_res_pos1.ty_ty
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	_gsac.prefix.file.load_body_res_pos1.ty_ty
+
+_gsac.prefix.file.load_body_res_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+bool.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.iport	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar
+_gsac.prefix.file.load_body_res_body_k	.subcode
+gsdl.ags.file.filetype.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
+isags	.fv	bool.t
+fn	.fv	ibio.file.name.t
+if	.fv	ibio.prim.iport	rune.t
+fs	.fv	gsdl.ags.syntax.features.t
+pos1.ty	.fv	_gsac.prefix.file.load_body_res_pos1.ty_ty
+ty	.lfield	0	pos1.ty
+pos1	.lfield	1	pos1.ty
+	.force	_gsac.prefix.file.load_body_res_body_k
+	.coerce	gsdl.ags.file.filetype.t.out
+	.enter	ty
+
+_gsac.prefix.file.load_body_res_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+bool.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.iport	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+gsdl.ags.file.filetype.prim.u	.tygvar
+maybe.t	.tygvar
+gsdl.ags.file.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_body_gsprefix_res_c	.subcode
+ibio.prim.unit	.gvar
+maybe.nothing	.gvar
+maybe.file.ty	.tylet	maybe.t	gsdl.ags.file.t
+eo	.fv	ibio.prim.oport	rune.t
+isags	.fv	bool.t
+fn	.fv	ibio.file.name.t
+if	.fv	ibio.prim.iport	rune.t
+pos1	.fv	parser.pos.t
+fs	.fv	gsdl.ags.syntax.features.t
+ty0	.karg	gsdl.ags.file.filetype.prim.u
+	.analyze	ty0	gsdocument	gsprefix
+		.case	gsdocument
+nothing			.apply	maybe.nothing	gsdl.ags.file.t
+			.lift
+			.app	nothing
+			.yield	ibio.prim.unit	maybe.file.ty
+		.case	gsprefix
+res			.closure	_gsac.prefix.file.load_body_res_body_gsprefix_res_c
+			.enter	res
+	-- > :: ibio.prim.t	maybe.file.ty
+
+_gsac.prefix.file.load_body_res_body_gsprefix_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+bool.t	.tygvar
+ibio.file.name.t	.tygvar
+ibio.prim.iport	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+gsdl.ags.file.filetype.prim.u	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
+gsdl.ags.file.t	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_body_gsprefix_res_s_c	.subcode
+_gsac.prefix.file.load_body_res_body_gsprefix_res_body_c	.subcode
+eo	.fv	ibio.prim.oport	rune.t
+isags	.fv	bool.t
+fn	.fv	ibio.file.name.t
+if	.fv	ibio.prim.iport	rune.t
+pos1	.fv	parser.pos.t
+fs	.fv	gsdl.ags.syntax.features.t
+ty0	.fv	gsdl.ags.file.filetype.prim.u
+maybe.file.ty	.tylet	maybe.t	gsdl.ags.file.t	-- Temp
+	.lift
+s	.bind	.closure	_gsac.prefix.file.load_body_res_body_gsprefix_res_s_c
+	.body	.closure	_gsac.prefix.file.load_body_res_body_gsprefix_res_body_c
+
+_gsac.prefix.file.load_body_res_body_gsprefix_res_s_c	.expr
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 list.t	.tygvar
@@ -410,17 +607,19 @@ ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 	.app	ms	if
 	.enter	ibio.lex.receive	rune.t	res.ty
 
-_gsac.prefix.file.load_body_res_body_c	.expr
+_gsac.prefix.file.load_body_res_body_gsprefix_res_body_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 bool.t	.tygvar
 ibio.file.name.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+gsdl.ags.file.filetype.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.file.t	.tygvar
 parser.err.t	.tygvar
-parser.pos.t	.tygvar
-gsdl.ags.syntax.features.t	.tygvar
-_gsac.prefix.file.load_body_res_body_k	.subcode
+_gsac.prefix.file.load_body_res_body_gsprefix_res_body_k	.subcode
+gsdl.ags.file.filetype.t.in	.cogvar
 either.t.out	.cogvar
 parser.parse	.gvar
 parser.rune.advance	.gvar
@@ -429,23 +628,29 @@ gsdl.ags.file.parser	.gvar
 eo	.fv	ibio.prim.oport	rune.t
 isags	.fv	bool.t
 fn	.fv	ibio.file.name.t
-pos	.fv	parser.pos.t
+pos1	.fv	parser.pos.t
 fs	.fv	gsdl.ags.syntax.features.t
+ty0	.fv	gsdl.ags.file.filetype.prim.u
 s	.fv	list.t	rune.t
-fp	.apply	gsdl.ags.file.parser	|	fs	isags
-	.force	_gsac.prefix.file.load_body_res_body_k
+ty0.l	.lifted	ty0
+ty0.cl	.cast	ty0.l	gsdl.ags.file.filetype.t.in
+fp	.apply	gsdl.ags.file.parser	|	fs	isags	ty0.cl
+	.force	_gsac.prefix.file.load_body_res_body_gsprefix_res_body_k
 	.coerce	either.t.out	parser.err.t	gsdl.ags.file.t
-	.app	parser.rune.advance	rune.print	pos	fp	s
+	.app	parser.rune.advance	rune.print	pos1	fp	s
 	.enter	parser.parse	rune.t	gsdl.ags.file.t
 
-_gsac.prefix.file.load_body_res_body_k	.forcecont
+_gsac.prefix.file.load_body_res_body_gsprefix_res_body_k	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
 gsdl.ags.file.t	.tygvar
+maybe.t	.tygvar
 _gsac.prefix.file.load_body_left_c	.subcode
 ibio.prim.unit	.gvar
+maybe.just	.gvar
+maybe.file.ty	.tylet	maybe.t	gsdl.ags.file.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	gsdl.ags.file.t
 	.analyze	e0	left	right
@@ -455,9 +660,10 @@ res			.closure	_gsac.prefix.file.load_body_left_c
 			.enter	res
 		.case	right
 file		.fkarg	0	gsdl.ags.file.t
+just.file			.apply	maybe.just	gsdl.ags.file.t	|	file
 			.lift
-			.app	file
-			.yield	ibio.prim.unit	gsdl.ags.file.t
+			.app	just.file
+			.yield	ibio.prim.unit	maybe.file.ty
 
 _gsac.prefix.file.load_body_left_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
@@ -489,8 +695,10 @@ s	.apply	list.<>	rune.t	|	s1	_gsac.prefix.file.load_body_left_write_nl.s
 
 _gsac.prefix.file.load_body_left_body_c	.expr
 ibio.prim.t	.tygvar	-- Temp
+maybe.t	.tygvar	-- Temp
 gsdl.ags.file.t	.tygvar	-- Temp
-	.undef	ibio.prim.t	gsdl.ags.file.t
+maybe.file.ty	.tylet	maybe.t	gsdl.ags.file.t	-- Temp
+	.undef	ibio.prim.t	maybe.file.ty
 
 -- §section §gs{gsac.prefix.file.boundvars}
 
@@ -3917,6 +4125,18 @@ gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
 gsdl.ags.typeitem.expr.t	.tygvar
 	.tyubproduct	0	gsdl.sourcepos.t	1	gsdl.var.t	2	gsdl.ags.typeitem.gskind.t	3	gsdl.ags.typeitem.decls.t	4	gsdl.ags.typeitem.expr.t
+
+-- §section §gs{gsac.prefix.file.load}
+
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tyexpr
+_gsac.prefix.file.load_body_res_pos1.ty_u	.tygvar
+	.tylift
+	.tyref	_gsac.prefix.file.load_body_res_pos1.ty_u
+
+_gsac.prefix.file.load_body_res_pos1.ty_u	.tyexpr
+gsdl.ags.file.filetype.t	.tygvar
+parser.pos.t	.tygvar
+	.typroduct	0	gsdl.ags.file.filetype.t	1	parser.pos.t
 
 -- §section §gs{gsac.prefix.file.interface.freevars}
 
