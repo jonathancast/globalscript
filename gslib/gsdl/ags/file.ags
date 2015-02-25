@@ -215,7 +215,10 @@ x		.fkarg	2	gsdl.var.t
 ty		.fkarg	3	gsdl.var.t
 nm.s			.apply	maybe.elim	gsdl.var.t	diff.list.rune.ty	|	nil	gsdl.ags.syntax.var.print	nm
 x.s			.apply	gsdl.ags.syntax.var.print	|	x
-s0.3			.undefined	string.t
+ty.s			.apply	gsdl.ags.syntax.var.print	|	ty
+s0.5			.apply	list.:	rune.t	|	rune.new.line	s1
+s0.4			.apply	ty.s	|	s0.5
+s0.3			.apply	list.:	rune.t	|	rune.tab	s0.4
 s0.2			.apply	x.s	|	s0.3
 s0.1			.apply	list.<>	rune.t	|	_gsdl.ags.file.print_dataitems_:_alias_alias.s	s0.2
 s0			.apply	nm.s	|	s0.1
