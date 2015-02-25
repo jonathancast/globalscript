@@ -49,6 +49,7 @@ _gsac.prefix.file.load_body_cv_0.6.s	.string	0.6
 _gsac.prefix.file.load_body_cv_0.7.s	.string	0.7
 _gsac.prefix.file.load_body_left_write_nl.s	.string	\n
 _gsac.prefix.file.load_type.s	.string	type
+_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix.s	.string	prefix
 
 gsac.prefix.file.boundvars	.closure	_gsac.prefix.file.boundvars_c
 
@@ -477,6 +478,7 @@ res			.closure	_gsac.prefix.file.load_body_res_pos1.ty_false_res_c
 			.enter	ordered.map.get	string.t	gsdl.pragma.t
 
 _gsac.prefix.file.load_body_res_pos1.ty_true_k	.forcecont
+parser.pos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.pragma.t	.tygvar
 string.t	.tygvar
@@ -484,6 +486,7 @@ ibio.prim.t	.tygvar	-- Temp
 _gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar	-- Temp
 _gsac.prefix.file.load_body_res_pos1.ty_true_just_k	.subcode
 list.t.out	.cogvar
+pos	.fv	parser.pos.t
 mb0	.karg	maybe.prim.u	gsdl.pragma.t
 	.analyze	mb0	just	nothing
 		.case	just
@@ -495,12 +498,46 @@ pr		.fkarg	0	gsdl.pragma.t
 			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty	-- File type: gsdl.ags.file.filetype.t
 
 _gsac.prefix.file.load_body_res_pos1.ty_true_just_k	.forcecont
+parser.pos.t	.tygvar
 list.prim.u	.tygvar
 string.t	.tygvar
+list.t	.tygvar
 ibio.prim.t	.tygvar	-- Temp
 _gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar	-- Temp
+_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix_k	.subcode
+bool.t.out	.cogvar
+string.≡	.gvar
+_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix.s	.gvar
+pos	.fv	parser.pos.t
 pr0	.karg	list.prim.u	string.t
+	.analyze	pr0	:	nil
+		.case	:
+ty.s		.fkarg	0	string.t
+pr1		.fkarg	1	list.t	string.t
+			.force	_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix_k
+			.coerce	bool.t.out
+			.app	ty.s	_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix.s
+			.enter	string.≡
+		.case	nil
 			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty	-- File type: gsdl.ags.file.filetype.t
+
+_gsac.prefix.file.load_body_res_pos1.ty_true_just_prefix_k	.forcecont
+parser.pos.t	.tygvar
+bool.prim.u	.tygvar
+_gsac.prefix.file.load_body_res_pos1.ty_ty	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.unit	.gvar
+gsdl.ags.file.filetype.gsprefix	.gvar
+pos	.fv	parser.pos.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.undef	ibio.prim.t	_gsac.prefix.file.load_body_res_pos1.ty_ty	-- File type: gsdl.ags.file.filetype.t
+		.case	true
+res			.lrecord	0	gsdl.ags.file.filetype.gsprefix	1	pos	|	_gsac.prefix.file.load_body_res_pos1.ty_ty
+			.lift
+			.app	res
+			.yield	ibio.prim.unit	_gsac.prefix.file.load_body_res_pos1.ty_ty
 
 _gsac.prefix.file.load_body_res_pos1.ty_false_res_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
