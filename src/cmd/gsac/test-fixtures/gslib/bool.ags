@@ -1,6 +1,5 @@
-#calculus: gsdl.string-code 0.6
-
-	.prefix
+#calculus: gsdl.string-code 0.7
+#type: prefix
 
 	.code
 
