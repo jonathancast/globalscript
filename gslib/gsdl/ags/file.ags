@@ -511,10 +511,12 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.file.t	.tygvar
+maybe.t	.tygvar
 string.t	.tygvar
 _gsdl.ags.file.parser_f_c	.subcode
 parser.lift4	.gvar
 parser.*>	.gvar
+parser.optional	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
 gsdl.ags.codeitem.segment.parser	.gvar
@@ -526,11 +528,13 @@ _dataitems_ty	.tylet	list.t	gsdl.ags.dataitem.t
 _codeitems_ty	.tylet	list.t	gsdl.ags.codeitem.t
 _typeitems_ty	.tylet	list.t	gsdl.ags.typeitem.t
 _coercionitems_ty	.tylet	list.t	gsdl.ags.coercionitem.t
+maybe.string.ty	.tylet	maybe.t	string.t
 isags	.larg	bool.t
 ty	.larg	gsdl.ags.file.filetype.t
 f	.closure	_gsdl.ags.file.parser_f_c
+optional.ws	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.whitespace
 das.p1	.apply	gsdl.ags.dataitem.segment.parser	|	isags
-das.p	.apply	parser.*>	rune.t	string.t	_dataitems_ty	|	gsdl.ags.syntax.whitespace	das.p1
+das.p	.apply	parser.*>	rune.t	maybe.string.ty	_dataitems_ty	|	optional.ws	das.p1
 cs.p	.apply	gsdl.ags.codeitem.segment.parser	|	fs
 	.app	f	das.p	cs.p	gsdl.ags.typeitem.segment.parser	gsdl.ags.coercionitem.segment.parser
 	.enter	parser.lift4	rune.t	_dataitems_ty	_codeitems_ty	_typeitems_ty	_coercionitems_ty	gsdl.ags.file.t
