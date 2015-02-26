@@ -3448,6 +3448,7 @@ string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar	-- Temp
 gsac.gsexpr.compileFunToGenRHS	.gvar
+list.:	.gvar
 gsac.gsexpr.compileTyArgsToGenRHS	.gvar
 pos	.fv	gsdl.sourcepos.t
 as	.fv	list.t	gsdl.cgs.gsexpr.arg.t
@@ -3462,7 +3463,7 @@ f0	.karg	gsdl.cgs.gsexpr.prim.u
 		.case	app
 f1		.fkarg	0	gsdl.cgs.gsexpr.t
 a		.fkarg	1	gsdl.cgs.gsexpr.arg.t
-as1			.undefined	list.t	gsdl.cgs.gsexpr.arg.t
+as1			.apply	list.:	gsdl.cgs.gsexpr.arg.t	|	a	as
 			.app	pos	f1	as1	tyem	pem	tysvs	svs
 			.enter	gsac.gsexpr.compileFunToGenRHS
 		.case	pos
