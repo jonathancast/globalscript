@@ -2980,7 +2980,9 @@ gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.subcode
 gsac.gsexpr.compileFunToExpr	.gvar
+gsac.gsexpr.compileTyArgsToExpr	.gvar
 pos	.fv	gsdl.sourcepos.t
 as	.fv	list.t	gsdl.cgs.gsexpr.arg.t
 tyem	.fv	ordered.set.t	gsdl.var.t
@@ -3007,8 +3009,17 @@ v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+k			.closure	_gsac.gsexpr.compileFunToExpr_var.unlifted_k_c
+			.app	pos	k	as	tyem	pem	tyvs	svs
+			.enter	gsac.gsexpr.compileTyArgsToExpr
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.expr
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+tyas	.larg	list.t	gsdl.var.t
+	.undef	gsdl.ags.codeitem.expr.t
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToExpr}
 
