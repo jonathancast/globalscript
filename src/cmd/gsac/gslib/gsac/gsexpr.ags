@@ -2825,11 +2825,11 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
@@ -2852,7 +2852,7 @@ cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem			.lfield	prim.emitted	r0
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
-e.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
+e.b.as			.apply	list.nil	gsdl.ags.codeitem.alloc.t
 r0.res			.lfield	res	r0
 r0.tyf			.lfield	tyfun	r0.res
 r0.tyas			.lfield	typeargs	r0.res
