@@ -2715,17 +2715,18 @@ _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
-gsdl.ags.dataitem.t	.tygvar	-- Temp
-gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
 list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
 gsdl.ags.codeitem.expr.yield	.gvar
@@ -2737,14 +2738,14 @@ tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 cs	.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos	.undefined	diff.list.t	gsdl.ags.coercionitem.t
-ds	.undefined	diff.list.t	gsdl.ags.dataitem.t
+ds	.apply	diff.list.nil	gsdl.ags.dataitem.t
 r.as	.apply	list.nil	gsdl.ags.codeitem.arg.t
 r.b.as	.apply	list.nil	gsdl.ags.codeitem.alloc.t
 nil.vs	.apply	list.nil	gsdl.var.t
 r.b.e	.apply	gsdl.ags.codeitem.expr.yield	|	pos	res.v	nil.vs
 r.b	.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	r.b.as	r.b.e
 r	.lrecord	args	r.as	body	r.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
-tygvs	.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs	.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyls	.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 ts	.undefined	diff.list.t	gsdl.ags.typeitem.t
 res	.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	r	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToLambdaExpr_res.ty
