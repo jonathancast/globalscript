@@ -418,10 +418,16 @@ r	.larg	record.empty
 _gsdl.var.vars_w_c	.expr
 natural.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.var.component.t	.tygvar
 list.t	.tygvar	-- Temp
 list.:	.gvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.numeric	.gvar
 n	.arg	natural.t
-v0	.undefined	gsdl.var.t
+v0.c0	.apply	gsdl.var.component.numeric	|	n
+v0.cs	.apply	list.singleton	gsdl.var.component.t	|	v0.c0
+v0	.apply	gsdl.var.basevar	|	v0.cs
 vs1	.undefined	list.t	gsdl.var.t
 	.app	v0	vs1
 	.enter	list.:	gsdl.var.t
