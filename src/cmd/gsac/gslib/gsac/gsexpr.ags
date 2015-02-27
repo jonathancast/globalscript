@@ -3146,6 +3146,7 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
@@ -3153,13 +3154,13 @@ either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
-gsdl.ags.codeitem.alloc.t	.tygvar	-- Temp
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
 list.nil	.gvar
+list.singleton	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
 gsdl.ags.codeitem.expr.yield	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -3173,7 +3174,8 @@ cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 r.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
-r.b.as			.undefined	list.t	gsdl.ags.codeitem.alloc.t
+r.b.a0			.undefined	gsdl.ags.codeitem.alloc.t
+r.b.as			.apply	list.singleton	gsdl.ags.codeitem.alloc.t	|	r.b.a0
 nil.vs			.apply	list.nil	gsdl.var.t
 r.b.e			.apply	gsdl.ags.codeitem.expr.yield	|	pos	sv0	nil.vs
 r.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	r.b.as	r.b.e
