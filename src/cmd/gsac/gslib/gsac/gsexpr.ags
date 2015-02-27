@@ -3199,12 +3199,14 @@ svs1		.fkarg	1	list.t	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileToVar_structure_k1_:_k	.forcecont
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToVar_structure_k1_:_right_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.cogvar
+sv0	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -3220,6 +3222,7 @@ k.r.b			.lfield	body	k.r.r
 
 _gsac.gsexpr.compileToVar_structure_k1_:_right_k	.forcecont
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u	.tygvar
 -- §paragraph{§gs{expr}}
 list.t	.tygvar
@@ -3229,7 +3232,6 @@ string.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 -- §paragraph{§gs{impprog}
-gsdl.var.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
 gsdl.ags.codeitem.impbody.t	.tygvar
 -- §par
@@ -3238,7 +3240,9 @@ either.right	.gvar
 list.nil	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	.gvar
 list.:	.gvar
+gsdl.ags.codeitem.alloc.record	.gvar
 k.r	.fv	_gsac.gsexpr.compileToLambdaExpr_res.ty
+sv0	.fv	gsdl.var.t
 k.r.b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
 	.analyze	k.r.b0	expr	impprog
 		.case	expr
@@ -3249,7 +3253,7 @@ cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
 pem1			.lfield	prim.emitted	k.r
 r.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
-r.b.a0			.undefined	gsdl.ags.codeitem.alloc.t
+r.b.a0			.apply	gsdl.ags.codeitem.alloc.record	|	sv0
 r.b.as			.apply	list.:	gsdl.ags.codeitem.alloc.t	|	r.b.a0	k.r.as
 r.b			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res_body.expr	|	r.b.as	k.r.e
 r			.lrecord	args	r.as	body	r.b	|	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
