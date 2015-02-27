@@ -2342,9 +2342,18 @@ tyas	.larg	list.t	string.t
 
 _gsdl.ags.codeitem.alloc.print_c	.expr
 gsdl.ags.codeitem.alloc.t	.tygvar
+_gsdl.ags.codeitem.alloc.print_k	.subcode
+gsdl.ags.codeitem.alloc.t.out	.cogvar
+a	.larg	gsdl.ags.codeitem.alloc.t
+	.force	_gsdl.ags.codeitem.alloc.print_k
+	.coerce	gsdl.ags.codeitem.alloc.t.out
+	.enter	a
+
+_gsdl.ags.codeitem.alloc.print_k	.forcecont
+gsdl.ags.codeitem.alloc.prim.u	.tygvar
 diff.list.t	.tygvar	-- Temp
 rune.t	.tygvar	-- Temp
-a	.larg	gsdl.ags.codeitem.alloc.t
+a0	.karg	gsdl.ags.codeitem.alloc.prim.u
 	.undef	diff.list.t	rune.t
 
 -- §subsection §gs{gsdl.ags.codeitem.alloc.fmtgs}
