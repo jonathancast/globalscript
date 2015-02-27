@@ -4634,6 +4634,11 @@ gsdl.ags.codeitem.karg.t	.tygvar
 	.tyinvert
 	.tydefinition	gsdl.ags.codeitem.karg.t
 
+gsdl.ags.codeitem.alloc.t.out	.tycoercion
+gsdl.ags.codeitem.alloc.t	.tygvar
+	.tyinvert
+	.tydefinition	gsdl.ags.codeitem.alloc.t
+
 gsdl.ags.codeitem.impgen.t.in	.tycoercion
 gsdl.ags.codeitem.impgen.t	.tygvar
 	.tydefinition	gsdl.ags.codeitem.impgen.t
