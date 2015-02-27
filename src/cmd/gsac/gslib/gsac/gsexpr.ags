@@ -2889,7 +2889,6 @@ tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 r0.args	.fv	list.t	gsdl.ags.codeitem.arg.t
 b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
-as	.undefined	list.t	gsdl.ags.codeitem.alloc.t
 cogvs	.undefined	list.t	string.t
 gvs	.undefined	list.t	gsdl.ags.codeitem.gvar.t
 scs	.undefined	list.t	string.t
