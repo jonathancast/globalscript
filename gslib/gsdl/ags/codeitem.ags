@@ -3768,7 +3768,11 @@ pos		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
 v.s			.apply	gsdl.ags.syntax.var.print	|	v
-s2			.undefined	diff.list.t	rune.t
+tyas.ss1				.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	gsdl.ags.syntax.var.print	tyas
+tyas.ss			.apply	list.map	diff.list.rune.ty	diff.list.rune.ty	|	cons.tab	tyas.ss1
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+s3			.apply	diff.list.singleton	rune.t	|	rune.new.line
+s2			.apply	diff.list.<>	rune.t	|	tyas.s	s3
 s1			.apply	diff.list.<>	rune.t	|	v.s	s2
 s0			.apply	diff.list.:	rune.t	|	rune.tab	s1
 			.app	_gsdl.ags.codeitem.expr.print_yield_yield.s	s0
