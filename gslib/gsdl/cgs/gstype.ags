@@ -761,8 +761,17 @@ sy	.larg	gsdl.cgs.symbol.t
 
 _gsdl.cgs.gstype.substty_product_false_k	.forcecont
 bool.prim.u	.tygvar
+list.t	.tygvar	-- Temp
 gsdl.cgs.gstype.t	.tygvar	-- Temp
+gsdl.cgs.gstype.field.t	.tygvar	-- Temp
+gsdl.cgs.gstype.product	.gvar
 b0	.karg	bool.prim.u	-- Does the type being substituted in contain free the bound variable of any generator in the signature?
+	.analyze	b0	false	true
+		.case	false
+fs1			.undefined	list.t	gsdl.cgs.gstype.field.t
+			.app	fs1
+			.enter	gsdl.cgs.gstype.product
+		.case	true
 			.undef	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.substty_var_k	.forcecont
