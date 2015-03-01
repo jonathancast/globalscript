@@ -3634,10 +3634,29 @@ svs	.larg	list.t	gsdl.var.t
 _gsac.gsexpr.compileTyArgsToGenRHS_k	.forcecont
 list.prim.u	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileTyArgsToGenRHS_:_k	.subcode
+gsdl.cgs.gsexpr.arg.t.out	.cogvar
 as0	.karg	list.prim.u	gsdl.cgs.gsexpr.arg.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	gsdl.cgs.gsexpr.arg.t
+as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
+			.force	_gsac.gsexpr.compileTyArgsToGenRHS_:_k
+			.coerce	gsdl.cgs.gsexpr.arg.t.out
+			.enter	a0
+		.case	nil
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+
+_gsac.gsexpr.compileTyArgsToGenRHS_:_k	.forcecont
+gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+a0.0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
