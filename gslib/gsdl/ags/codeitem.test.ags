@@ -193,11 +193,15 @@ _test.parse_gvars_natural_input	.string	1\t.natural\t1\n
 _test.parse_allocs	.closure	_test.parse_allocs_c
 _test.parse_allocs_label	.string	Expression\sGenerators
 
-_tests.parse_allocs	.list	test.property.t	_test.parse_alloc_closure
+_tests.parse_allocs	.list	test.property.t	_test.parse_alloc_closure	_test.parse_alloc_lifted
 
 _test.parse_alloc_closure	.closure	_test.parse_alloc_closure_c
 _test.parse_alloc_closure_label	.string	qq{x\\t.closure\\t_x_c\\n}\s=~\sgsdl.ags.codeitem.allocs.parser
 _test.parse_alloc_closure_input	.string	x\t.closure\t_x_c\n
+
+_test.parse_alloc_lifted	.closure	_test.parse_alloc_lifted_c
+_test.parse_alloc_lifted_label	.string	qq{x\\t.lifted\\tx0\\n}\s=~\sgsdl.ags.codeitem.allocs.parser
+_test.parse_alloc_lifted_input	.string	x\t.lifted\tx0\n
 
 -- §subsection Imperative Generators
 
@@ -1612,6 +1616,37 @@ test	.apply	parser.test.assert.passes	rune.t	list.alloc.ty	|	parser.rune.advance
 	.enter	test.property.label
 
 _test.parse_alloc_closure_k_c	.expr
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+test.true	.gvar
+err	.larg	list.t	gsdl.ags.codeitem.alloc.t
+	.enter	test.true
+
+-- §subsubsection §stringcode{.lifted}
+
+_test.parse_alloc_lifted_c	.expr
+rune.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
+gsdl.ags.syntax.features.t	.tygvar
+_test.parse_alloc_lifted_k_c	.subcode
+test.property.label	.gvar
+_test.parse_alloc_lifted_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+gsdl.ags.codeitem.allocs.parser	.gvar
+bool.false	.gvar
+_test.parse_alloc_lifted_input	.gvar
+list.alloc.ty	.tylet	list.t	gsdl.ags.codeitem.alloc.t
+k	.closure	_test.parse_alloc_lifted_k_c
+fs	.lrecord	type.pragma	bool.false	|	gsdl.ags.syntax.features.t
+allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
+test	.apply	parser.test.assert.passes	rune.t	list.alloc.ty	|	parser.rune.advance	rune.print	allocs.p	_test.parse_alloc_lifted_input	k
+	.app	_test.parse_alloc_lifted_label	test
+	.enter	test.property.label
+
+_test.parse_alloc_lifted_k_c	.expr
 list.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 test.true	.gvar
