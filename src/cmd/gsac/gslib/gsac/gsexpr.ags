@@ -3597,7 +3597,9 @@ f1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsac.gsexpr.compileFunToGenRHS
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+k			.undefined	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
+			.app	pos	k	as	tyem	pem	tysvs	svs
+			.enter	gsac.gsexpr.compileTyArgsToGenRHS
 		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
 k			.undefined	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
