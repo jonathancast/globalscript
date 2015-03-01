@@ -3009,6 +3009,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToExpr_var.lifted_k_c	.subcode
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.subcode
 gsac.gsexpr.compileFunToExpr	.gvar
 gsac.gsexpr.compileTyArgsToExpr	.gvar
@@ -3035,13 +3036,22 @@ f1		.fkarg	1	gsdl.cgs.gsexpr.t
 			.enter	gsac.gsexpr.compileFunToExpr
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+k			.closure	_gsac.gsexpr.compileFunToExpr_var.lifted_k_c
+			.app	pos	k	as	tyem	pem	tyvs	svs
+			.enter	gsac.gsexpr.compileTyArgsToExpr
 		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
 k			.closure	_gsac.gsexpr.compileFunToExpr_var.unlifted_k_c
 			.app	pos	k	as	tyem	pem	tyvs	svs
 			.enter	gsac.gsexpr.compileTyArgsToExpr
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+
+_gsac.gsexpr.compileFunToExpr_var.lifted_k_c	.expr
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+tyas	.larg	list.t	gsdl.var.t
+	.undef	gsdl.ags.codeitem.expr.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.expr
 list.t	.tygvar
