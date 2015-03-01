@@ -1877,19 +1877,19 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.t	.tygvar	-- Temp
-gsdl.ags.coercionitem.t	.tygvar	-- Temp
-gsdl.ags.dataitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
-gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
+diff.list.nil	.gvar
 gsdl.ags.dataitem.alias	.gvar
 pos	.fv	gsdl.sourcepos.t
 mbv	.fv	maybe.t	gsdl.var.t
@@ -1902,9 +1902,9 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
+cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
+ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
 pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 d			.apply	gsdl.ags.dataitem.alias	|	pos	mbv	x	v.ty.v
 svs1			.undefined	list.t	gsdl.var.t
@@ -1912,7 +1912,7 @@ tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
 tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+ts			.lfield	typeitems	ty.r
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	d	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToDataItem_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToDataItem_res.ty
