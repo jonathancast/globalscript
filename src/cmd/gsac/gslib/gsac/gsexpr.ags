@@ -532,6 +532,7 @@ gsdl.cgs.gsexpr.arg.t	.tygvar	-- Temp
 gsdl.cgs.gskind.t	.tygvar	-- Temp
 either.right	.gvar
 gsdl.cgs.gsexpr.app	.gvar
+gsdl.cgs.gsexpr.arg.type	.gvar
 gsdl.cgs.gstype.substty	.gvar
 f.r.e	.fv	gsdl.cgs.gsexpr.t
 fa.v	.fv	gsdl.var.t
@@ -544,7 +545,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.annotate_res.ty
 		.case	right
 r		.fkarg	0	record.empty
-a			.undefined	gsdl.cgs.gsexpr.arg.t
+a			.apply	gsdl.cgs.gsexpr.arg.type	|	tya.r.ty
 e			.apply	gsdl.cgs.gsexpr.app	|	f.r.e	a
 ki			.undefined	gsdl.cgs.gskind.t
 ty			.apply	gsdl.cgs.gstype.substty	|	fa.v	tya.r.ty	tyb
