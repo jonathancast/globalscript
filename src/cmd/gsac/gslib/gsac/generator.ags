@@ -19,6 +19,8 @@ gsac.generator.annotate	.closure	_gsac.generator.annotate_c	_gsac.generator.anno
 gsac.generator.annotate.context.doc	.closure	_gsac.generator.annotate.context.doc_c
 gsac.generator.annotate.context.impfor	.closure	_gsac.generator.annotate.context.impfor_c
 
+gsac.generator.doc.compile	.closure	_gsac.generator.doc.compile_c	_gsac.generator.doc.compile_ty
+
 gsac.generator.prefix.compileToExprGenerators	.closure	_gsac.generator.prefix.compileToExprGenerators_c
 
 	.code
@@ -816,6 +818,27 @@ res	.constr	gsac.generator.annotate.context.prim.u	impfor	0	ty
 	.lift
 	.yield	res
 
+-- §section §gs{gsac.generator.doc.compile}
+
+_gsac.generator.doc.compile_c	.expr
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.generator.doc.compile_res.ty	.tygvar	-- Temp
+pos	.larg	gsdl.sourcepos.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.generator.doc.compile_res.ty
+
 -- §section §gs{gsac.generator.prefix.compileToExprGenerators}
 
 _gsac.generator.prefix.compileToExprGenerators_c	.expr
@@ -993,6 +1016,25 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 	.tylift
 	.tyfun	list.t	gsac.generator.varmap.t
 	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+
+-- §section §gs{gsac.generator.doc.compile}
+
+_gsac.generator.doc.compile_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+record.empty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
+	.tylift
+	.tyfun	list.t	gsdl.cgs.gsexpr.generator.t
+	.tyref	gsac.gsexpr.compile.m	record.empty
+
+_gsac.generator.doc.compile_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+record.empty	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	record.empty
 
 	.coercion
 
