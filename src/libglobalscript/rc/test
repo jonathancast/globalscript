@@ -183,3 +183,4 @@ ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18:
 echo '# Version 0.7 and up:'
 
 ok_diff_fail '-- type as a pragma --' ./$O.test-gsi undef-type-pragma.ags
+ok_diff_fail '-- comments between pragmas and code --' ./$O.test-gsi undef-comments-after-pragmas.ags

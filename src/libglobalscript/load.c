@@ -266,17 +266,18 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
 
     calculus_version = 0;
     features = 0;
-    while (line[0] == '#' || line[0] == '\n') {
+    while (line[0] == '#' || line[0] == '\n' || (line[0] == '-' && line[1] == '-' && line[2] == ' ')) {
         if (line[0] == '#') {
             gsparse_pragma(pos, line, &calculus_version, &features, &type);
         } else if (line[0] == '\n') {
+        } else if (line[0] == '-' && line[1] == '-' && line[2] == ' ') {
         } else {
-            gsfatal(UNIMPL("%s:%d: Don't recognize line %s in pragmas section"), pos.real_filename, pos.real_lineno);
+            gsfatal(UNIMPL("%s:%d: Don't recognize line '%s' in pragmas section"), pos.real_filename, pos.real_lineno, line);
         }
         pos.real_lineno++;
         if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
         /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
-        if (n == 1) gsfatal("%s:$: EOF before .document or .prefix", pos.real_filename);
+        if (n == 1) gsfatal("%s:$: EOF before %s", pos.real_filename, (features & gsstring_code_type_as_pragma) ? "first section" : ".document or .prefix");
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
     if (!strcmp(calculus_version, "0.5")) {

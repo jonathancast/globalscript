@@ -1,0 +1,8 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+-- Stuff
+
+	.data
+
+	.undefined	bool.t
