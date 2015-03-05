@@ -3015,6 +3015,7 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileFunToExpr_var.lifted_k_c	.subcode
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.subcode
 gsac.gsexpr.compileFunToExpr	.gvar
+list.:	.gvar
 gsac.gsexpr.compileTyArgsToExpr	.gvar
 pos	.fv	gsdl.sourcepos.t
 as	.fv	list.t	gsdl.cgs.gsexpr.arg.t
@@ -3029,7 +3030,7 @@ f0	.karg	gsdl.cgs.gsexpr.prim.u
 		.case	app
 f1		.fkarg	0	gsdl.cgs.gsexpr.t
 a0		.fkarg	1	gsdl.cgs.gsexpr.arg.t
-as1			.undefined	list.t	gsdl.cgs.gsexpr.arg.t
+as1			.apply	list.:	gsdl.cgs.gsexpr.arg.t	|	a0	as
 			.app	pos	f1	as1	tyem	pem	tyvs	svs
 			.enter	gsac.gsexpr.compileFunToExpr
 		.case	pos
