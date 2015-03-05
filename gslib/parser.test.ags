@@ -5,7 +5,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test_symbol.nil	_test.symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test_symbol.nil	_test_symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test_fail.nil	.closure	_test_fail.nil_c
 _test_fail.nil_label	.string	parse\sfail\sqq{}
@@ -22,9 +22,9 @@ _test_symbol.nil	.closure	_test_symbol.nil_c
 _test_symbol.nil_label	.string	parse\ssymbol\sqq{}
 _test_symbol.nil_expected	.string	./parse-data:$:\sUn-expected\sEOF;\sexpected\ssymbol
 
-_test.symbol.cons	.closure	_test.symbol.cons_c
-_test.symbol.cons_label	.string	parse\ssymbol\sqq{n}
-_test.symbol.cons_string	.string	n
+_test_symbol.cons	.closure	_test_symbol.cons_c
+_test_symbol.cons_label	.string	parse\ssymbol\sqq{n}
+_test_symbol.cons_string	.string	n
 
 _test.optional.fail.nil	.closure	_test.optional.fail.nil_c
 _test.optional.fail.nil_label	.string	parse\s(optional\sfail)\sqq{}
@@ -312,23 +312,23 @@ err.s	.apply	parser.err.fmt	|	err
 
 -- §section §gs{parse symbol qq{n}}
 
-_test.symbol.cons_c	.expr
+_test_symbol.cons_c	.expr
 rune.t	.tygvar
-_test.symbol.cons_k	.subcode
+_test_symbol.cons_k	.subcode
 test.property.label	.gvar
-_test.symbol.cons_label	.gvar
+_test_symbol.cons_label	.gvar
 parser.test.assert.passes	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 parser.symbol	.gvar
-_test.symbol.cons_string	.gvar
+_test_symbol.cons_string	.gvar
 symbol	.apply	parser.symbol	rune.t
-k	.closure	_test.symbol.cons_k
-test	.apply	parser.test.assert.passes	rune.t	rune.t	|	parser.rune.advance	rune.print	symbol	_test.symbol.cons_string	k
-	.app	_test.symbol.cons_label	test
+k	.closure	_test_symbol.cons_k
+test	.apply	parser.test.assert.passes	rune.t	rune.t	|	parser.rune.advance	rune.print	symbol	_test_symbol.cons_string	k
+	.app	_test_symbol.cons_label	test
 	.enter	test.property.label
 
-_test.symbol.cons_k	.expr
+_test_symbol.cons_k	.expr
 rune.t	.tygvar
 test.assert.eq	.gvar
 rune.≡	.gvar
