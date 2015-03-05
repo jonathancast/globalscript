@@ -3817,10 +3817,34 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 
 _gsac.gsexpr.compileArgsToGenRHS_:_k	.forcecont
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.subcode
+gsdl.cgs.gsexpr.t.out	.cogvar
 a0.0	.karg	gsdl.cgs.gsexpr.arg.prim.u
+	.danalyze	a0.0	expr	expr.lifted	expr.unlifted
+		.default
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+		.case	expr
+ea		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+		.case	expr.lifted
+ea		.fkarg	0	gsdl.cgs.gsexpr.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+		.case	expr.unlifted
+ea		.fkarg	0	gsdl.cgs.gsexpr.t
+			.force	_gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k
+			.coerce	gsdl.cgs.gsexpr.t.out
+			.enter	ea
+
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+ea0	.karg	gsdl.cgs.gsexpr.prim.u
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
