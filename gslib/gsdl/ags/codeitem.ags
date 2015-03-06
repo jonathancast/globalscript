@@ -2445,12 +2445,17 @@ gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 rune.t	.tygvar	-- Temp
+diff.list.<>	.gvar
+gsdl.ags.sourcepos.print	.gvar
 a0	.karg	gsdl.ags.codeitem.alloc.prim.u
 	.analyze	a0	record
 		.case	record
 v		.fkarg	0	gsdl.var.t
 pos		.fkarg	1	gsdl.sourcepos.t
-			.undef	diff.list.t	rune.t
+pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
+s			.undefined	diff.list.t	rune.t
+			.app	pos.s	s
+			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
 
 -- §subsection §gs{gsdl.ags.codeitem.alloc.fmtgs}
