@@ -3821,6 +3821,7 @@ gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.subcode
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 a0.0	.karg	gsdl.cgs.gsexpr.arg.prim.u
@@ -3832,12 +3833,22 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 		.case	expr.lifted
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+			.force	_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k
+			.coerce	gsdl.cgs.gsexpr.t.out
+			.enter	ea
 		.case	expr.unlifted
 ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.force	_gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k
 			.coerce	gsdl.cgs.gsexpr.t.out
 			.enter	ea
+
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.forcecont
+gsdl.cgs.gsexpr.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+ea0	.karg	gsdl.cgs.gsexpr.prim.u
+			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.forcecont
 gsdl.cgs.gsexpr.prim.u	.tygvar
