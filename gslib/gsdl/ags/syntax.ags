@@ -5,8 +5,10 @@
 	.data
 
 gsdl.ags.syntax.whitespace	.closure	_gsdl.ags.syntax.whitespace_c
+gsdl.ags.syntax.blank.lines	.closure	_gsdl.ags.syntax.blank.lines_c
 
 _gsdl.ags.syntax.whitespace_re	.regex	§§*	_gsdl.ags.syntax.whitespace_re_eol	_gsdl.ags.syntax.whitespace_re_blank
+_gsdl.ags.syntax.blank.lines_re	.regex	§*	_gsdl.ags.syntax.whitespace_re_blank
 _gsdl.ags.syntax.whitespace_re_eol	.regex	\n|\t§	_gsdl.ags.syntax.whitespace_re_maybe.comment
 _gsdl.ags.syntax.whitespace_re_blank	.regex	\t*§	_gsdl.ags.syntax.whitespace_re_maybe.comment
 _gsdl.ags.syntax.whitespace_re_maybe.comment	.regex	\n|--[\s][^\n]*\n
@@ -50,6 +52,16 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.syntax.whitespace_re	.gvar
 	.app	rune.compare	_gsdl.ags.syntax.whitespace_re
+	.enter	parser.match	rune.t
+
+-- §section §gs{gsdl.ags.syntax.blank.lines}
+
+_gsdl.ags.syntax.blank.lines_c	.expr
+rune.t	.tygvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.syntax.blank.lines_re	.gvar
+	.app	rune.compare	_gsdl.ags.syntax.blank.lines_re
 	.enter	parser.match	rune.t
 
 -- §section §gs{gsdl.ags.syntax.columnsep}

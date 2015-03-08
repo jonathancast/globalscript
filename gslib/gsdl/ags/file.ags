@@ -517,7 +517,7 @@ _gsdl.ags.file.parser_f_c	.subcode
 parser.lift4	.gvar
 parser.*>	.gvar
 parser.optional	.gvar
-gsdl.ags.syntax.whitespace	.gvar
+gsdl.ags.syntax.blank.lines	.gvar
 gsdl.ags.dataitem.segment.parser	.gvar
 gsdl.ags.codeitem.segment.parser	.gvar
 gsdl.ags.typeitem.segment.parser	.gvar
@@ -532,7 +532,7 @@ maybe.string.ty	.tylet	maybe.t	string.t
 isags	.larg	bool.t
 ty	.larg	gsdl.ags.file.filetype.t
 f	.closure	_gsdl.ags.file.parser_f_c
-optional.ws	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.whitespace
+optional.ws	.apply	parser.optional	rune.t	string.t	|	gsdl.ags.syntax.blank.lines
 das.p1	.apply	gsdl.ags.dataitem.segment.parser	|	isags
 das.p	.apply	parser.*>	rune.t	maybe.string.ty	_dataitems_ty	|	optional.ws	das.p1
 cs.p	.apply	gsdl.ags.codeitem.segment.parser	|	fs

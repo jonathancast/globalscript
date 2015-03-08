@@ -1,6 +1,8 @@
 #calculus: gsdl.string-code 0.7
 #type: prefix
 
+-- This is a comment before the first section
+
 	.code
 
 _bool.true_c	.expr
