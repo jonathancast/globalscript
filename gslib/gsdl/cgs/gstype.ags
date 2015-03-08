@@ -1341,9 +1341,18 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 
 _gsdl.cgs.gstype.field.freevars_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
+_gsdl.cgs.gstype.field.freevars_k	.subcode
+gsdl.cgs.gstype.field.t.out	.cogvar
+f	.larg	gsdl.cgs.gstype.field.t
+	.force	_gsdl.cgs.gstype.field.freevars_k
+	.coerce	gsdl.cgs.gstype.field.t.out
+	.enter	f
+
+_gsdl.cgs.gstype.field.freevars_k	.forcecont
+gsdl.cgs.gstype.field.prim.u	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
-f	.larg	gsdl.cgs.gstype.field.t
+f0	.karg	gsdl.cgs.gstype.field.prim.u
 	.undef	ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.field.name.compare}
