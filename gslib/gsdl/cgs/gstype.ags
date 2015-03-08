@@ -1271,8 +1271,45 @@ c	.constr	gsdl.cgs.gstype.prim.u	fun	0	tya	1	tyr
 _gsdl.cgs.gstype.field.parser_c	.expr
 rune.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
-parser.fail	.gvar
-	.enter	parser.fail	rune.t	gsdl.cgs.gstype.field.t
+_gsdl.cgs.gstype.field.parser_object.p_c	.subcode
+object.p	.closure	_gsdl.cgs.gstype.field.parser_object.p_c
+	.enter	object.p
+
+_gsdl.cgs.gstype.field.parser_object.p_c	.expr
+rune.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+_gsdl.cgs.gstype.field.parser_object.p_f_c	.subcode
+parser.<*	.gvar
+parser.lift3	.gvar
+parser.pos.get	.gvar
+gsdl.cgs.syntax.var.parser	.gvar
+natural.0	.gvar
+parser.*>	.gvar
+gsdl.cgs.syntax.oftype	.gvar
+gsdl.cgs.gstype.parser	.gvar
+gsdl.cgs.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_gsdl.cgs.gstype.field.parser_object.p_f_c
+pos.get	.appty	parser.pos.get	rune.t
+var.p	.apply	gsdl.cgs.syntax.var.parser	|	natural.0
+ty.p	.apply	parser.*>	rune.t	string.t	gsdl.cgs.gstype.t	|	gsdl.cgs.syntax.oftype	gsdl.cgs.gstype.parser
+p	.apply	parser.lift3	rune.t	parser.pos.t	gsdl.var.t	gsdl.cgs.gstype.t	gsdl.cgs.gstype.field.t	|	f	pos.get	var.p	ty.p
+	.app	p	gsdl.cgs.syntax.semi
+	.enter	parser.<*	rune.t	gsdl.cgs.gstype.field.t	string.t
+
+_gsdl.cgs.gstype.field.parser_object.p_f_c	.expr
+parser.pos.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar	-- Temp
+pos0	.larg	parser.pos.t
+v	.larg	gsdl.var.t
+ty	.larg	gsdl.cgs.gstype.t
+	.undef	gsdl.cgs.gstype.field.t
 
 -- §section §gs{gsdl.cgs.gstype.field.boundvar}
 
