@@ -29,16 +29,21 @@
 \hscommand\error{\hskwd{error}}
 
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
-\hscommand\inlinefor[2]{\for\ (#1)\ #2}
+\hscommand\inlinefor[2]{\for\ #1.\ #2}
 \hscommand\inlinetuple[1]{\llangle #1 \rrangle}
+\hscommand\inlinewhere[1]{\where\hsbody{\hsalign{#1}}}
 
-\newcommand\blockanalyze[2]{\analyze\ #1\hsbody{\hsalign{#2}}}
+\newcommand\blockanalyze[2]{\analyze\ #1.\hsbody{\hsalign{#2}}}
 \newcommand\blocklambda[2]{\gslambda\ #1. \hsbody{\hsalign{#2}}}
 \hscommand\blockfor[2]{\for\ (#1)\hsbody{\hsalign{#2}}}
 \hscommand\blockwhere[1]{(\where\hsbody{\hsalign{#1}})}
 
+\hscommand\pvar[1]{'\!#1}
+\hscommand\pview[1]{\(\text{#1}\)}
+
 \newcommand\qq[1]{qq\{\text{\texttt{#1}}\}}
 \newcommand\str[1]{\(str\{\text{#1}\}\)}
+\newcommand\omode[1]{\(o/\text{\texttt{#1}}/\)}
 
 \hscommand\ifrom{<\!<}
 
@@ -548,22 +553,22 @@ as might be expected.
 \section{IBIO \sh{echo}}
 
 \begin{haskell}
-    \inlinefor{'as \leftarrow env.args.get}{send \$ concat (intersperse \qq{\ } as) <> \qq{$\backslash$n}}
+    \inlinefor{\pvar{as} \leftarrow getM env.args}{send \$ concat (intersperse \qq{\ } as) <> \qq{$\backslash$n}}
 \end{haskell}
 
 \section{IBIO \sh{cat}}
 
 \begin{haskell}
-    (\inlinefor{'as \leftarrow env.args.get}{\blockanalyze{as}{%
-        \case\ nil. cat \\
-        \case\ \_. foreachM \$ \blocklambda{'a}{
-            \inlinefor{'eif \leftarrow file.open o/r/ \$ file.name.in a}{\blockanalyze{eif}{
-                \case\ left 'e. abend e \\
-                \case\ right 'if. cat \ifrom{} if
+    \inlinefor{\pvar{as} \leftarrow getM env.args}{\blockanalyze{as}{%
+        \case\ \pview{nil}. cat \\
+        (\case\ \_. foreachM \$ \blocklambda{\pvar{a}}{
+            \inlinefor{\pvar{eif} \leftarrow file.open \omode{r} \$ file.name.in a}{\blockanalyze{eif}{
+                \case\ \pview{left} \pvar{e}. abend e \\
+                \case\ \pview{right} \pvar{if}. cat \ifrom{} if
             }}
-        }
-    }}) \blockwhere{
-        'cat = \inlinefor{'s \leftarrow receive (many symbol)}{send s};
+        })
+    }} \inlinewhere{
+        \pvar{cat} = \inlinefor{\pvar{s} \leftarrow receive (many symbol)}{send s}
     }
 \end{haskell}
 
