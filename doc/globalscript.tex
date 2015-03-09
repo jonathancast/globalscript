@@ -74,26 +74,81 @@
 
 \tableofcontents
 
+\chapter{Introduction}
+
+This document specifies the \defn{Global Script Program Calculus}, a purely-functional, completely machine-independent program calculus designed to support the Global Script Type-Setting System.
+
+\section{Excursus on the Term `Programming Language'}
+
+The term `programming language' has an odd, and in the opinion of the developer of this system deleterious, connotation in normal usage.
+`Programming language' clearly derives from the verb `program', (rather than the noun);
+it does not mean `language that is engaged in programming', so it must mean `language for the act of programming'.
+But the verb `program' is a transitive verb: `program the i686 processor', `program the fuel injection system', `program the accounting system', etc.
+To program a machine is to make it do what the programmer wishes;
+the act of programming makes no sense except in reference to a machine.
+So `machine-independent programming language' is, properly speaking, a nonsensical concept.
+
+Originally, it simply meant `programming language which targets multiple machines'
+(or, usually rather, `family of programming languages indexed by multiple machines'),
+which really means (if it means anything) `programming language which targets a family of machines sharing similar capabilities'.
+Typically this class of machines encompases most of the machines typically encountered by programmers
+(but not most programmable machines in use!),
+so the myth has grown up that typical languages `support all computers';
+and even that languages lacking I/O facilities are not Turing-complete!
+
+Meanwhile, `programming language' has come to mean something like what this document intends by `program calculus':
+methods for algorithmic computation, variable naming, function definition, program partitioning, etc.
+I/O `isn't part of the language' or `shouldn't be part of the language' (!) (thus excluding denotational semantics from `the language'\ldots).
+The problem with this position --- beyond the fact that you can't interpret I/O operations in an arbitrary model of a language that lacks them! ---
+is that it justifies the neglect of I/O that programming language designers have traditionally lavished on it.
+Almost every language has genuinely wretched I/O facilities,
+precisely because of the second-class status assigned to I/O by the concept of the `general-purpose programming language'.
+Global Script thus includes I/O in `the language', not only because that is the only way to give a denotation for I/O,
+but because I/O deserves the same careful design as any other aspect of the language.
+The Global Script Program Calculus is thus a genuine programming language --- environment-dependent and I/Oful ---
+stripped of its environment-specific and I/O-related facilities.
+In fact, because the calculus and the I/O system are so largely orthogonal, it is several (distinct) languages so stripped of their environmental facilities;
+the list includes at least:
+\begin{itemize}
+    \item Global Script Log --- a logical markup language;
+    \item Global Script Set --- a page description language;
+    \item Global Script Type --- ditto, but for line printers;
+    \item IBIO --- a concurrent stream I/O language, suitable for writing Unix filters (and, although not designed for them, compilers);
+    \item Cord --- a relational database language; and
+    \item Dance --- an FRP GUI language.
+\end{itemize}
+These share the same calculus; the type system distinguishes between the operations of different languages.
+An implementation of one language \emph{simpliciter} never need link in an implementation of any of the others.
+
+\chapter{Syntax}
+
+\chapter{Type System}
+
+\chapter{Models and Denotations}
+
+\chapter{Equational Theory}
+
+\chapter{Operational Model}
+
+\chapter{Implementations}
+
 \chapter{Object Expressions}
 
 \section{Variables}
+\label{sec:variables}
 
-The judgment form for variables is
-\begin{equation}
-    \Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{a_j :: \tau_j}; \tau
-\end{equation}
-($i \in [0, n)$, $j \in [n, n + m)$).
+The judgment form for a variable \<v\> in type environment \<\Delta,\Gamma\> is
+\begin{equation}\label{eqn:var-judgment}
+    \Delta,\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}_{i=0}^{n-1}; \overline{a_j :: \tau_j}_{j=n}^{n+m-1}; \tau
+\end{equation}.
 \begin{itemize}
-    \item $\Gamma$ is the type environment,
-    \item $v$ is the variable term in question,
-    \item $\overline{\tau_i :: \kappa_i}$ is a sequence of \defn{default type arguments} and their kinds,
-    \item $\overline{a_j :: \tau_j}$ is a sequence of \defn{default arguments} and their types, and
+    \item $\overline{\tau_i :: \kappa_i}_{i=0}^{n-1}$ is a sequence of \defn{default type arguments} and their kinds,
+    \item $\overline{a_j :: \tau_j}_{j=n}^{n+m-1}$ is a sequence of \defn{default arguments} and their types, and
     \item $\tau$ is the (monomorphic) type of the variable term.
 \end{itemize}
-A \defn{variable term} is a simple variable
-followed by a sequence of \defn{explicit type arguments} of the form \<@(\type \tau)\>
-followed by a sequence of \defn{explicit arguments} of the form \<@e\>.
-Variable terms are designated \<v\>; simple variables are designated \<x\>.
+The meta-variable \<v\> can stand for a simple identifier (this case will be written \<x\>, \<x_i\>, etc.), or for an application (see below).
+
+A variable has no denotation, but see section \ref{subsec:var-exprs} below.
 
 \subsection{Variables Without \kwd{implicit} Declarations}
 
@@ -149,6 +204,7 @@ Variable terms are designated \<v\>; simple variables are designated \<x\>.
 ($i \in [1, n)$, $j \in [n + 1, n + m)$).
 
 \subsection{Variables Used as Expressions}
+\label{subsec:var-exprs}
 
 \begin{prooftree}
     \AxiomC{$\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
