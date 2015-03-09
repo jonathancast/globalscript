@@ -1356,12 +1356,14 @@ gsdl.var.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 ordered.set.t	.tygvar	-- Temp
 gsdl.cgs.symbol.t	.tygvar	-- Temp
+gsdl.cgs.gstype.freevars	.gvar
 f0	.karg	gsdl.cgs.gstype.field.prim.u
 	.analyze	f0	object
 		.case	object
 v		.fkarg	0	gsdl.var.t
 ty		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	ordered.set.t	gsdl.cgs.symbol.t
+			.app	ty
+			.enter	gsdl.cgs.gstype.freevars
 	-- > :: ordered.set.t	gsdl.cgs.symbol.t
 
 -- §section §gs{gsdl.cgs.gstype.field.name.compare}
