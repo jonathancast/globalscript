@@ -40,12 +40,15 @@
 \hscommand\blockfor[2]{\for\ (#1)\hsbody{\hsalign{#2}}}
 \hscommand\blockwhere[1]{(\where\hsbody{\hsalign{#1}})}
 
+\hscommand\structure[1]{\langle\hsbody{#1}\rangle}
+
 \hscommand\pvar[1]{'\!#1}
 \hscommand\pview[1]{\(\text{#1}\)}
 
 \newcommand\qq[1]{qq\{\text{\texttt{#1}}\}}
 \newcommand\str[1]{\(str\{\text{#1}\}\)}
 \newcommand\omode[1]{\(o/\text{\texttt{#1}}/\)}
+\hscommand\matchre[1]{\(m/\text{#1}/\)}
 
 \hscommand\ifrom{<\!<}
 
@@ -587,6 +590,23 @@ as might be expected.
     }} \inlinewhere{
         \pvar{cat} = \inlinefor{\pvar{s} \leftarrow receive (many symbol)}{send s}
     }
+\end{haskell}
+
+\section{IBIO \sh{wc}}
+
+\begin{haskell}
+    \pvar{wc} = \inlinefor{\pvar{ls} \leftarrow receive (many line)}{unit !(foldl.! accum init ls)} \blockwhere{
+        \pvar{init} \propto \structure{
+            \pvar{lines} \propto 0; \\
+            \pvar{words} \propto 0; \\
+            \pvar{runes} \propto 0;
+        }; \\
+        \pvar{accum} \pvar{as} (\pvar{l} :: vector.t rune.t) = \structure{
+            !\pvar{lines} \propto as \#lines + 1; \\
+            !\pvar{words} \propto as \#words + (l =\sim split \matchre{$\backslash${}s+}) \#length; \\
+            !\pvar{runes} \propto as \#runes + l \#length;
+        };
+    };
 \end{haskell}
 
 \end{document}
