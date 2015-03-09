@@ -28,6 +28,8 @@
 \hscommand\macro{\hskwd{macro}}
 \hscommand\error{\hskwd{error}}
 
+\hscommand\reduceto{:\!\!-}
+
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
 \hscommand\inlinefor[2]{\for\ #1.\ #2}
 \hscommand\inlinetuple[1]{\llangle #1 \rrangle}
@@ -531,6 +533,21 @@ as might be expected.
 \label{stdlib}
 
 \chapter{Examples}
+
+\section{Fibionacci Numbers}
+
+\begin{haskell}
+    \pvar{fibs} \propto 0 : 1 : map_2 @by.zip (+) fibs (drop 1 fibs);
+\end{haskell}
+
+\section{Prime Numbers}
+
+\begin{haskell}
+    \pvar{primes} = w 2 (repeat true) \blockwhere{
+        \pvar{w} !\pvar{n} (\pview{false} : \pvar{bs}) &\reduceto w (n + 1) bs; \\
+        \pvar{w} !\pvar{p} (\pview{true} : \pvar{bs}) &\reduceto p : w (p + 1) (set (chunksof p \circ elems \circ last) false bs);
+    };
+\end{haskell}
 
 \section{\sh{gstype} Hello, World}
 
