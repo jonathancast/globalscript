@@ -7,7 +7,6 @@
 \usepackage{mathabx}
 \usepackage{MnSymbol}
 \usepackage{bussproofs}
-\usepackage{latexsym}
 \usepackage{haskell}
 
 \newcommand\sequent\vdash
@@ -29,6 +28,9 @@
 \hscommand\error{\hskwd{error}}
 
 \hscommand\reduceto{:\!\!-}
+
+\hscommand\lift[1]{\lfloor#1\rfloor}
+\hscommand\emdash{\text{---}}
 
 \newcommand\inlinelambda[2]{\gslambda\ #1. #2}
 \hscommand\inlinefor[2]{\for\ #1.\ #2}
@@ -65,8 +67,11 @@
 
 \hscommand\diverges{\uparrow}
 \hscommand\fails{\downarrow}
+\hscommand\Den[1]{Den\ldbrack#1\rdbrack}
 \hscommand\Pat[1]{\mathbb{P}\ldbrack#1\rdbrack}
 \hscommand\Expr[1]{\mathbb{E}\ldbrack#1\rdbrack}
+\hscommand\Type[1]{\mathbb{T}\ldbrack#1\rdbrack}
+\hscommand\Kind[1]{\mathbb{K}\ldbrack#1\rdbrack}
 
 \begin{document}
 
@@ -124,7 +129,47 @@ An implementation of one language \emph{simpliciter} never need link in an imple
 
 \chapter{Type System}
 
+Global Script has a standard natural deduction-based type system, based on \defn{judgment}s of the form
+\begin{displaymath}
+    \Gamma \sequent \text{conclusion}
+\end{displaymath}
+The context \<\Gamma\> several classes of variables (type variables, object variables, views, etc.) to various sorts of meta-data (kinds, types, implicit arguments, macro properties, etc.).
+Nevertheless, the context will generally be treated as a single object, except in the denotational semantics,
+where it will be split into a kind context \<\Delta\> and a type context \<\Gamma\>.
+
 \chapter{Models and Denotations}
+
+Note: `semantics' means `meaning'; specifically, the kind of detailed meaning that might be found in a language specification.
+`Denotation' means `meaning'; specifically, the kind of formal meaning that might be found in a language specification.
+So `denotational semantics' is redundant.
+End note.
+
+A \defn{model} of Global Script is a (directed-)complete partial order-enriched category $\mathcal{C}$ with:
+\begin{itemize}
+    \item Finite products indexed by sets of Global Script identifiers (note that this implies in particular the existence of a terminal object \<\star\>);
+    \item Finite coproducts indexed by sets of Global Script identifiers (note that this implies in particular the existence of an initial object \<\epsilon\>);
+    \item Exponentials;
+    \item An existential quantifier, which is a functor $\exists : \mathcal{C}^\kappa \to \mathcal{C}$, which is the left adjoint of the constant functor $K : \mathcal{C} \to \mathcal{C}^\kappa$, for $\kappa$ at least the denotations of the kind environments as defined below; and
+    \item A universal quantifier, which is a functor $\forall : \mathcal{C}^\kappa \to \mathcal{C}$ which is the right adjoint of of the constant functor $K : \mathcal{C} \to \mathcal{C}^\kappa$, for $\kappa$ at least the denotations of the kind environments as defined below;
+\end{itemize}
+together with a designated \defn{lifting monad}, which is a monad \<\lift{\emdash}\> on $\mathcal{C}$ together with a natural transformation $\bot : K\star \to \lift{\emdash}$ so that $\bot_\alpha \circ \star_\beta$ is the least homomorphism $: \beta \to \lift{\alpha}$ for all objects $\alpha$, $\beta$.
+
+Note: we need a couple of other things:
+\begin{itemize}
+    \item A `strength' $: \exists (K\alpha \times F) \to \alpha \times \exists F$;
+    \item A way to `lift' $\exists$ and $\forall$ to functors with more than one argument (eliminating only the last one).
+\end{itemize}
+These seem like they should be definable in any category, though.
+TODO: Will need to confirm / deny that.
+
+For the purpose of the denotational semantics, contexts will be divided into two pieces:
+a kind environment $\Delta$ and a type environment $\Gamma$.
+The kind environment $\Delta$ can be thought of as a mapping from type variables to kinds;
+the denotation of a kind is a category, and the denotation of a type environment $\Delta$, written $\Den{\Delta}$, is
+\begin{displaymath}
+    \prod_{t\in Dom\Delta}\Kind{\Delta(t)}
+\end{displaymath}
+The denotation of the type environment $\Gamma$, which will be written $\Den{\lambda\Delta.\Gamma}$, will be a functor $F : \Den{\Delta} \to \mathcal{C}$.
 
 \chapter{Equational Theory}
 
@@ -134,12 +179,20 @@ An implementation of one language \emph{simpliciter} never need link in an imple
 
 \chapter{Object Expressions}
 
+The judgment form for an expression $e$ in context $\Gamma$ is
+\begin{equation}
+    \Gamma \sequent e :: \tau
+\end{equation}
+for some type $\tau$.
+
+The denotation of an expression will be a natural transformation $\Expr{\Delta, \Gamma \sequent e :: \tau} : \Den{\lambda\Delta.\Gamma} \to \Type{\lambda\Delta.\tau}$.
+
 \section{Variables}
 \label{sec:variables}
 
-The judgment form for a variable \<v\> in type environment \<\Delta,\Gamma\> is
+The judgment form for a variable \<v\> in context \<\Gamma\> is
 \begin{equation}\label{eqn:var-judgment}
-    \Delta,\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}_{i=0}^{n-1}; \overline{a_j :: \tau_j}_{j=n}^{n+m-1}; \tau
+    \Gamma \sequent v :: \overline{\tau_i :: \kappa_i}_{i=0}^{n-1}; \overline{a_j :: \tau_j}_{j=n}^{n+m-1}; \tau
 \end{equation}.
 \begin{itemize}
     \item $\overline{\tau_i :: \kappa_i}_{i=0}^{n-1}$ is a sequence of \defn{default type arguments} and their kinds,
