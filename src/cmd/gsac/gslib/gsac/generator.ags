@@ -827,11 +827,29 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
+_gsac.generator.doc.compile_f_c	.subcode
+gsac.gsexpr.compile.mapM.void	.gvar
+pos	.larg	gsdl.sourcepos.t
+gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+f	.closure	_gsac.generator.doc.compile_f_c
+	.app	f	gs	tyem	pem	tysvs	svs
+	.enter	gsac.gsexpr.compile.mapM.void	gsdl.cgs.gsexpr.generator.t
+
+_gsac.generator.doc.compile_f_c	.expr
+gsdl.cgs.gsexpr.generator.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.generator.doc.compile_res.ty	.tygvar	-- Temp
-pos	.larg	gsdl.sourcepos.t
-gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
+g	.larg	gsdl.cgs.gsexpr.generator.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
