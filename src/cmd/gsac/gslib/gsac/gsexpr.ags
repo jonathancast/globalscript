@@ -51,6 +51,8 @@ gsac.gsexpr.body.compileToGenRHS	.closure	_gsac.gsexpr.body.compileToGenRHS_c	_g
 
 gsac.gsexpr.compile.mapM	.closure	_gsac.gsexpr.compile.mapM_c	_gsac.gsexpr.compile.mapM_ty
 
+gsac.gsexpr.compile.mapM.void	.closure	_gsac.gsexpr.compile.mapM.void_c	_gsac.gsexpr.compile.mapM.void_ty
+
 _gsac.gsexpr_c.v	.closure	_gsac.gsexpr_c.v_c
 _gsac.gsexpr_c.v_s	.string	c
 
@@ -4252,6 +4254,28 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	
 			.app	res
 			.enter	either.right	string.t	res.list.β.ty
 
+-- §section §gs{gsac.gsexpr.compile.mapM.void}
+
+_gsac.gsexpr.compile.mapM.void_c	.expr
+_gsac.gsexpr.compile.mapM.void_f_ty	.tygvar
+list.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar	-- Temp
+list.t.out	.cogvar
+α	.tyarg	*
+f	.larg	_gsac.gsexpr.compile.mapM.void_f_ty	α
+xn	.larg	list.t	α
+tyem	.larg	ordered.set.t	gsdl.var.t
+pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.larg	list.t	gsdl.var.t
+svs	.larg	list.t	gsdl.var.t
+	.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+
 -- §section Helper Functions
 
 -- §subsection §gs{c.v}
@@ -4828,6 +4852,33 @@ gsac.gsexpr.compile.m	.tygvar
 	.tylift
 	.tyfun	α
 	.tyref	gsac.gsexpr.compile.m	β
+
+-- §section §gs{gsac.gsexpr.compile.mapM.void}
+
+_gsac.gsexpr.compile.mapM.void_ty	.tyexpr
+_gsac.gsexpr.compile.mapM.void_f_ty	.tygvar
+list.t	.tygvar
+gsac.gsexpr.compile.m	.tygvar
+record.empty	.tygvar
+α	.tyforall	*
+	.tylift
+	.tyfun	_gsac.gsexpr.compile.mapM.void_f_ty	α
+	.tylift
+	.tyfun	list.t	α
+	.tyref	gsac.gsexpr.compile.m	record.empty
+
+_gsac.gsexpr.compile.mapM.void_f_ty	.tyexpr
+gsac.gsexpr.compile.m	.tygvar
+record.empty	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyfun	α
+	.tyref	gsac.gsexpr.compile.m	record.empty
+
+_gsac.gsexpr.compile.mapM.void_res.ty	.tyexpr
+_gsac.gsexpr.compile.m_res.ty	.tygvar
+record.empty	.tygvar
+	.tyref	_gsac.gsexpr.compile.m_res.ty	record.empty
 
 	.coercion
 
