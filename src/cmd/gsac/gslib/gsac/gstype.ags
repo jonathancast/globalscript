@@ -918,10 +918,19 @@ res			.lrecord	gskind	ki	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 
 _gsac.gstype.field.annotate_c	.expr
 gsdl.cgs.gstype.field.t	.tygvar
+_gsac.gstype.field.annotate_k	.subcode
+gsdl.cgs.gstype.field.t.out	.cogvar
+f	.larg	gsdl.cgs.gstype.field.t
+	.force	_gsac.gstype.field.annotate_k
+	.coerce	gsdl.cgs.gstype.field.t.out
+	.enter	f
+
+_gsac.gstype.field.annotate_k	.forcecont
+gsdl.cgs.gstype.field.prim.u	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gstype.field.annotate_res.ty	.tygvar	-- Temp
-f	.larg	gsdl.cgs.gstype.field.t
+f0	.karg	gsdl.cgs.gstype.field.prim.u
 	.undef	either.t	string.t	_gsac.gstype.field.annotate_res.ty
 
 -- §section §gs{gsac.gstype.constr.annotate}
