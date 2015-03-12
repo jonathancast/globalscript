@@ -200,8 +200,8 @@ _test.parse_alloc_closure_label	.string	qq{x\\t.closure\\t_x_c\\n}\s=~\sgsdl.ags
 _test.parse_alloc_closure_input	.string	x\t.closure\t_x_c\n
 
 _test.parse_alloc_cast	.closure	_test.parse_alloc_cast_c
-_test.parse_alloc_cast_label	.string	qq{x\\t.cast\\tx0\\tco\\n}\s=~\sgsdl.ags.codeitem.allocs.parser
-_test.parse_alloc_cast_input	.string	x\t.cast\tx0\tco\n
+_test.parse_alloc_cast_label	.string	qq{x\\t.cast\\tx0\\tco\\tt\\n}\s=~\sgsdl.ags.codeitem.allocs.parser
+_test.parse_alloc_cast_input	.string	x\t.cast\tx0\tco\tt\n
 
 _test.parse_alloc_lifted	.closure	_test.parse_alloc_lifted_c
 _test.parse_alloc_lifted_label	.string	qq{x\\t.lifted\\tx0\\n}\s=~\sgsdl.ags.codeitem.allocs.parser
