@@ -3132,12 +3132,16 @@ list.prim.u	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileTyArgsToExpr_:_default_k1_c	.subcode
+_gsac.gsexpr.compileTyArgsToExpr_:_type_k	.subcode
 list.t.in	.cogvar
+either.t.out	.cogvar
 gsac.gsexpr.compileArgsToExpr	.gvar
+gsac.gstype.compileToVar	.gvar
 pos	.fv	gsdl.sourcepos.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3154,6 +3158,18 @@ as0.cl			.cast	as0.l	list.t.in	gsdl.cgs.gsexpr.arg.t
 			.enter	gsac.gsexpr.compileArgsToExpr
 		.case	type
 tya		.fkarg	0	gsdl.cgs.gstype.t
+			.force	_gsac.gsexpr.compileTyArgsToExpr_:_type_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToVar_res.ty
+			.app	pos	tya	tyem	pem	tysvs
+			.enter	gsac.gstype.compileToVar
+
+_gsac.gsexpr.compileTyArgsToExpr_:_type_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToVar_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
 			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileTyArgsToExpr_:_default_k1_c	.expr
