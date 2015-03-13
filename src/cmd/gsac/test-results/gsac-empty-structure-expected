@@ -1,0 +1,26 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.line	./test-fixtures/empty-structure.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+	.line	./test-fixtures/empty-structure.cgs 3 1
+_ep_c	.expr
+	.lift
+	.line	./test-fixtures/empty-structure.cgs 3 2
+	.line	./test-fixtures/empty-structure.cgs 3 2
+0	.record
+	.line	./test-fixtures/empty-structure.cgs 3 2
+	.yield	0
+
+	.type
+
+	.line	./test-fixtures/empty-structure.cgs 3 1
+_ep_ty	.tyexpr
+	.tylift
+	.typroduct
