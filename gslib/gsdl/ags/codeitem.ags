@@ -95,6 +95,7 @@ _gsdl.ags.codeitem.allocs.parser_record.p_record.re	.regex	.record
 _gsdl.ags.codeitem.allocs.parser_undefined.p_undefined.re	.regex	.undefined
 
 gsdl.ags.codeitem.alloc.print	.closure	_gsdl.ags.codeitem.alloc.print_c
+_gsdl.ags.codeitem.alloc.print_record_record.s	.string	.record
 
 gsdl.ags.codeitem.alloc.fmtgs	.closure	_gsdl.ags.codeitem.alloc.fmtgs_c
 
@@ -2453,13 +2454,24 @@ diff.list.t	.tygvar	-- Temp
 rune.t	.tygvar	-- Temp
 diff.list.<>	.gvar
 gsdl.ags.sourcepos.print	.gvar
+gsdl.ags.syntax.var.print	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+diff.list.prepend	.gvar
+_gsdl.ags.codeitem.alloc.print_record_record.s	.gvar
+diff.list.singleton	.gvar
+rune.new.line	.gvar
 a0	.karg	gsdl.ags.codeitem.alloc.prim.u
 	.analyze	a0	record
 		.case	record
 v		.fkarg	0	gsdl.var.t
 pos		.fkarg	1	gsdl.sourcepos.t
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
-s			.undefined	diff.list.t	rune.t
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
+s3			.apply	diff.list.singleton	rune.t	|	rune.new.line
+s2			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.alloc.print_record_record.s	s3
+s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
+s			.apply	diff.list.<>	rune.t	|	v.s	s1
 			.app	pos.s	s
 			.enter	diff.list.<>	rune.t
 	-- > :: diff.list.t	rune.t
