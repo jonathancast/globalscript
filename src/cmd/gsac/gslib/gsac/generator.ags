@@ -868,14 +868,23 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.generator.doc.compile_res.ty	.tygvar	-- Temp
+_gsac.generator.doc.compile_f_k	.subcode
+gsdl.cgs.gsexpr.generator.t.out	.cogvar
 g	.larg	gsdl.cgs.gsexpr.generator.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
+	.force	_gsac.generator.doc.compile_f_k
+	.coerce	gsdl.cgs.gsexpr.generator.t.out
+	.enter	g
+
+_gsac.generator.doc.compile_f_k	.forcecont
+gsdl.cgs.gsexpr.generator.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.generator.doc.compile_res.ty	.tygvar	-- Temp
+g0	.karg	gsdl.cgs.gsexpr.generator.prim.u
 	.undef	either.t	string.t	_gsac.generator.doc.compile_res.ty
 
 -- §section §gs{gsac.generator.prefix.compileToExprGenerators}
