@@ -698,8 +698,8 @@ res			.lrecord	env	env1	generator	g1	|	_gsac.generator.annotate_res.ty
 
 _gsac.generator.annotate_typesyn_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
-gsdl.var.t	.tygvar
 gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -711,6 +711,7 @@ _gsac.generator.annotate_typesyn_right_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.typeexpansion.annotate	.gvar
 env	.fv	gsdl.cgs.typeenv.t
+pos0	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
 pos1	.fv	gsdl.sourcepos.t
 tye	.fv	gsdl.cgs.typeenv.typeexpansion.t
@@ -727,6 +728,7 @@ r		.fkarg	0	record.empty
 			.enter	gsac.gstype.typeexpansion.annotate
 
 _gsac.generator.annotate_typesyn_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -739,7 +741,10 @@ either.right	.gvar
 gsdl.cgs.typeenv.typefun.insert	.gvar
 maybe.just	.gvar
 gsdl.cgs.typeenv.empty	.gvar
+gsdl.cgs.gsexpr.generator.typesyn	.gvar
+pos0	.fv	gsdl.sourcepos.t
 v	.fv	gsdl.var.t
+pos1	.fv	gsdl.sourcepos.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.typeexpansion.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -751,7 +756,7 @@ r.ki			.lfield	kind	tye.r
 just.r.ki			.apply	maybe.just	gsdl.cgs.gskind.t	|	r.ki
 r.tye			.lfield	typeexpansion	tye.r
 env			.apply	gsdl.cgs.typeenv.typefun.insert	|	v	just.r.ki	r.tye	gsdl.cgs.typeenv.empty
-r.g			.undefined	gsdl.cgs.gsexpr.generator.t
+r.g			.apply	gsdl.cgs.gsexpr.generator.typesyn	|	pos0	v	pos1	r.tye
 res			.lrecord	env	env	generator	r.g	|	_gsac.generator.annotate_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.annotate_res.ty
