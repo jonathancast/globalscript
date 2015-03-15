@@ -4576,6 +4576,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 		.case	right
 x.r		.fkarg	0	_gsac.gsexpr.compile.mapM.void_res.ty
+x0.r.ds			.lfield	dataitems	x.r
 tyem1			.lfield	ty.emitted	x.r
 pem1			.lfield	prim.emitted	x.r
 tysvs1			.lfield	ty.subvars	x.r
@@ -4586,11 +4587,21 @@ svs1			.lfield	subvars	x.r
 			.enter	gsac.gsexpr.compile.mapM.void	α
 
 _gsac.gsexpr.compile.mapM.void_:_right_k	.forcecont
+diff.list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.mapM.void_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
+record.empty	.gvar
+diff.list.<>	.gvar
+x0.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -4598,7 +4609,18 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 		.case	right
 xn1.r		.fkarg	0	_gsac.gsexpr.compile.mapM.void_res.ty
-res			.undefined	_gsac.gsexpr.compile.mapM.void_res.ty
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+xn1.r.ds			.lfield	dataitems	xn1.r
+ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	x0.r.ds	xn1.r.ds
+pem1			.lfield	prim.emitted	xn1.r
+svs1			.lfield	subvars	xn1.r
+tyem1			.lfield	ty.emitted	xn1.r
+tysvs1			.lfield	ty.subvars	xn1.r
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	record.empty	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compile.mapM.void_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
