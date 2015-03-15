@@ -28,14 +28,12 @@ doc	.larg	gsdl.cgs.document.t
 	.enter	gsac.document.annotate
 
 _gsac.document.compile_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 gsdl.ags.file.t	.tygvar
 _gsac.document.compile_right_k	.subcode
 either.left	.gvar
-env	.fv	gsdl.cgs.typeenv.t
 e0	.karg	either.prim.u	string.t	gsdl.cgs.document.t
 	.analyze	e0	left	right
 		.case	left
@@ -48,12 +46,10 @@ doc1		.fkarg	0	gsdl.cgs.document.t
 			.enter	doc1
 
 _gsac.document.compile_right_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsac.document.compile_right_k1	.subcode
 maybe.t.out	.cogvar
-env	.fv	gsdl.cgs.typeenv.t
 doc0	.karg	gsdl.cgs.document.prim.u
 mbe	.field	expr	doc0
 	.force	_gsac.document.compile_right_k1
@@ -61,7 +57,6 @@ mbe	.field	expr	doc0
 	.enter	mbe
 
 _gsac.document.compile_right_k1	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
@@ -69,7 +64,6 @@ gsdl.cgs.gstype.t	.tygvar
 _gsac.document.compile_right_just_k	.subcode
 _gsac.document.compile_right_nothing_k	.subcode
 maybe.t.out	.cogvar
-env	.fv	gsdl.cgs.typeenv.t
 doc0	.fv	gsdl.cgs.document.prim.u
 mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
 mbty	.field	gstype	doc0
@@ -157,7 +151,6 @@ res			.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.a
 			.enter	either.right	string.t	gsdl.ags.file.t
 
 _gsac.document.compile_right_nothing_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.prim.u	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -179,7 +172,6 @@ list.singleton	.gvar
 gsdl.var.component.alphanum	.gvar
 _gsac.document.compile_right_just_ep.s	.gvar
 _gsac.document.compile_right_just_ty.s	.gvar
-env	.fv	gsdl.cgs.typeenv.t
 doc0	.fv	gsdl.cgs.document.prim.u
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
