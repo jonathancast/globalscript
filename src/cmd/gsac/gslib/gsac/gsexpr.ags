@@ -4511,12 +4511,22 @@ svs	.larg	list.t	gsdl.var.t
 
 _gsac.gsexpr.compile.mapM.void_k	.forcecont
 list.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar	-- Temp
+either.right	.gvar
 α	.tyfv	*
 xn0	.karg	list.prim.u	α
-	.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+	.analyze	xn0	:	nil
+		.case	:
+x0		.fkarg	0	α
+xn1		.fkarg	1	list.t	α
+			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+		.case	nil
+res			.undefined	_gsac.gsexpr.compile.mapM.void_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
 -- §section Helper Functions
 
