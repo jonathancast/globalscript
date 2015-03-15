@@ -47,17 +47,59 @@ doc1		.fkarg	0	gsdl.cgs.document.t
 
 _gsac.document.compile_right_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
-gsdl.cgs.gsexpr.t	.tygvar
+gsdl.var.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+string.t	.tygvar
+_gsac.generator.doc.compile_res.ty	.tygvar
 _gsac.document.compile_right_k1	.subcode
-maybe.t.out	.cogvar
+either.t.out	.cogvar
+gsac.generator.doc.compile	.gvar
+ordered.set.empty	.gvar
+ordered.map.empty	.gvar
+list.nil	.gvar
 doc0	.karg	gsdl.cgs.document.prim.u
-mbe	.field	expr	doc0
+pos	.field	pos	doc0
+gs	.field	gens	doc0
+set.empty	.appty	ordered.set.empty	gsdl.var.t
+map.empty	.appty	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
+nil	.appty	list.nil	gsdl.var.t
 	.force	_gsac.document.compile_right_k1
-	.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
-	.enter	mbe
+	.coerce	either.t.out	string.t	_gsac.generator.doc.compile_res.ty
+	.app	pos	gs	set.empty	map.empty	nil	nil
+	.enter	gsac.generator.doc.compile
 
 _gsac.document.compile_right_k1	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.generator.doc.compile_res.ty	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.cgs.gsexpr.t	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+gsdl.ags.file.t	.tygvar	-- Temp
+_gsac.document.compile_right_right_k	.subcode
+maybe.t.out	.cogvar
+diff.list.tolist	.gvar
+doc0	.fv	gsdl.cgs.document.prim.u
+e0	.karg	either.prim.u	string.t	_gsac.generator.doc.compile_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	gsdl.ags.file.t
+		.case	right
+gs.r		.fkarg	0	_gsac.generator.doc.compile_res.ty
+gs.r.ds			.lfield	dataitems	gs.r
+gs.ds			.apply	diff.list.tolist	gsdl.ags.dataitem.t	|	gs.r.ds
+mbe			.field	expr	doc0
+			.force	_gsac.document.compile_right_right_k
+			.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
+			.enter	mbe
+
+_gsac.document.compile_right_right_k	.forcecont
+gsdl.cgs.document.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -65,6 +107,7 @@ _gsac.document.compile_right_just_k	.subcode
 _gsac.document.compile_right_nothing_k	.subcode
 maybe.t.out	.cogvar
 doc0	.fv	gsdl.cgs.document.prim.u
+gs.ds	.fv	list.t	gsdl.ags.dataitem.t
 mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
 mbty	.field	gstype	doc0
 	.analyze	mbe0	just	nothing
@@ -80,12 +123,13 @@ e		.fkarg	0	gsdl.cgs.gsexpr.t
 
 _gsac.document.compile_right_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
-list.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	-- Temp
@@ -97,6 +141,7 @@ ordered.map.empty	.gvar
 gsac.gsexpr.compileToDataItem	.gvar
 maybe.nothing	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
+gs.ds	.fv	list.t	gsdl.ags.dataitem.t
 e	.fv	gsdl.cgs.gsexpr.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 set.empty	.apply	ordered.set.empty	gsdl.var.t
@@ -116,19 +161,21 @@ svs			.undefined	list.t	gsdl.var.t
 			.undef	either.t	string.t	gsdl.ags.file.t
 
 _gsac.document.compile_right_just_just_k	.forcecont
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 diff.list.tolist	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
+gs.ds	.fv	list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -142,7 +189,7 @@ r.cos			.lfield	coercionitems	r
 cos			.apply	diff.list.tolist	gsdl.ags.coercionitem.t	|	r.cos
 r.res			.lfield	res	r
 r.ds			.lfield	dataitems	r
-ds1			.apply	diff.list.tolist	gsdl.ags.dataitem.t	|	r.ds
+ds1			.apply	r.ds	|	gs.ds
 ds			.apply	list.:	gsdl.ags.dataitem.t	|	r.res	ds1
 r.ts			.lfield	typeitems	r
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	r.ts
@@ -152,6 +199,8 @@ res			.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.a
 
 _gsac.document.compile_right_nothing_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
@@ -160,7 +209,6 @@ string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.file.t	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
 _gsac.document.compile_right_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.compileToGlobalVar	.gvar
@@ -173,6 +221,7 @@ gsdl.var.component.alphanum	.gvar
 _gsac.document.compile_right_just_ep.s	.gvar
 _gsac.document.compile_right_just_ty.s	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
+gs.ds	.fv	list.t	gsdl.ags.dataitem.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
@@ -196,26 +245,27 @@ v			.apply	gsdl.var.constructed	|	natural.1	v.cs
 
 _gsac.document.compile_right_nothing_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
+list.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
-gsdl.ags.dataitem.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 either.t	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
-list.singleton	.gvar
+list.:	.gvar
 gsdl.ags.dataitem.undefined	.gvar
 maybe.nothing	.gvar
 gsdl.ags.syntax.var.print	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
+gs.ds	.fv	list.t	gsdl.ags.dataitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -229,7 +279,7 @@ dts			.lfield	typeitems	res1
 cs			.apply	list.nil	gsdl.ags.codeitem.t
 nothing			.apply	maybe.nothing	gsdl.var.t
 d			.apply	gsdl.ags.dataitem.undefined	|	pos	nothing	v
-ds			.apply	list.singleton	gsdl.ags.dataitem.t	|	d
+ds			.apply	list.:	gsdl.ags.dataitem.t	|	d	gs.ds
 ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
 tcs			.apply	list.nil	gsdl.ags.coercionitem.t
 res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
@@ -277,6 +327,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 		.case	right
 gs.r		.fkarg	0	_gsac.generator.doc.annotate_res.ty
+gs1			.lfield	gens	gs.r
 env1			.lfield	env	gs.r
 env2			.apply	gsdl.cgs.typeenv.overlay	|	env1	env
 mbexp			.lfield	expr	doc
@@ -285,8 +336,10 @@ mbexp			.lfield	expr	doc
 			.enter	mbexp
 
 _gsac.document.annotate_right_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
@@ -298,8 +351,9 @@ _gsac.document.annotate_right_nothing_k	.subcode
 either.t.out	.cogvar
 maybe.t.out	.cogvar
 gsac.gsexpr.annotate	.gvar
-env2	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
+env2	.fv	gsdl.cgs.typeenv.t
 pos	.fv	gsdl.sourcepos.t
 mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
 gsty	.lfield	gstype	doc
@@ -482,8 +536,10 @@ doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 			.enter	either.right	string.t	gsdl.cgs.document.t
 
 _gsac.document.annotate_right_nothing_k	.forcecont
-gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.sourcepos.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -493,8 +549,9 @@ either.t	.tygvar	-- Temp
 _gsac.document.annotate_right_nothing_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
-env2	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
+env2	.fv	gsdl.cgs.typeenv.t
 pos	.fv	gsdl.sourcepos.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
@@ -509,6 +566,8 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 
 _gsac.document.annotate_right_nothing_just_k	.forcecont
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -520,6 +579,7 @@ either.left	.gvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 ty	.fv	gsdl.cgs.gstype.t
 eky0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	eky0	left	right
@@ -538,6 +598,8 @@ ty.r.ki			.lfield	gskind	ty.r
 
 _gsac.document.annotate_right_nothing_just_right_k	.forcecont
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
@@ -545,12 +607,11 @@ string.t	.tygvar
 record.empty	.tygvar
 gsdl.sourcepos.t	.tygvar
 either.t	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.right	.gvar
 maybe.nothing	.gvar
 maybe.just	.gvar
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 ty.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
 	.analyze	e0	left	right
@@ -559,7 +620,6 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
-gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 nothing			.apply	maybe.nothing	gsdl.cgs.gsexpr.t
 mbty			.apply	maybe.just	gsdl.cgs.gstype.t	|	ty.r.ty
 pos			.lfield	pos	doc
