@@ -4496,9 +4496,7 @@ ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM.void_k	.subcode
 list.t.out	.cogvar
 α	.tyarg	*
 f	.larg	_gsac.gsexpr.compile.mapM.void_f_ty	α
@@ -4507,6 +4505,17 @@ tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
+	.force	_gsac.gsexpr.compile.mapM.void_k
+	.coerce	list.t.out	α
+	.enter	xn
+
+_gsac.gsexpr.compile.mapM.void_k	.forcecont
+list.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar	-- Temp
+α	.tyfv	*
+xn0	.karg	list.prim.u	α
 	.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
 -- §section Helper Functions
