@@ -318,6 +318,8 @@ e		.fkarg	0	gsdl.cgs.gsexpr.t
 _gsac.document.annotate_right_just_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
@@ -327,6 +329,7 @@ maybe.t.out	.cogvar
 either.left	.gvar
 env2	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -343,14 +346,14 @@ mbty			.lfield	gstype	doc
 _gsac.document.annotate_right_just_right_k	.forcecont
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.document.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 _gsac.gsexpr.annotate_res.ty	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
-list.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 _gsac.document.annotate_right_just_right_just_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.annotate	.gvar
@@ -358,6 +361,7 @@ either.right	.gvar
 maybe.just	.gvar
 env2	.fv	gsdl.cgs.typeenv.t
 doc	.fv	gsdl.cgs.document.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 e.r	.fv	_gsac.gsexpr.annotate_res.ty
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t	-- Type signature in input document
 pos	.lfield	pos	doc
@@ -371,7 +375,6 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 			.app	pos	env2	ty
 			.enter	gsac.gstype.annotate
 		.case	nothing
-gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
 mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
 doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
