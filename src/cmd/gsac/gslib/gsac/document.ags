@@ -74,6 +74,7 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.generator.doc.compile_res.ty	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
@@ -91,6 +92,8 @@ err		.fkarg	0	string.t
 gs.r		.fkarg	0	_gsac.generator.doc.compile_res.ty
 gs.r.ds			.lfield	dataitems	gs.r
 gs.ds			.apply	diff.list.tolist	gsdl.ags.dataitem.t	|	gs.r.ds
+gs.r.ts			.lfield	typeitems	gs.r
+gs.ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	gs.r.ts
 mbe			.field	expr	doc0
 			.force	_gsac.document.compile_right_right_k
 			.coerce	maybe.t.out	gsdl.cgs.gsexpr.t
@@ -100,6 +103,7 @@ _gsac.document.compile_right_right_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -108,6 +112,7 @@ _gsac.document.compile_right_nothing_k	.subcode
 maybe.t.out	.cogvar
 doc0	.fv	gsdl.cgs.document.prim.u
 gs.ds	.fv	list.t	gsdl.ags.dataitem.t
+gs.ts	.fv	list.t	gsdl.ags.typeitem.t
 mbe0	.karg	maybe.prim.u	gsdl.cgs.gsexpr.t
 mbty	.field	gstype	doc0
 	.analyze	mbe0	just	nothing
@@ -125,6 +130,7 @@ _gsac.document.compile_right_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -142,6 +148,7 @@ gsac.gsexpr.compileToDataItem	.gvar
 maybe.nothing	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
 gs.ds	.fv	list.t	gsdl.ags.dataitem.t
+gs.ts	.fv	list.t	gsdl.ags.typeitem.t
 e	.fv	gsdl.cgs.gsexpr.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 set.empty	.apply	ordered.set.empty	gsdl.var.t
@@ -163,19 +170,20 @@ svs			.undefined	list.t	gsdl.var.t
 _gsac.document.compile_right_just_just_k	.forcecont
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 gsdl.ags.file.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
-gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 diff.list.tolist	.gvar
 gsdl.ags.file.filetype.gsdocument	.gvar
 gs.ds	.fv	list.t	gsdl.ags.dataitem.t
+gs.ts	.fv	list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToDataItem_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -192,7 +200,7 @@ r.ds			.lfield	dataitems	r
 ds1			.apply	r.ds	|	gs.ds
 ds			.apply	list.:	gsdl.ags.dataitem.t	|	r.res	ds1
 r.ts			.lfield	typeitems	r
-ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	r.ts
+ts			.apply	r.ts	|	gs.ts
 res			.lrecord	codesection	cs	coercionsection	cos	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts	|	gsdl.ags.file.t
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
@@ -201,6 +209,7 @@ _gsac.document.compile_right_nothing_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 maybe.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 gsdl.var.t	.tygvar
@@ -222,6 +231,7 @@ _gsac.document.compile_right_just_ep.s	.gvar
 _gsac.document.compile_right_just_ty.s	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
 gs.ds	.fv	list.t	gsdl.ags.dataitem.t
+gs.ts	.fv	list.t	gsdl.ags.typeitem.t
 mbty0	.karg	maybe.prim.u	gsdl.cgs.gstype.t
 	.analyze	mbty0	just	nothing
 		.case	just
@@ -247,6 +257,7 @@ _gsac.document.compile_right_nothing_just_k	.forcecont
 gsdl.cgs.document.prim.u	.tygvar
 list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToGlobalVar_res.ty	.tygvar
@@ -255,7 +266,6 @@ gsdl.ags.codeitem.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
 list.:	.gvar
@@ -266,6 +276,7 @@ gsdl.ags.file.filetype.gsdocument	.gvar
 diff.list.tolist	.gvar
 doc0	.fv	gsdl.cgs.document.prim.u
 gs.ds	.fv	list.t	gsdl.ags.dataitem.t
+gs.ts	.fv	list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -280,9 +291,9 @@ cs			.apply	list.nil	gsdl.ags.codeitem.t
 nothing			.apply	maybe.nothing	gsdl.var.t
 d			.apply	gsdl.ags.dataitem.undefined	|	pos	nothing	v
 ds			.apply	list.:	gsdl.ags.dataitem.t	|	d	gs.ds
-ts			.apply	diff.list.tolist	gsdl.ags.typeitem.t	|	dts
+ts			.apply	dts	|	gs.ts
 tcs			.apply	list.nil	gsdl.ags.coercionitem.t
-res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts
+res			.lrecord	codesection	cs	coercionsection	tcs	datasection	ds	filetype	gsdl.ags.file.filetype.gsdocument	typesection	ts	|	gsdl.ags.file.t
 			.app	res
 			.enter	either.right	string.t	gsdl.ags.file.t
 
