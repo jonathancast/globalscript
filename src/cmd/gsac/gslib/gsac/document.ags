@@ -383,6 +383,8 @@ doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
 
 _gsac.document.annotate_right_just_right_just_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -397,6 +399,7 @@ either.t.out	.cogvar
 gsac.gskind.check	.gvar
 gsdl.cgs.gskind.lifted	.gvar
 pos	.fv	gsdl.sourcepos.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 env2	.fv	gsdl.cgs.typeenv.t
 e.r.expr	.fv	gsdl.cgs.gsexpr.t
 e.r.ty	.fv	gsdl.cgs.gstype.t
@@ -416,6 +419,8 @@ ky			.lfield	gskind	ty.r
 
 _gsac.document.annotate_right_just_right_just_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
@@ -428,6 +433,7 @@ _gsac.document.annotate_right_just_right_just_right_right_k	.subcode
 either.t.out	.cogvar
 gsac.gstype.check	.gvar
 pos	.fv	gsdl.sourcepos.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 env2	.fv	gsdl.cgs.typeenv.t
 e.r.expr	.fv	gsdl.cgs.gsexpr.t
 e.r.ty	.fv	gsdl.cgs.gstype.t
@@ -446,18 +452,19 @@ r		.fkarg	0	record.empty
 
 _gsac.document.annotate_right_just_right_just_right_right_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.generator.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 gsdl.cgs.document.t	.tygvar
 record.empty	.tygvar
-list.t	.tygvar	-- Temp
-gsdl.cgs.gsexpr.generator.t	.tygvar	-- Temp
 either.left	.gvar
 either.right	.gvar
 maybe.just	.gvar
 pos	.fv	gsdl.sourcepos.t
+gs1	.fv	list.t	gsdl.cgs.gsexpr.generator.t
 e.r.expr	.fv	gsdl.cgs.gsexpr.t
 e.r.ty	.fv	gsdl.cgs.gstype.t
 e0	.karg	either.prim.u	string.t	record.empty
@@ -468,7 +475,6 @@ err		.fkarg	0	string.t
 			.enter	either.left	string.t	gsdl.cgs.document.t
 		.case	right
 r		.fkarg	0	record.empty
-gs1			.undefined	list.t	gsdl.cgs.gsexpr.generator.t
 mbe1			.apply	maybe.just	gsdl.cgs.gsexpr.t	|	e.r.expr
 mbty1			.apply	maybe.just	gsdl.cgs.gstype.t	|	e.r.ty
 doc1			.lrecord	expr	mbe1	gens	gs1	gstype	mbty1	pos	pos	|	gsdl.cgs.document.t
