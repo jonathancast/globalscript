@@ -905,13 +905,19 @@ gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 -- §paragraph{§gs{undef}}
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
 -- §par
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.generator.doc.compile_res.ty	.tygvar	-- Temp
+_gsac.generator.doc.compile_f_undef_k	.subcode
+either.t.out	.cogvar
 either.right	.gvar
 diff.list.nil	.gvar
 record.empty	.gvar
+gsac.gstype.compileToGlobalVar	.gvar
+gsdl.var.<>	.gvar
+_gsac.gsexpr_ty.v	.gvar
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -945,8 +951,70 @@ pos0		.fkarg	0	gsdl.sourcepos.t
 v		.fkarg	1	gsdl.var.t
 pos1		.fkarg	2	gsdl.sourcepos.t
 ty		.fkarg	3	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.generator.doc.compile_res.ty
+v.ty.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
+			.force	_gsac.generator.doc.compile_f_undef_k
+			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+			.app	pos1	v.ty.v	ty
+			.enter	gsac.gstype.compileToGlobalVar
+-- > v.c1.c0			.apply	gsdl.var.component.alphanum	|	_gsac.document.compile_right_just_ty.s
+-- > v.c1.cs			.apply	list.singleton	gsdl.var.component.t	|	v.c1.c0
+-- > v.c1			.apply	gsdl.var.basevar	|	v.c1.cs
+-- > v.cs1			.apply	list.singleton	gsdl.var.t	|	v.c1
+-- > v.cs			.apply	list.:	gsdl.var.t	|	v.c0	v.cs1
+-- > v			.apply	gsdl.var.constructed	|	natural.1	v.cs
+-- > 			.force	_gsac.document.compile_right_nothing_just_k
+-- > 			.coerce	either.t.out	string.t	_gsac.gstype.compileToGlobalVar_res.ty
 	-- > :: either.t	string.t	_gsac.generator.doc.compile_res.ty
+
+_gsac.generator.doc.compile_f_undef_k	.forcecont
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
+gsdl.sourcepos.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.compileToGlobalVar_res.ty	.tygvar
+_gsac.generator.doc.compile_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+either.right	.gvar
+diff.list.nil	.gvar
+diff.list.singleton	.gvar
+gsdl.ags.dataitem.undefined	.gvar
+maybe.just	.gvar
+record.empty	.gvar
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
+v	.fv	gsdl.var.t
+pos1	.fv	gsdl.sourcepos.t
+e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToGlobalVar_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.generator.doc.compile_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.compileToGlobalVar_res.ty
+cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
+cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
+just.v			.apply	maybe.just	gsdl.var.t	|	v
+ty.r.nm			.lfield	nm	ty.r
+d			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.v	ty.r.nm
+ds			.apply	diff.list.singleton	gsdl.ags.dataitem.t	|	d
+tygvs			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
+ts			.lfield	typeitems	ty.r
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.generator.doc.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.generator.doc.compile_res.ty
 
 -- §section §gs{gsac.generator.prefix.compileToExprGenerators}
 
