@@ -4557,12 +4557,50 @@ res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	
 			.enter	either.right	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
 _gsac.gsexpr.compile.mapM.void_:_k	.forcecont
+_gsac.gsexpr.compile.mapM.void_f_ty	.tygvar
+list.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compile.mapM.void_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM.void_:_right_k	.subcode
+either.t.out	.cogvar
+gsac.gsexpr.compile.mapM.void	.gvar
+α	.tyfv	*
+f	.fv	_gsac.gsexpr.compile.mapM.void_f_ty	α
+xn1	.fv	list.t	α
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+		.case	right
+x.r		.fkarg	0	_gsac.gsexpr.compile.mapM.void_res.ty
+tyem1			.lfield	ty.emitted	x.r
+pem1			.lfield	prim.emitted	x.r
+tysvs1			.lfield	ty.subvars	x.r
+svs1			.lfield	subvars	x.r
+			.force	_gsac.gsexpr.compile.mapM.void_:_right_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+			.app	f	xn1	tyem1	pem1	tysvs1	svs1
+			.enter	gsac.gsexpr.compile.mapM.void	α
+
+_gsac.gsexpr.compile.mapM.void_:_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+		.case	right
+xn1.r		.fkarg	0	_gsac.gsexpr.compile.mapM.void_res.ty
+res			.undefined	_gsac.gsexpr.compile.mapM.void_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
 -- §section Helper Functions
 
