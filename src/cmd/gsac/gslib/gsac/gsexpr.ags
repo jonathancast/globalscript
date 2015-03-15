@@ -4510,6 +4510,7 @@ svs	.larg	list.t	gsdl.var.t
 	.enter	xn
 
 _gsac.gsexpr.compile.mapM.void_k	.forcecont
+_gsac.gsexpr.compile.mapM.void_f_ty	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
@@ -4524,11 +4525,13 @@ gsdl.ags.dataitem.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
-either.t	.tygvar	-- Temp
+_gsac.gsexpr.compile.mapM.void_:_k	.subcode
+either.t.out	.cogvar
 either.right	.gvar
 diff.list.nil	.gvar
 record.empty	.gvar
 α	.tyfv	*
+f	.fv	_gsac.gsexpr.compile.mapM.void_f_ty	α
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -4538,7 +4541,10 @@ xn0	.karg	list.prim.u	α
 		.case	:
 x0		.fkarg	0	α
 xn1		.fkarg	1	list.t	α
-			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+			.force	_gsac.gsexpr.compile.mapM.void_:_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+			.app	x0	tyem	pem	tysvs	svs
+			.enter	f
 		.case	nil
 cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
 cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
@@ -4549,6 +4555,14 @@ ts			.appty	diff.list.nil	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compile.mapM.void_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+
+_gsac.gsexpr.compile.mapM.void_:_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compile.mapM.void_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
+			.undef	either.t	string.t	_gsac.gsexpr.compile.mapM.void_res.ty
 
 -- §section Helper Functions
 
