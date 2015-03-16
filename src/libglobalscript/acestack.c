@@ -305,7 +305,8 @@ ace_stack_post_gc_consolidate(struct gsstringbuilder *err, struct ace_thread *th
         switch (cont->node) {
             case gsbc_cont_update:
             case gsbc_cont_app:
-            case gsbc_cont_force: {
+            case gsbc_cont_force:
+            case gsbc_cont_strict: {
                 void *srcret, *destret;
 
                 srcret = (uchar*)src - sizeof(gsvalue);
