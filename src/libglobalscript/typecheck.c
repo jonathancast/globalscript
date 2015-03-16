@@ -516,7 +516,7 @@ static
 void
 gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsbc_item item, struct gstype **pentrytype)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymalias, gssymcast;
 
     struct gsparsedline *pdata;
     int i;
@@ -617,6 +617,21 @@ gstypes_process_data_type_signature(struct gsfile_symtable *symtable, struct gsb
         ; else if (pentrytype)
             *pentrytype = type
         ;
+    } else if (gssymceq(pdata->directive, gssymalias, gssymdatadirective, ".alias")) {
+        struct gstype *type;
+
+        if (pdata->numarguments < 2)
+            return;
+
+        type = gssymtable_get_type(symtable, pdata->arguments[1]);
+        if (!type)
+            gsfatal("%P: Couldn't find type %y", pdata->pos, pdata->arguments[1])
+        ;
+        if (pdata->label)
+            gssymtable_set_data_type(symtable, pdata->label, type)
+        ; else if (pentrytype)
+            *pentrytype = type
+        ;
     } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         return;
     } else {
@@ -668,7 +683,7 @@ static
 void
 gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item *items, struct gstype **types, struct gskind **kinds, struct gstype **pentrytype, int n, int i)
 {
-    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymcast;
+    static gsinterned_string gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymclosure, gssymalias, gssymcast;
 
     struct gsparsedline *pdata;
 
@@ -860,6 +875,19 @@ gstypes_type_check_data_item(struct gsfile_symtable *symtable, struct gsbc_item 
             ;
             gsbc_typecheck_check_boxed(pdata->pos, code_type->result_type);
         }
+    } else if (gssymceq(pdata->directive, gssymalias, gssymdatadirective, ".alias")) {
+        struct gstype *src_type, *declared_type;
+
+        gsargcheck(pdata, 0, "source");
+        src_type = gssymtable_get_data_type(symtable, pdata->arguments[0]);
+        if (!src_type)
+            gsfatal(UNIMPL("%P: Cannot find type of data item %y"), pdata->pos, pdata->arguments[0])
+        ;
+        gsbc_typecheck_check_boxed(pdata->pos, src_type);
+
+        gsargcheck(pdata, 1, "type");
+        declared_type = gssymtable_get_type(symtable, pdata->arguments[1]);
+        gstypes_type_check_type_fail(pdata->pos, src_type, declared_type);
     } else if (gssymceq(pdata->directive, gssymcast, gssymdatadirective, ".cast")) {
         struct gstype *src_type;
         struct gsbc_coercion_type *coercion_type;

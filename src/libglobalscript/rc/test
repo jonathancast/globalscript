@@ -25,6 +25,8 @@ ok_diff_fail '-- undefined entry points --' ./$O.test-gsi undef.ags
 ok_diff_fail '-- undefined empty record values --' ./$O.test-gsi undef-empty-record.ags
 ok_diff_fail '-- undefined expressions --' ./$O.test-gsi undef-expr.ags
 
+ok_diff_fail '-- undefined entry points (.aliased) --' ./$O.test-gsi undef-aliased.ags
+
 ok_diff_fail '-- undefined entry points (declared position) --' ./$O.test-gsi undef-declared-line-column-pos.ags
 
 ok_diff_fail '-- undefined entry points (.tyextabstype type) --' ./$O.test-gsi undef-tyextabstype.ags

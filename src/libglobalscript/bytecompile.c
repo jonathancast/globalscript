@@ -81,7 +81,7 @@ gsbc_alloc_data_for_scc(struct gsfile_symtable *symtable, struct gsbc_item *item
 
 static char *gsbc_parse_rune_literal(struct gspos, uint, char *, gsvalue *);
 
-static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymclosure, gssymcast;
+static gsinterned_string gssymundefined, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymclosure, gssymalias, gssymcast;
 
 static
 void
@@ -205,7 +205,10 @@ gsbc_size_data_item(struct gsfile_symtable *symtable, struct gsbc_item item, enu
     } else if (gssymceq(p->directive, gssymclosure, gssymdatadirective, ".closure")) {
         *psection = gsbc_heap;
         *psize = MAX(sizeof(struct gsclosure), sizeof(struct gsindirection));
-    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
+    } else if (
+        gssymceq(p->directive, gssymalias, gssymdatadirective, ".alias")
+        || gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")
+    ) {
         gsvalue res;
 
         res = gssymtable_get_data(symtable, p->arguments[0]);
@@ -1447,7 +1450,10 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
         gsargcheck(p, 0, "Code label");
         cl->cl.code = gssymtable_get_code(symtable, p->arguments[0]);
         cl->cl.numfvs = 0;
-    } else if (gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")) {
+    } else if (
+        gssymceq(p->directive, gssymalias, gssymdatadirective, ".alias")
+        || gssymceq(p->directive, gssymcast, gssymdatadirective, ".cast")
+    ) {
         ;
     } else {
         gsfatal(UNIMPL("%P: Data directive %y"), p->pos, p->directive);

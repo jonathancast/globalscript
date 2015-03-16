@@ -494,7 +494,7 @@ static
 long
 gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parsedfile, struct uxio_ichannel *chan, char *line, char **fields, ulong numfields, struct gsfile_symtable *symtable)
 {
-    static gsinterned_string gssymclosure, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymcast;
+    static gsinterned_string gssymclosure, gssymrecord, gssymconstr, gssymrune, gssymstring, gssymlist, gssymregex, gssymundefined, gssymalias, gssymcast;
 
     struct gsparsedline *parsedline;
     int i;
@@ -601,6 +601,18 @@ gsparse_data_item(struct gsparse_input_pos *pos, int is_ags, gsparsedfile *parse
         parsedline->arguments[0] = gsintern_string(gssymtypelable, fields[2+0]);
         if (numfields > 2+1)
             gsfatal("%s:%d: Undefined data item %s has too many arguments; I don't know what they all are", pos->real_filename, pos->real_lineno, fields[0])
+        ;
+    } else if (gssymceq(parsedline->directive, gssymalias, gssymdatadirective, ".alias")) {
+        if (numfields < 2+1)
+            gsfatal("%s:%d: Missing source of alias", pos->real_filename, pos->real_lineno)
+        ;
+        parsedline->arguments[0] = gsintern_string(gssymdatalable, fields[2+0]);
+        if (numfields < 2+2)
+            gsfatal("%s:%d: Missing type signature", pos->real_filename, pos->real_lineno)
+        ;
+        parsedline->arguments[1] = gsintern_string(gssymtypelable, fields[2+1]);
+        if (numfields > 2+2)
+            gsfatal("%s:%d: Too many arguments to .alias; I know about the data item to copy and the type signature", pos->real_filename, pos->real_lineno)
         ;
     } else if (gssymceq(parsedline->directive, gssymcast, gssymdatadirective, ".cast")) {
         if (numfields < 2+1)
