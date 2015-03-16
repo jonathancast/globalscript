@@ -1,0 +1,25 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.line	./test-fixtures/undef-var-doc.cgs 3 1
+	.alias	b	_ep_ty
+
+	.line	./test-fixtures/undef-var-doc.cgs 4 3
+b	.undefined	_b_ty
+
+	.type
+
+	.line	./test-fixtures/undef-var-doc.cgs 3 1
+_ep_ty	.tyexpr
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/undef-var-doc.cgs 4 6
+	.tyref	bool.t
+
+	.line	./test-fixtures/undef-var-doc.cgs 4 3
+_b_ty	.tyexpr
+bool.t	.tyextabstype	*
+	.line	./test-fixtures/undef-var-doc.cgs 4 6
+	.tyref	bool.t
