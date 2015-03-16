@@ -2804,69 +2804,45 @@ das1	.apply	diff.list.snoc	gsdl.var.t	|	das	a0.v
 _gsac.gstype.compileToImpprim_c	.expr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-ordered.set.t	.tygvar
-gsdl.var.t	.tygvar
-ordered.map.t	.tygvar
-_gsac.gstype_primname.t	.tygvar
-list.t	.tygvar
 _gsac.gstype.compileToImpprim_k	.subcode
 gsdl.cgs.gstype.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 ty	.larg	gsdl.cgs.gstype.t
-em	.larg	ordered.set.t	gsdl.var.t
-pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-svs	.larg	list.t	gsdl.var.t
 	.force	_gsac.gstype.compileToImpprim_k
 	.coerce	gsdl.cgs.gstype.t.out
 	.enter	ty
 
 _gsac.gstype.compileToImpprim_k	.forcecont
-ordered.set.t	.tygvar
-gsdl.var.t	.tygvar
-ordered.map.t	.tygvar
-_gsac.gstype_primname.t	.tygvar
-list.t	.tygvar
 gsdl.cgs.gstype.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.cgs.gskind.t	.tygvar
-string.t	.tygvar
-_gsac.gstype.compileToImpprim_res.ty	.tygvar
+_gsac.gstype.compileToImpprim_res_res.u	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.sourcepos.t	.tygvar
-either.t	.tygvar	-- Temp
-_gsac.gstype.compileToImpprim_res_res.ty	.tygvar	-- Temp
-either.right	.gvar
-diff.list.nil	.gvar
+_gsac.gstype.compileToImpprim_res.ty	.tygvar	-- Temp
 gsac.gstype.compileToImpprim	.gvar
-em	.fv	ordered.set.t	gsdl.var.t
-pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-svs	.fv	list.t	gsdl.var.t
 ty0	.karg	gsdl.cgs.gstype.prim.u
 	.danalyze	ty0	app	impprim	pos
 		.default
-			.undef	either.t	string.t	_gsac.gstype.compileToImpprim_res.ty
+			.undef	_gsac.gstype.compileToImpprim_res.ty
 		.case	app
 tyf		.fkarg	0	gsdl.cgs.gstype.t
 tyx		.fkarg	1	gsdl.cgs.gstype.t
-			.undef	either.t	string.t	_gsac.gstype.compileToImpprim_res.ty
+			.undef	_gsac.gstype.compileToImpprim_res.ty
 		.case	impprim
 ps		.fkarg	0	gsdl.var.t
 pn		.fkarg	1	gsdl.var.t
 ki		.fkarg	2	gsdl.cgs.gskind.t
-r			.lrecord	primnm	pn	primset	ps	|	_gsac.gstype.compileToImpprim_res_res.ty
-tyfvs			.apply	diff.list.nil	gsdl.var.t
-tygvs			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
-tyls			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
-tis			.apply	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	emitted	em	prim.emitted	pem	res	r	subvars	svs	tyfvs	tyfvs	tygvars	tygvs	tylets	tyls	typeitems	tis	|	_gsac.gstype.compileToImpprim_res.ty
-			.app	res
-			.enter	either.right	string.t	_gsac.gstype.compileToImpprim_res.ty
+r			.record	primnm	pn	primset	ps	|	_gsac.gstype.compileToImpprim_res_res.u
+			.lift
+			.yield	r
 		.case	pos
 pos1		.fkarg	0	gsdl.sourcepos.t
 ty1		.fkarg	1	gsdl.cgs.gstype.t
-			.app	pos1	ty1	em	pem	svs
+			.app	pos1	ty1
 			.enter	gsac.gstype.compileToImpprim
 	-- > :: either.t	string.t	_gsac.gstype.compileToImpprim_res.ty
 
@@ -3900,18 +3876,16 @@ _gsac.gstype.compileToApp_res.ty	.tygvar
 _gsac.gstype.compileToImpprim_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.t	.tygvar
-gsac.gstype.compile.m	.tygvar
-_gsac.gstype.compileToImpprim_res_res.ty	.tygvar
+_gsac.gstype.compileToImpprim_res.ty	.tygvar
 	.tylift
 	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.t
-	.tyref	gsac.gstype.compile.m	_gsac.gstype.compileToImpprim_res_res.ty
+	.tyref	_gsac.gstype.compileToImpprim_res.ty
 
 _gsac.gstype.compileToImpprim_res.ty	.tyexpr
-_gsac.gstype.compile.m_res.ty	.tygvar
 _gsac.gstype.compileToImpprim_res_res.ty	.tygvar
-	.tyref	_gsac.gstype.compile.m_res.ty	_gsac.gstype.compileToImpprim_res_res.ty
+	.tyref	_gsac.gstype.compileToImpprim_res_res.ty
 
 _gsac.gstype.compileToImpprim_res_res.ty	.tyexpr
 _gsac.gstype.compileToImpprim_res_res.u	.tygvar
