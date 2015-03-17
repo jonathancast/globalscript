@@ -836,20 +836,16 @@ gsrecordsgc(struct gsstringbuilder *err, gsvalue v)
     switch (rec->type) {
         case gsrecord_fields: {
             struct gsrecord_fields *fields, *newfields;
+            ulong sz;
             struct gsrecord_gcforward *fwd;
 
             fields = (struct gsrecord_fields *)rec;
 
-            newfields = gsreserverecords(sizeof(*newfields) + fields->numfields * sizeof(gsvalue));
+            sz = sizeof(*newfields) + fields->numfields * sizeof(gsvalue);
+            newfields = gsreserverecords(sz);
             newrec = (struct gsrecord *)newfields;
 
-            newrec->pos = rec->pos;
-            newrec->type = rec->type;
-            newfields->numfields = fields->numfields;
-
-            for (i = 0; i < fields->numfields; i++)
-                newfields->fields[i] = fields->fields[i]
-            ;
+            memcpy(newrec, rec, sz);
 
             rec->type = gsrecord_gcforward;
             fwd = (struct gsrecord_gcforward *)rec;
