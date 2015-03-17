@@ -106,10 +106,11 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
         lock(&hp->lock);
         if (hp->type == gsclosure) {
             struct gsclosure *cl;
-            int needed_args, supplied_args;
+            int fun_args, needed_args, supplied_args;
 
             cl = (struct gsclosure *)hp;
-            needed_args = cl->cl.code->numargs - (cl->cl.numfvs - cl->cl.code->numfvs);
+            fun_args = cl->cl.numfvs - cl->cl.code->numfvs; /* Num FVs in closure above num needed by code */
+            needed_args = cl->cl.code->numargs - fun_args; /* Num args needed by code above num in closure */
             supplied_args = MIN(needed_args, n);
             if (needed_args > 0) {
                 struct gsclosure *newfun;
