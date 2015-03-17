@@ -536,7 +536,15 @@ static struct api_promise *api_alloc_promise(void);
 #define CHECK_NSTATEMENTS() \
     do { \
         if (nstatements >= MAX_NUM_REGISTERS) { \
-            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many statemetns", pinstr->pos, pinstr->instr); \
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many statements", pinstr->pos, pinstr->instr); \
+            return; \
+        } \
+    } while (0)
+
+#define CHECK_NREGS() \
+    do { \
+        if (nregs >= MAX_NUM_REGISTERS) { \
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many registers", pinstr->pos, pinstr->instr); \
             return; \
         } \
     } while (0)
@@ -611,10 +619,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
-                if (nregs > MAX_NUM_REGISTERS) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
-                    return;
-                }
+                CHECK_NREGS();
 
                 subexpr = subexprs[ACE_CLOSURE_CODE(pinstr)];
 
@@ -635,6 +640,8 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 continue;
             }
             case gsbc_op_undefined: {
+                CHECK_NREGS();
+
                 regs[nregs] = (gsvalue)gsundefined(pinstr->pos);
                 nregs++;
                 pin = ACE_UNDEFINED_SKIP(pinstr);
@@ -642,6 +649,8 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
             }
             case gsbc_op_apply: {
                 gsvalue fun, args[MAX_NUM_REGISTERS];
+
+                CHECK_NREGS();
 
                 fun = regs[ACE_APPLY_FUN(pinstr)];
                 for (i = 0; i < ACE_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_APPLY_ARG(pinstr, i)];
@@ -654,10 +663,8 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
-                if (nregs > MAX_NUM_REGISTERS) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
-                    return;
-                }
+                CHECK_NSTATEMENTS();
+                CHECK_NREGS();
 
                 subexpr = subexprs[ACE_BIND_CLOSURE_CODE(pinstr)];
 
@@ -685,6 +692,9 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
             case gsbc_op_bind_apply: {
                 gsvalue fun, args[MAX_NUM_REGISTERS];
 
+                CHECK_NSTATEMENTS();
+                CHECK_NREGS();
+
                 fun = regs[ACE_BIND_APPLY_FUN(pinstr)];
                 for (i = 0; i < ACE_BIND_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_BIND_APPLY_ARG(pinstr, i)];
 
@@ -703,10 +713,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
-                if (nstatements > MAX_NUM_REGISTERS) {
-                    api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many statements (max 0x%x)", MAX_NUM_REGISTERS);
-                    return;
-                }
+                CHECK_NSTATEMENTS();
 
                 subexpr = subexprs[ACE_BODY_CLOSURE_CODE(pinstr)];
 
