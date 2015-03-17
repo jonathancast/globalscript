@@ -112,7 +112,7 @@ gsnapplyv(struct gspos pos, gsvalue fun, int n, gsvalue *args)
             fun_args = cl->cl.numfvs - cl->cl.code->numfvs; /* Num FVs in closure above num needed by code */
             needed_args = cl->cl.code->numargs - fun_args; /* Num args needed by code above num in closure */
             supplied_args = MIN(needed_args, n);
-            if (needed_args > 0) {
+            if (supplied_args > 0) {
                 struct gsclosure *newfun;
 
                 newfun = gsreserveheap(sizeof(struct gsclosure) + (cl->cl.numfvs + supplied_args)*sizeof(gsvalue));
