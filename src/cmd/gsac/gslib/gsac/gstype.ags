@@ -167,9 +167,10 @@ ty1		.fkarg	1	gsdl.cgs.gstype.t
 			.enter	gsac.gstype.annotate
 		.case	product
 fs		.fkarg	0	list.t	gsdl.cgs.gstype.field.t
+field.annotate			.apply	gsac.gstype.field.annotate	|	pos
 			.force	_gsac.gstype.annotate_product_k
 			.coerce	either.t.out	string.t	list.field.res.ty
-			.app	gsac.gstype.field.annotate	fs
+			.app	field.annotate	fs
 			.enter	either.mapM	string.t	gsdl.cgs.gstype.field.t	_gsac.gstype.field.annotate_res.ty
 		.case	sum
 cs		.fkarg	0	list.t	gsdl.cgs.gstype.constr.t
@@ -917,9 +918,11 @@ res			.lrecord	gskind	ki	gstype	tye	|	_gsac.gstype.fun.annotate_res.ty
 -- §section §gs{gsac.gstype.field.annotate}
 
 _gsac.gstype.field.annotate_c	.expr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 _gsac.gstype.field.annotate_k	.subcode
 gsdl.cgs.gstype.field.t.out	.cogvar
+pos	.larg	gsdl.sourcepos.t
 f	.larg	gsdl.cgs.gstype.field.t
 	.force	_gsac.gstype.field.annotate_k
 	.coerce	gsdl.cgs.gstype.field.t.out
@@ -3617,10 +3620,13 @@ gsdl.cgs.typeenv.typeexpansion.t	.tygvar
 -- §section §gs{gsac.gstype.field.annotate}
 
 _gsac.gstype.field.annotate_ty	.tyexpr
+gsdl.sourcepos.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar
 string.t	.tygvar
 _gsac.gstype.field.annotate_res.ty	.tygvar
+	.tylift
+	.tyfun	gsdl.sourcepos.t
 	.tylift
 	.tyfun	gsdl.cgs.gstype.field.t
 	.tyref	either.t	string.t	_gsac.gstype.field.annotate_res.ty
