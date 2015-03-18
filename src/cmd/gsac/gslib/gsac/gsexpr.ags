@@ -4240,14 +4240,24 @@ svs	.larg	list.t	gsdl.var.t
 	.enter	as
 
 _gsac.gsexpr.compileArgsToGenRHS_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
-list.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToGenRHS_:_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 as0	.karg	list.prim.u	gsdl.cgs.gsexpr.arg.t
 	.analyze	as0	:	nil
 		.case	:
@@ -4260,6 +4270,12 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 _gsac.gsexpr.compileArgsToGenRHS_:_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
@@ -4268,6 +4284,11 @@ _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.subcode
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 a0.0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 	.danalyze	a0.0	expr	expr.lifted	expr.unlifted
 		.default
@@ -4295,12 +4316,24 @@ ea0	.karg	gsdl.cgs.gsexpr.prim.u
 			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+list.t	.tygvar
+_gsac.gsexpr.compileToVar_k_ty	.tygvar	-- Temp
+gsac.gsexpr.compileToVar	.gvar
+pos	.fv	gsdl.sourcepos.t
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 ea0	.karg	gsdl.cgs.gsexpr.prim.u
-			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+k1	.undefined	_gsac.gsexpr.compileToVar_k_ty
+	.app	pos	ea0	k1	tyem	pem	tysvs	svs
+	.enter	gsac.gsexpr.compileToVar
 
 -- §section §gs{gsac.gsexpr.body.compileToGenRHS}
 
