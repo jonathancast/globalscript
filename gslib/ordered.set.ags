@@ -1,6 +1,5 @@
-#calculus: gsdl.string-code 0.6
-
-	.prefix
+#calculus: gsdl.string-code 0.7
+#type: prefix
 
 -- Note: this library doesn't balance its binary trees;
 -- that will need to be fixed but I want to see what the performance looks like directly first.
