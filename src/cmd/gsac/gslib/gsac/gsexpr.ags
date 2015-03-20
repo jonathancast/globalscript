@@ -3305,6 +3305,7 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gsexpr.arg.prim.u	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 either.t	.tygvar	-- Temp
@@ -3318,6 +3319,7 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
+as1	.fv	list.t	gsdl.cgs.gsexpr.arg.t
 a0.0	.karg	gsdl.cgs.gsexpr.arg.prim.u
 	.danalyze	a0.0	expr.lifted	expr.unlifted
 		.default
@@ -3340,6 +3342,7 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
 _gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k1_c	.subcode
 gsac.gsexpr.compileToVar	.gvar
@@ -3348,26 +3351,39 @@ tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
+as1	.fv	list.t	gsdl.cgs.gsexpr.arg.t
 ea0	.karg	gsdl.cgs.gsexpr.prim.u
 k1	.closure	_gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k1_c
 	.app	pos	ea0	k1	tyem	pem	tysvs	svs
 	.enter	gsac.gsexpr.compileToVar
 
 _gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k1_c	.expr
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gsexpr.arg.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
-list.t	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
-v	.larg	gsdl.var.t
+_gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k2_c	.subcode
+gsac.gsexpr.compileArgsToExpr	.gvar
+pos	.fv	gsdl.sourcepos.t
+as1	.fv	list.t	gsdl.cgs.gsexpr.arg.t
+a0.r	.larg	gsdl.var.t
 tyem1	.larg	ordered.set.t	gsdl.var.t
 pem1	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-tyvs1	.larg	list.t	gsdl.var.t
+tysvs1	.larg	list.t	gsdl.var.t
 svs1	.larg	list.t	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+k2	.closure	_gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k2_c
+	.app	pos	k2	as1	tyem1	pem1	tysvs1	svs1
+	.enter	gsac.gsexpr.compileArgsToExpr
+
+_gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k2_c	.expr
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+as1.r	.larg	list.t	gsdl.var.t
+	.undef	gsdl.ags.codeitem.expr.t
 
 _gsac.gsexpr.compileArgsToExpr_:_expr.unlifted_k	.forcecont
 gsdl.sourcepos.t	.tygvar
