@@ -455,6 +455,7 @@ r		.fkarg	0	record.empty
 ki			.lfield	tyres.kind	tyf.r
 f.r.e			.lfield	expr	f.r
 ea.r.e			.lfield	expr	ea.r
+ea.r.ki			.lfield	gskind	ea.r
 a1			.closure	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_c
 e1			.apply	gsdl.cgs.gsexpr.app	|	f.r.e	a1
 tyres			.lfield	tyres	tyf.r
@@ -467,11 +468,11 @@ gsdl.cgs.gskind.t	.tygvar
 gsdl.cgs.gsexpr.t	.tygvar
 _gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k	.subcode
 gsdl.cgs.gskind.t.out	.cogvar
-ki	.fv	gsdl.cgs.gskind.t
+ea.r.ki	.fv	gsdl.cgs.gskind.t
 ea.r.e	.fv	gsdl.cgs.gsexpr.t
 	.force	_gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k
 	.coerce	gsdl.cgs.gskind.t.out
-	.enter	ki
+	.enter	ea.r.ki
 
 _gsac.gsexpr.annotate_app_right_expr_right_right_right_a1_k	.forcecont
 gsdl.cgs.gsexpr.t	.tygvar
