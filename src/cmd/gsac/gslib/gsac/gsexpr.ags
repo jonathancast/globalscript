@@ -3277,11 +3277,12 @@ _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
 list.prim.u	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToExpr_:_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
+either.right	.gvar
 pos	.fv	gsdl.sourcepos.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3296,7 +3297,9 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 			.coerce	gsdl.cgs.gsexpr.arg.t.out
 			.enter	a0
 		.case	nil
-			.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+res			.undefined	_gsac.gsexpr.compileToLambdaExpr_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
 
 _gsac.gsexpr.compileArgsToExpr_:_k	.forcecont
 gsdl.sourcepos.t	.tygvar
