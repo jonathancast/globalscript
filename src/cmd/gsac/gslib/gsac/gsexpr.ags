@@ -4482,12 +4482,24 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 			.enter	ea
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
+ordered.map.t	.tygvar
+_gsac.gstype_primname.t	.tygvar
+list.t	.tygvar
 gsdl.cgs.gsexpr.prim.u	.tygvar
-either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileToVar_k_ty	.tygvar	-- Temp
+gsac.gsexpr.compileToVar	.gvar
+pos	.fv	gsdl.sourcepos.t
+tyem	.fv	ordered.set.t	gsdl.var.t
+pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+tysvs	.fv	list.t	gsdl.var.t
+svs	.fv	list.t	gsdl.var.t
 ea0	.karg	gsdl.cgs.gsexpr.prim.u
-			.undef	either.t	string.t	_gsac.gsexpr.compileToGenRHS_res.ty
+k1	.undefined	_gsac.gsexpr.compileToVar_k_ty
+	.app	pos	ea0	k1	tyem	pem	tysvs	svs
+	.enter	gsac.gsexpr.compileToVar
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.forcecont
 gsdl.sourcepos.t	.tygvar
