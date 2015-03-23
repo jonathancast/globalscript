@@ -1065,7 +1065,7 @@ ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar	-- Temp
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
 k	.larg	_gsac.generator.prefix.compileToExprGenerators_k_ty
 scc	.larg	graph.scc.t	gsdl.cgs.gsexpr.generator.t
 vs	.larg	list.t	gsac.generator.varmap.t
@@ -1073,7 +1073,7 @@ tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
-	.undef	either.t	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
+	.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 	.type
 
@@ -1203,10 +1203,10 @@ _gsac.generator.prefix.compileToExprGenerators_k_ty	.tyexpr
 list.t	.tygvar
 gsac.generator.varmap.t	.tygvar
 gsac.gsexpr.compile.m	.tygvar
-_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
+_gsac.gsexpr.compileToExpr_res_res.t	.tygvar
 	.tylift
 	.tyfun	list.t	gsac.generator.varmap.t
-	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
+	.tyref	gsac.gsexpr.compile.m	_gsac.gsexpr.compileToExpr_res_res.t
 
 -- §section §gs{gsac.generator.doc.compile}
 
