@@ -3669,8 +3669,17 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
-	.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
+		.case	right
+k.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
+res			.undefined	_gsac.gsexpr.compileToExpr_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 _gsac.gsexpr.compileToVar_pos_k	.forcecont
 gsdl.sourcepos.t	.tygvar
