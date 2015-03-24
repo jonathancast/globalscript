@@ -3371,6 +3371,7 @@ svs	.larg	list.t	gsdl.var.t
 
 _gsac.gsexpr.compileArgsToExpr_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileArgsToExpr_k_ty	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
@@ -3383,6 +3384,7 @@ _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
@@ -3392,7 +3394,10 @@ _gsac.gsexpr.compileArgsToExpr_:_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
 either.right	.gvar
 diff.list.nil	.gvar
+list.nil	.gvar
+_gsac.gsexpr.compileToExpr_res_res.expr	.gvar
 pos	.fv	gsdl.sourcepos.t
+k	.fv	_gsac.gsexpr.compileArgsToExpr_k_ty
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
@@ -3409,7 +3414,10 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
 cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.appty	diff.list.nil	gsdl.ags.dataitem.t
-r			.undefined	_gsac.gsexpr.compileToExpr_res_res.t
+nil.as			.appty	list.nil	gsdl.ags.codeitem.alloc.t
+nil.vs			.appty	list.nil	gsdl.var.t
+r.e			.apply	k	|	nil.vs
+r			.apply	_gsac.gsexpr.compileToExpr_res_res.expr	|	nil.as	r.e
 tygvs			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 ts			.appty	diff.list.nil	gsdl.ags.typeitem.t
