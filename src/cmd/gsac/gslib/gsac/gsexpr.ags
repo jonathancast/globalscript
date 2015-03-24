@@ -3685,6 +3685,7 @@ string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToVar_default_:_k1_right_r_c	.subcode
 either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
@@ -3697,7 +3698,8 @@ cs			.lfield	codeitems	k.r
 cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
 pem1			.lfield	prim.emitted	k.r
-r			.undefined	_gsac.gsexpr.compileToExpr_res_res.t
+k.r.r			.lfield	res	k.r
+r			.closure	_gsac.gsexpr.compileToVar_default_:_k1_right_r_c
 svs1			.lfield	subvars	k.r
 tyem1			.lfield	ty.emitted	k.r
 tysvs1			.lfield	ty.subvars	k.r
@@ -3707,6 +3709,21 @@ ts			.lfield	typeitems	k.r
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem1	res	r	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
+
+_gsac.gsexpr.compileToVar_default_:_k1_right_r_c	.expr
+_gsac.gsexpr.compileToExpr_res_res.t	.tygvar
+_gsac.gsexpr.compileToVar_default_:_k1_right_r_k	.subcode
+_gsac.gsexpr.compileToExpr_res_res.t.out	.cogvar
+k.r.r	.fv	_gsac.gsexpr.compileToExpr_res_res.t
+	.force	_gsac.gsexpr.compileToVar_default_:_k1_right_r_k
+	.coerce	_gsac.gsexpr.compileToExpr_res_res.t.out
+	.enter	k.r.r
+
+_gsac.gsexpr.compileToVar_default_:_k1_right_r_k	.forcecont
+_gsac.gsexpr.compileToExpr_res_res.prim.u	.tygvar
+_gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
+k.r.r0	.karg	_gsac.gsexpr.compileToExpr_res_res.prim.u
+	.undef	_gsac.gsexpr.compileToExpr_res_res.t
 
 _gsac.gsexpr.compileToVar_pos_k	.forcecont
 gsdl.sourcepos.t	.tygvar
