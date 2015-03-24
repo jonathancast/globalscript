@@ -3692,7 +3692,6 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToVar_default_:_k1_right_r_c	.subcode
 either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
