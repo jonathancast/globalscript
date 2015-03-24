@@ -3380,10 +3380,18 @@ list.prim.u	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
+gsdl.ags.codeitem.t	.tygvar
+gsdl.ags.coercionitem.t	.tygvar
+gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToExpr_:_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
 either.right	.gvar
+diff.list.nil	.gvar
 pos	.fv	gsdl.sourcepos.t
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3398,7 +3406,14 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 			.coerce	gsdl.cgs.gsexpr.arg.t.out
 			.enter	a0
 		.case	nil
-res			.undefined	_gsac.gsexpr.compileToExpr_res.ty
+cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
+cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
+ds			.appty	diff.list.nil	gsdl.ags.dataitem.t
+r			.undefined	_gsac.gsexpr.compileToExpr_res_res.t
+tygvs			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
+ts			.appty	diff.list.nil	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	r	subvars	tysvs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
