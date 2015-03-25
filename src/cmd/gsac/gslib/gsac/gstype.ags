@@ -931,12 +931,48 @@ f	.larg	gsdl.cgs.gstype.field.t
 	.enter	f
 
 _gsac.gstype.field.annotate_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.cgs.typeenv.t	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.cgs.gstype.t	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
 _gsac.gstype.field.annotate_res.ty	.tygvar	-- Temp
+_gsac.gstype.field.annotate_object_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.annotate	.gvar
+pos	.fv	gsdl.sourcepos.t
+env	.fv	gsdl.cgs.typeenv.t
 f0	.karg	gsdl.cgs.gstype.field.prim.u
-	.undef	either.t	string.t	_gsac.gstype.field.annotate_res.ty
+	.analyze	f0	object
+		.case	object
+v		.fkarg	0	gsdl.var.t
+ty		.fkarg	1	gsdl.cgs.gstype.t
+			.force	_gsac.gstype.field.annotate_object_k
+			.coerce	either.t.out	string.t	_gsac.gstype.annotate_res.ty
+			.app	pos	env	ty
+			.enter	gsac.gstype.annotate
+	-- > :: either.t	string.t	_gsac.gstype.field.annotate_res.ty
+
+_gsac.gstype.field.annotate_object_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.annotate_res.ty	.tygvar
+_gsac.gstype.field.annotate_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+either.right	.gvar
+e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.field.annotate_res.ty
+		.case	right
+ty.rr		.fkarg	0	_gsac.gstype.annotate_res.ty
+res			.undefined	_gsac.gstype.field.annotate_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.field.annotate_res.ty
 
 -- §section §gs{gsac.gstype.constr.annotate}
 
