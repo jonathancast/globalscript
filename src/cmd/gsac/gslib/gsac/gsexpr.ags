@@ -3609,7 +3609,8 @@ v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
-			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
+			.app	v	tyem	pem	tysvs	svs
+			.enter	k
 		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
