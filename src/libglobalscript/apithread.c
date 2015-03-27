@@ -901,8 +901,8 @@ api_gc_trace_code_segment(struct gsstringbuilder *err, struct api_code_segment *
     code->fwd = newcode;
 
     for (i = newcode->ip; i < newcode->size; i++) {
+        if (gs_gc_trace_pos(err, &newcode->instrs[i].pos) < 0) return -1;
         if (GS_GC_TRACE(err, &newcode->instrs[i].instr) < 0) return -1;
-
         if (api_gc_trace_promise(err, &newcode->instrs[i].presult) < 0) return -1;
     }
 
