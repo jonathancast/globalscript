@@ -733,6 +733,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 goto got_statements;
             }
             case gsbc_op_body_undefined: {
+                CHECK_NSTATEMENTS();
                 rhss[nstatements] = (gsvalue)gsundefined(pinstr->pos);
                 poss[nstatements] = pinstr->pos;
                 nstatements++;
