@@ -132,4 +132,4 @@ void *gsreserveconstrs(ulong);
 
 /* §section API Primitives */
 
-void *gsreserveeprims(ulong);
+void *gsreserveapiprims(ulong);

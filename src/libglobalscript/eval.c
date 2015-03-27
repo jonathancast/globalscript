@@ -1158,32 +1158,32 @@ gsconstrsgc(struct gsstringbuilder *err, gsvalue v)
 
 /* §section API Primitives */
 
-static gsvalue gseprimgc(struct gsstringbuilder *, gsvalue);
+static gsvalue gsapiprimgc(struct gsstringbuilder *, gsvalue);
 
-static struct gs_sys_global_block_suballoc_info gseprims_alloc_info = {
+static struct gs_sys_global_block_suballoc_info gsapiprims_alloc_info = {
     /* descr = */ {
         /* evaluator = */ gswhnfeval,
         /* indirection_dereferencer = */ gswhnfindir,
-        /* gc_trace = */ gseprimgc,
+        /* gc_trace = */ gsapiprimgc,
         /* description = */ "API Primitives",
     },
 };
 
 void *
-gsreserveeprims(ulong sz)
+gsreserveapiprims(ulong sz)
 {
-    return gs_sys_global_block_suballoc(&gseprims_alloc_info, sz);
+    return gs_sys_global_block_suballoc(&gsapiprims_alloc_info, sz);
 }
 
 int
-gsiseprim_block(struct gs_blockdesc *p)
+gsisapiprim_block(struct gs_blockdesc *p)
 {
-    return p->class == &gseprims_alloc_info.descr;
+    return p->class == &gsapiprims_alloc_info.descr;
 }
 
 static
 gsvalue
-gseprimgc(struct gsstringbuilder *err, gsvalue v)
+gsapiprimgc(struct gsstringbuilder *err, gsvalue v)
 {
     struct gseprim *ep, *newep;
     gsvalue gctemp;
@@ -1193,7 +1193,7 @@ gseprimgc(struct gsstringbuilder *err, gsvalue v)
 
     if (ep->type == eprim_forward) return (gsvalue)ep->f.dest;
 
-    newep = gsreserveeprims(sizeof(*newep) + ep->p.numargs * sizeof(gsvalue));
+    newep = gsreserveapiprims(sizeof(*newep) + ep->p.numargs * sizeof(gsvalue));
 
     newep->pos = ep->pos;
     newep->type = ep->type;

@@ -442,7 +442,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 api_abend(thread, UNIMPL("API instruction execution (%d exprs)"), hp->type);
                 return 0;
         }
-    } else if (gsiseprim_block(block)) {
+    } else if (gsisapiprim_block(block)) {
         struct gseprim *eprim;
         struct api_prim_table *table;
 

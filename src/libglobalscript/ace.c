@@ -994,7 +994,7 @@ ace_instr_alloc_unknown_api_prim(struct ace_thread *thread, struct ace_eval_stat
 
     ip = st->ip;
 
-    prim = gsreserveeprims(sizeof(*prim));
+    prim = gsreserveapiprims(sizeof(*prim));
     prim->pos = ip->pos;
     prim->type = eprim_prim;
     prim->p.numargs = 0;
@@ -1018,7 +1018,7 @@ ace_instr_alloc_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
 
     ip = st->ip;
 
-    prim = gsreserveeprims(sizeof(*prim) + ACE_IMPPRIM_NUMARGS(ip) * sizeof(gsvalue));
+    prim = gsreserveapiprims(sizeof(*prim) + ACE_IMPPRIM_NUMARGS(ip) * sizeof(gsvalue));
     prim->pos = ip->pos;
     prim->type = eprim_prim;
     prim->p.numargs = ACE_IMPPRIM_NUMARGS(ip);
