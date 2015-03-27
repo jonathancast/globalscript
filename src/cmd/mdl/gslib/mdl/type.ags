@@ -16,6 +16,10 @@ _mdl.type.decl.parser_lprim.blocking_blocking.re	.regex	blocking
 
 mdl.type.field.decl.parser	.closure	_mdl.type.field.decl.parser_c
 
+mdl.type.transition.decl.parser	.closure	_mdl.type.transition.decl.parser_c
+_mdl.type.transition.decl.parser_transition.re	.regex	transition
+_mdl.type.transition.decl.parser_to.re	.regex	to
+
 mdl.type.parser	.closure	_mdl.type.parser_c	_mdl.type.parser_ty
 _mdl.type.parser_hack.bco_bco.re	.regex	bco
 _mdl.type.parser_hack.gsvalue_gsvalue.re	.regex	gsvalue
@@ -103,6 +107,7 @@ mdl.type.decl.t	.tygvar
 _mdl.type.decl.parser_heap_body_ty	.tygvar
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
+mdl.type.transition.decl.t	.tygvar
 _mdl.type.decl.parser_heap_f_c	.subcode
 _mdl.type.decl.parser_interpreted.heap_body.f_c	.subcode
 parser.lift2	.gvar
@@ -116,10 +121,11 @@ mdl.syntax.braces	.gvar
 parser.map	.gvar
 parser.many	.gvar
 mdl.type.field.decl.parser	.gvar
-
+mdl.type.transition.decl.parser	.gvar
 mdl.syntax.semi	.gvar
 parser.fail	.gvar	-- Temp
 list.field.ty	.tylet	list.t	mdl.type.field.decl.t
+list.transition.ty	.tylet	list.t	mdl.type.transition.decl.t
 f	.closure	_mdl.type.decl.parser_heap_f_c
 interpreted.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_interpreted.re
 heap.kw.p	.apply	mdl.syntax.keyword	|	_mdl.type.decl.parser_interpreted.heap_heap.re
@@ -127,7 +133,8 @@ label.p1	.apply	parser.*>	rune.t	string.t	string.t	|	heap.kw.p	mdl.syntax.id
 label.p	.apply	parser.*>	rune.t	string.t	string.t	|	interpreted.kw.p	label.p1
 body.f	.closure	_mdl.type.decl.parser_interpreted.heap_body.f_c
 fields.p	.apply	parser.many	rune.t	mdl.type.field.decl.t	|	mdl.type.field.decl.parser
-body.p2	.apply	parser.map	rune.t	list.field.ty	_mdl.type.decl.parser_heap_body_ty	|	body.f	fields.p
+transitions.p	.apply	parser.many	rune.t	mdl.type.transition.decl.t	|	mdl.type.transition.decl.parser
+body.p2	.apply	parser.lift2	rune.t	list.field.ty	list.transition.ty	_mdl.type.decl.parser_heap_body_ty	|	body.f	fields.p	transitions.p
 body.p1	.apply	mdl.syntax.braces	_mdl.type.decl.parser_heap_body_ty	|	body.p2
 body.p	.apply	parser.<*	rune.t	_mdl.type.decl.parser_heap_body_ty	string.t	|	body.p1	mdl.syntax.semi
 	.app	f	label.p	body.p
@@ -147,8 +154,10 @@ fs	.lfield	0	b
 _mdl.type.decl.parser_interpreted.heap_body.f_c	.expr
 list.t	.tygvar
 mdl.type.field.decl.t	.tygvar
+mdl.type.transition.decl.t	.tygvar
 _mdl.type.decl.parser_heap_body_ty	.tygvar	-- Temp
 fs	.larg	list.t	mdl.type.field.decl.t
+ts	.larg	list.t	mdl.type.transition.decl.t
 	.undef	_mdl.type.decl.parser_heap_body_ty
 
 _mdl.type.decl.parser_interpreted.stackframe_c	.expr
@@ -268,6 +277,37 @@ ty	.larg	mdl.type.t
 res	.record	gstype	ty	name	nm	|	mdl.type.field.decl.prim.u
 	.lift
 	.yield	res
+
+-- §section §gs{mdl.type.transition.decl.parser}
+
+_mdl.type.transition.decl.parser_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+mdl.type.transition.decl.t	.tygvar
+_mdl.type.transition.decl.parser_f_c	.subcode
+parser.map	.gvar
+parser.*>	.gvar
+mdl.syntax.keyword	.gvar
+_mdl.type.transition.decl.parser_transition.re	.gvar
+_mdl.type.transition.decl.parser_to.re	.gvar
+parser.<*	.gvar
+mdl.syntax.id	.gvar
+mdl.syntax.semi	.gvar
+parser.fail	.gvar	-- Temp
+f	.closure	_mdl.type.transition.decl.parser_f_c
+transition.p	.apply	mdl.syntax.keyword	|	_mdl.type.transition.decl.parser_transition.re
+to.p	.apply	mdl.syntax.keyword	|	_mdl.type.transition.decl.parser_to.re
+p2	.apply	parser.<*	rune.t	string.t	string.t	|	mdl.syntax.id	mdl.syntax.semi
+p1	.apply	parser.*>	rune.t	string.t	string.t	|	to.p	p2
+p	.apply	parser.*>	rune.t	string.t	string.t	|	transition.p	p1
+	.app	f	p
+	.enter	parser.map	rune.t	string.t	mdl.type.transition.decl.t
+
+_mdl.type.transition.decl.parser_f_c	.expr
+string.t	.tygvar
+mdl.type.transition.decl.t	.tygvar	-- Temp
+tg	.larg	string.t
+	.undef	mdl.type.transition.decl.t
 
 -- §section §gs{mdl.type.parser}
 
