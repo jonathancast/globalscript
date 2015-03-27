@@ -781,7 +781,9 @@ gs_gc_trace_bco_instrs(struct gsstringbuilder *err, void *oldbase, void *newbase
             case gsbc_op_enter:
             case gsbc_op_yield:
             case gsbc_op_ubprim:
+            case gsbc_op_unknown_ubprim:
             case gsbc_op_lprim:
+            case gsbc_op_unknown_lprim:
             case gsbc_op_body_closure:
             case gsbc_op_body_undefined:
             case gsbc_op_body_alias:
