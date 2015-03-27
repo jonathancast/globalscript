@@ -98,6 +98,8 @@ enum {
 #define ACE_APPLY_ARG(ip, n) ((ip)->args[2 + (n)])
 #define ACE_APPLY_SKIP(ip) GS_NEXT_BYTECODE((ip), 2 + ACE_APPLY_NUM_ARGS(ip))
 
+#define ACE_UNKNOWN_IMPPRIM_SKIP(ip) GS_NEXT_BYTECODE(ip, 0)
+
 #define ACE_IMPPRIM_SIZE(nargs) GS_SIZE_BYTECODE(2 + (nargs))
 #define ACE_IMPPRIM_INDEX(ip) ((ip)->args[0])
 #define ACE_IMPPRIM_NUMARGS(ip) ((ip)->args[1])

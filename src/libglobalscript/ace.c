@@ -1005,7 +1005,7 @@ ace_instr_alloc_unknown_api_prim(struct ace_thread *thread, struct ace_eval_stat
         return;
     }
     st->regs[st->nregs++] = (gsvalue)prim;
-    st->ip = GS_NEXT_BYTECODE(ip, 0);
+    st->ip = ACE_UNKNOWN_IMPPRIM_SKIP(ip);
     return;
 }
 
