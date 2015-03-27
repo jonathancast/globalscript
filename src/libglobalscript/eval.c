@@ -1187,6 +1187,7 @@ gsvalue
 gsapiprimgc(struct gsstringbuilder *err, gsvalue v)
 {
     struct gseprim *ep, *newep;
+    ulong sz;
     gsvalue gctemp;
     int i;
 
@@ -1194,15 +1195,10 @@ gsapiprimgc(struct gsstringbuilder *err, gsvalue v)
 
     if (ep->type == eprim_forward) return (gsvalue)ep->f.dest;
 
-    newep = gsreserveapiprims(sizeof(*newep) + ep->p.numargs * sizeof(gsvalue));
+    sz = sizeof(*newep) + ep->p.numargs * sizeof(gsvalue);
+    newep = gsreserveapiprims(sz);
 
-    newep->pos = ep->pos;
-    newep->type = ep->type;
-    newep->p.index = ep->p.index;
-    newep->p.numargs = ep->p.numargs;
-    for (i = 0; i < ep->p.numargs; i++)
-        newep->p.arguments[i] = ep->p.arguments[i]
-    ;
+    memcpy(newep, ep, sz);
 
     ep->type = eprim_forward;
     ep->f.dest = newep;
