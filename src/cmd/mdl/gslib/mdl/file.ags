@@ -1,0 +1,12 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.type
+
+mdl.file.t	.tyabstract	*
+mdl.file.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.file.prim.u
+
+mdl.file.prim.u	.tyexpr
+	.tysum
