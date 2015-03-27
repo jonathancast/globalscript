@@ -3,7 +3,23 @@
 
 	.data
 
-	.undefined	_ep_ty
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+_ep_c	.impprog	ibio.prim	ibio
+rune.t	.tygvar
+record.empty	.tygvar
+ibio.prim.iport	.tygvar
+ibio.prim.oport	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+ibio.m.in	.cogvar
+	.coerce	ibio.m.in	rune.t	rune.t	record.empty
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
+	.lift
+	.body	.undefined	ibio.prim.t	record.empty
 
 	.type
 
