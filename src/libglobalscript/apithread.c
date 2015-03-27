@@ -884,7 +884,7 @@ api_gc_trace_code_segment(struct gsstringbuilder *err, struct api_code_segment *
         gsstring_builder_print(err, "%p: instruction pointer is negative: %d", code, code->ip);
         return -1;
     }
-    if (code->ip >= code->size) {
+    if (code->ip > code->size) {
         gsstring_builder_print(err, "%p: instruction pointer is too large: %d > %d", code, code->ip, code->size);
         return -1;
     }
