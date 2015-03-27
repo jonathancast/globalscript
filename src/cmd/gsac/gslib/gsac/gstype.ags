@@ -3330,7 +3330,8 @@ gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
-either.t	.tygvar	-- Temp
+_gsac.gstype.fields.compile_:_k	.subcode
+gsdl.cgs.gstype.field.t.out	.cogvar
 either.right	.gvar
 ordered.set.empty	.gvar
 diff.list.nil	.gvar
@@ -3342,7 +3343,9 @@ fs0	.karg	list.prim.u	gsdl.cgs.gstype.field.t
 		.case	:
 f0		.fkarg	0	gsdl.cgs.gstype.field.t
 fs1		.fkarg	1	list.t	gsdl.cgs.gstype.field.t
-			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
+			.force	_gsac.gstype.fields.compile_:_k
+			.coerce	gsdl.cgs.gstype.field.t.out
+			.enter	f0
 		.case	nil
 tyes			.apply	diff.list.nil	gsdl.ags.typeitem.t
 fs			.apply	diff.list.nil	gsdl.ags.typeitem.field.t
@@ -3352,6 +3355,14 @@ tyls			.apply	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 res			.lrecord	emitted	em	prim.emitted	pem	res	fs	subvars	gvs	tyfvs	tyfvs	tygvars	tygvs	tylets	tyls	typeitems	tyes	|	_gsac.gstype.fields.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
+
+_gsac.gstype.fields.compile_:_k	.forcecont
+gsdl.cgs.gstype.field.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gstype.fields.compile_res.ty	.tygvar	-- Temp
+f0.0	.karg	gsdl.cgs.gstype.field.prim.u
+			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
 
 -- §section §gs{gsac.gstype.constr.compile}
 
