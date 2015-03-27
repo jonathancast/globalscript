@@ -15,6 +15,9 @@ ibio.prim.oport	.tygvar
 list.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 ibio.file.name.t	.tygvar	-- Temp
+either.t	.tygvar	-- Temp
+parser.err.t	.tygvar	 -- Temp
+mdl.file.t	.tygvar	-- Temp
 ibio.prim.t	.tygvar	-- Temp
 ibio.m.in	.cogvar
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
@@ -25,6 +28,7 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.undefined	list.t	string.t
 fn	.undefined	ibio.file.name.t
 s	.undefined	list.t	rune.t
+ef	.undefined	either.t	parser.err.t	mdl.file.t
 	.body	.undefined	ibio.prim.t	record.empty
 
 	.type
