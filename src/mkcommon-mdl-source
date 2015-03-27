@@ -1,0 +1,2 @@
+%.h:D:%.mdi
+	$GLOBALSCRIPT/bin/bootstrap mdl2cheader $stem.mdi > $stem.h
