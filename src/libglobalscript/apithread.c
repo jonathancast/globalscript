@@ -896,9 +896,7 @@ api_gc_trace_code_segment(struct gsstringbuilder *err, struct api_code_segment *
         return -1;
     }
     newcode->ip = newcode->size - (code->size - code->ip); /* > newcode->size - newcode->ip = code->size - code->ip; */
-    for (i = 1; newcode->size - i >= newcode->ip; i++)
-        newcode->instrs[newcode->size - i] = code->instrs[code->size - i]
-    ;
+    memcpy(newcode->instrs + newcode->ip, code->instrs + code->ip, sizeof(struct api_instr)*(code->size - code->ip));
 
     code->fwd = newcode;
 
