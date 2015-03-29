@@ -106,7 +106,8 @@ gsbc_topsortfile(gsparsedfile *parsedfile, struct gsfile_symtable *symtable)
             item.type = gssymdatalable;
             item.v = GSDATA_SECTION_FIRST_ITEM(parsedfile->data);
             if (!parsedfile->data)
-                gsfatal("%s: Cannot compile file: no data section so no entry points", parsedfile->name->name);
+                gsfatal("%s: Cannot compile file: no data section so no entry point", parsedfile->name->name)
+            ;
             if (!parsedfile->data->numitems)
                 gsfatal("%s: Document lacks first data item; cannot find entry point", parsedfile->name->name);
             gsbc_topsort_item(symtable, preorders, &unassigned_items, &maybe_group_items, item, &pend, &c);
