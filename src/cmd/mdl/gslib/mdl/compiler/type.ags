@@ -1,0 +1,16 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.type
+
+-- §section §gs{mdl.compiler.type.m
+
+_mdl.compiler.type.m_res.ty	.tyexpr
+_mdl.compiler.type.m_res.u	.tygvar
+α	.tylambda	*
+	.tylift
+	.tyref	_mdl.compiler.type.m_res.u	α
+
+_mdl.compiler.type.m_res.u	.tyexpr
+α	.tylambda	*
+	.typroduct
