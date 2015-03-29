@@ -17,7 +17,6 @@ record.empty	.tygvar
 list.t	.tygvar	-- Temp
 parser.pos.t	.tygvar	-- Temp
 parser.t	.tygvar	-- Temp
-ibio.lex.receiver.t	.tygvar
 _ep_fn_c	.subcode
 _ep_if_c	.subcode
 _ep_body_c	.subcode
@@ -27,6 +26,8 @@ parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 ibio.lex.receive	.gvar
+ibio.lex.receiver.many	.gvar
+ibio.lex.receiver.symbol	.gvar
 parser.fail	.gvar	-- Temp
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
 i	.larg	ibio.prim.iport	rune.t
@@ -38,7 +39,8 @@ fn	.closure	_ep_fn_c
 if	.bind	.closure	_ep_if_c
 pos	.undefined	parser.pos.t
 p	.apply	parser.fail	rune.t	mdl.file.t
-ms	.undefined	ibio.lex.receiver.t	rune.t	string.t
+sym	.appty	ibio.lex.receiver.symbol	rune.t
+ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 s	.bind	.apply	ibio.lex.receive	rune.t	string.t	|	ms	if
 ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
 	.body	.closure	_ep_body_c
@@ -87,9 +89,9 @@ rune.t	.tygvar
 _ibio.prim.file.read.open_res.ty	.tygvar
 string.t	.tygvar
 ibio.prim.iport	.tygvar
-ibio.prim.t	.tygvar	-- Temp
 _ep_if_body_0_res_c	.subcode
-iport.rune.ty	.tylet	ibio.prim.iport	rune.t	-- Temp
+ibio.prim.unit	.gvar
+iport.rune.ty	.tylet	ibio.prim.iport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 eif	.efv	_ibio.prim.file.read.open_res.ty	rune.t
 	.analyze	eif	0	1
@@ -99,7 +101,9 @@ res			.closure	_ep_if_body_0_res_c
 			.enter	res
 		.case	1
 if		.karg	ibio.prim.iport	rune.t
-			.undef	ibio.prim.t	iport.rune.ty
+			.lift
+			.app	if
+			.yield	ibio.prim.unit	iport.rune.ty
 
 _ep_if_body_0_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
