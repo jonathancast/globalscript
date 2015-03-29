@@ -2613,11 +2613,13 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
         if (i < p->numarguments) i++;
         first_arg = i;
         for (; i < p->numarguments; i++) {
+            int reg;
             struct gstype *tyarg;
             struct gstype_fun *fun;
             int is_lifted;
 
-            tyarg = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i])];
+            reg = gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[i]);
+            tyarg = pcl->regtypes[reg];
             is_lifted = 0;
             if (type->node == gstype_lift) {
                 struct gstype_lift *lift = (struct gstype_lift *)type;
@@ -2626,10 +2628,16 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
                 type = lift->arg;
             }
             if (type->node != gstype_fun)
-                gsfatal("%P: Too many arguments to %y%s (max %d)", p->pos, p->arguments[0], type->node == gstype_forall ? " (type is polymorphic)" : "", i - first_arg)
+                gsfatal("%P: Too many arguments to %y%s (max %d)", p->pos, p->arguments[offset + 0], type->node == gstype_forall ? " (type is polymorphic)" : "", i - first_arg)
             ;
             fun = (struct gstype_fun *)type;
             gstypes_type_check_type_fail(p->pos, tyarg, fun->tyarg);
+            if (pimpcl && pimpcl->bind_bound[reg]) {
+                struct gskind *kind = gstypes_calculate_kind(tyarg);
+                if (kind->node != gskind_lifted)
+                    gsfatal("%P: '%y' is .bind-bound but passed as an argument in a %y (must use a .closure and .efv-bind the variable)", p->pos, p->arguments[i], directive)
+                ;
+            }
             type = fun->tyres;
             if (is_lifted)
                 gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind())
@@ -2638,8 +2646,6 @@ gsbc_typecheck_alloc_rhs(struct gsparsedline *p, int offset, struct gsbc_typeche
         gsbc_typecheck_check_boxed(p->pos, type);
         if (isalloc) gstypes_kind_check_fail(p->pos, gstypes_calculate_kind(type), gskind_lifted_kind());
     } else if (gssymceq(directive, gssymappty, gssymcodeop, ".appty")) {
-        int first_arg;
-
         gsargcheck(p, offset + 0, "Function");
         type = pcl->regtypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[offset + 0])];
         for (i = offset + 1; i < p->numarguments; i++) {

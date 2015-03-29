@@ -1,0 +1,31 @@
+#calculus: gsdl.string-code 0.6
+
+	.document
+
+	.data
+
+	.closure	_ep_c
+_ep_body	.closure	_ep_body_c
+
+	.code
+
+_ep_c	.impprog	test.sequence	m
+_ep_x_c	.subcode
+_ep_body	.gvar
+x	.bind	.closure	_ep_x_c
+	.body	.apply	_ep_body	|	x
+
+_ep_x_c	.expr
+sequence.unit.ty	.tygvar
+rune.prim.rune	.tygvar
+x	.rune	x
+un	.impprim	test.sequence	m	unit	sequence.unit.ty	rune.prim.rune	|	x
+	.yield	un
+
+_ep_body_c	.expr
+sequence.unit.ty	.tygvar
+rune.prim.rune	.tygvar
+x	.larg	rune.prim.rune
+un	.impprim	test.sequence	m	unit	sequence.unit.ty	rune.prim.rune	|	x
+	.lift
+	.yield	un

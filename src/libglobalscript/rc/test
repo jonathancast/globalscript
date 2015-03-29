@@ -171,6 +171,7 @@ ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
 ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
 
 ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
+ok_grep_errors '-- API dis-allows  .bind-bound variables of unlifted type as arguments to .apply --' './test-fixtures/invalid-apply-arg.ags:16: ''x'' is .bind-bound but passed as an argument in a .apply \(must use a .closure and .efv-bind the variable\)' ./$O.test-gsexec invalid-apply-arg.ags
 
 ok_grep_errors '-- .appty in .impprogs --' 'impprog-appty.ags:21: undefined' ./$O.test-gsexec impprog-appty.ags
 
