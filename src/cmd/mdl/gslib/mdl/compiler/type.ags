@@ -3,7 +3,15 @@
 
 	.type
 
--- §section §gs{mdl.compiler.type.m
+-- §section §gs{mdl.compiler.type.m}
+
+mdl.compiler.type.m	.tyexpr
+either.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+α	.tylambda	*
+res.α.ty	.tylet	_mdl.compiler.type.m_res.ty	α
+	.tyref	either.t	string.t	res.α.ty
 
 _mdl.compiler.type.m_res.ty	.tyexpr
 _mdl.compiler.type.m_res.u	.tygvar
