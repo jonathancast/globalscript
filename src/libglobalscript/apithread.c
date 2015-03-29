@@ -647,6 +647,15 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 pin = ACE_UNDEFINED_SKIP(pinstr);
                 continue;
             }
+            case gsbc_op_alias: {
+                CHECK_NREGS();
+
+                CHECK_REG(ACE_BODY_ALIAS_SOURCE(pinstr));
+                regs[nregs++] = regs[ACE_BODY_ALIAS_SOURCE(pinstr)];
+
+                pin = ACE_ALIAS_SKIP(pinstr);
+                continue;
+            }
             case gsbc_op_apply: {
                 gsvalue fun, args[MAX_NUM_REGISTERS];
 
