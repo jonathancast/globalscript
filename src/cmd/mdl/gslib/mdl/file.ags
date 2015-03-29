@@ -1,12 +1,32 @@
 #calculus: gsdl.string-code 0.7
 #type: prefix
 
+	.data
+
+mdl.file.parser	.closure	_mdl.file.parser_c
+
+	.code
+
+_mdl.file.parser_c	.expr
+rune.t	.tygvar
+mdl.file.decl.t	.tygvar
+parser.many	.gvar
+parser.fail	.gvar	-- Temp
+mdl.file.decl.parser	.appty	parser.fail	rune.t	mdl.file.decl.t
+	.app	mdl.file.decl.parser
+	.enter	parser.many	rune.t	mdl.file.decl.t
+
 	.type
 
-mdl.file.t	.tyabstract	*
-mdl.file.prim.u	.tygvar
-	.tylift
-	.tyref	mdl.file.prim.u
+mdl.file.t	.tyexpr
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+	.tyref	list.t	mdl.file.decl.t
 
-mdl.file.prim.u	.tyexpr
+mdl.file.decl.t	.tyabstract	*
+mdl.file.decl.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.file.decl.prim.u
+
+mdl.file.decl.prim.u	.tyexpr
 	.tysum
