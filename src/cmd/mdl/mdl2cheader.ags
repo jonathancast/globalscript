@@ -27,7 +27,9 @@ parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
 parser.pos.initial	.gvar
-parser.fail	.gvar	-- Temp
+parser.*>	.gvar
+mdl.syntax.whitespace	.gvar
+mdl.file.parser	.gvar
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
@@ -37,7 +39,7 @@ as	.bind	.apply	ibio.prim.env.args.get
 fn	.closure	_ep_fn_c
 if	.bind	.closure	_ep_if_c
 pos	.apply	parser.pos.initial	|	fn
-p	.apply	parser.fail	rune.t	mdl.file.t
+p	.apply	parser.*>	rune.t	string.t	mdl.file.t	|	mdl.syntax.whitespace	mdl.file.parser
 s	.bind	.closure	_ep_s_c
 ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
 	.body	.closure	_ep_body_c
