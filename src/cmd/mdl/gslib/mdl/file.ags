@@ -30,3 +30,11 @@ mdl.file.decl.prim.u	.tygvar
 
 mdl.file.decl.prim.u	.tyexpr
 	.tysum
+
+mdl.file.decl.key.t	.tyabstract	*
+mdl.file.decl.key.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.file.decl.key.prim.u
+
+mdl.file.decl.key.prim.u	.tyexpr
+	.tysum
