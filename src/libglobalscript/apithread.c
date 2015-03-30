@@ -756,6 +756,20 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 nstatements++;
                 goto got_statements;
             }
+            case gsbc_op_body_apply: {
+                gsvalue fun, args[MAX_NUM_REGISTERS];
+
+                CHECK_NSTATEMENTS();
+
+                fun = regs[ACE_BODY_APPLY_FUN(pinstr)];
+                for (i = 0; i < ACE_BODY_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_BODY_APPLY_ARG(pinstr, i)];
+
+                rhss[nstatements] = gsnapplyv(pinstr->pos, fun, ACE_BODY_APPLY_NUM_ARGS(pinstr), args);
+                poss[nstatements] = pinstr->pos;
+                nstatements++;
+
+                goto got_statements;
+            }
             default:
                 api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: %d opcodes", pinstr->pos, pinstr->instr);
                 return;

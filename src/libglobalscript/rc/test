@@ -182,6 +182,7 @@ ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-
 
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:13: undefined' ./$O.test-gsexec body-undefined.ags
 ok_grep_errors '-- .body .appty in .impprogs --' 'body-appty.ags:20: undefined' ./$O.test-gsexec body-appty.ags
+ok_grep_errors '-- .body .apply in .impprogs --' 'body-apply.ags:21: undefined' ./$O.test-gsexec body-apply.ags
 
 ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags
 

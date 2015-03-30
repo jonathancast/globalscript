@@ -813,8 +813,6 @@ gsbc_bytecode_size_alloc_op(struct gsparsedline *p, struct gsbc_bytecode_size_co
 int
 gsbc_bytecode_size_cast_op(struct gsparsedline *p, struct gsbc_bytecode_size_code_closure *pcl)
 {
-    int i;
-
     if (
         gssymceq(p->directive, gssymopcoerce, gssymcodeop, ".coerce")
         || gssymceq(p->directive, gssymoplift, gssymcodeop, ".lift")
@@ -975,6 +973,20 @@ gsbc_bytecode_size_terminal_code_op(struct gsparsedfile_segment **ppseg, struct 
         && gssymceq((*pp)->arguments[0], gssymopappty, gssymcodeop, ".appty")
     ) {
         pcl->size += ACE_BODY_ALIAS_SIZE();
+    } else if (
+        gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq((*pp)->arguments[0], gssymopapply, gssymcodeop, ".apply")
+    ) {
+        if (pcl->nregs >= MAX_NUM_REGISTERS)
+            gsfatal("%P: Too many registers; max 0x%x", (*pp)->pos, MAX_NUM_REGISTERS)
+        ;
+        pcl->nregs++;
+
+        /* Skip type arguments */
+        for (i = 2; i < (*pp)->numarguments && (*pp)->arguments[i]->type != gssymseparator; i++);
+        if (i < (*pp)->numarguments) i++;
+
+        pcl->size += ACE_BODY_APPLY_SIZE((*pp)->numarguments - i);
     } else if (gssymceq((*pp)->directive, gssymopbody, gssymcodeop, ".body")) {
         gsfatal(UNIMPL("%P: gsbc_bytecode_size_item (%y)"), (*pp)->pos, (*pp)->arguments[0]);
     } else {
@@ -2780,8 +2792,33 @@ gsbc_byte_compile_api_ops(struct gsfile_symtable *symtable, uint features, struc
         ACE_BODY_ALIAS_SOURCE(pcode) = (uchar)regarg;
 
         cl.pout = ACE_BODY_ALIAS_SKIP(pcode);
+    } else if (
+        gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")
+        && gssymceq(p->arguments[0], gssymopapply, gssymcodeop, ".apply")
+    ) {
+        struct gsbc *pcode;
+        int first_arg;
+
+        pcode = (struct gsbc *)cl.pout;
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_body_apply;
+
+        ACE_BODY_APPLY_FUN(pcode) = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[1]);
+
+        for (i = 2; i < p->numarguments && p->arguments[i]->type != gssymseparator; i++);
+        if (i < p->numarguments) i++;
+        first_arg = i;
+        ACE_BODY_APPLY_NUM_ARGS(pcode) = p->numarguments - first_arg;
+        for (; i < p->numarguments; i++) {
+            int regarg = gsbc_find_register(p, cl.regs, cl.nregs, p->arguments[i]);
+
+            ACE_BODY_APPLY_ARG(pcode, i - first_arg) = regarg;
+        }
+
+        cl.pout = ACE_BODY_APPLY_SKIP(pcode);
     } else if (gssymceq(p->directive, gssymopbody, gssymcodeop, ".body")) {
-        gsfatal(UNIMPL("%P: API op %y"), p->pos, p->arguments[0]);
+        gsfatal(UNIMPL("%P: API op %y\t%y"), p->pos, p->directive, p->arguments[0]);
     } else {
         gsfatal(UNIMPL("%P: API op %y"), p->pos, p->directive);
     }
