@@ -1,0 +1,14 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.type
+
+-- §section §gs{clang.decl.t}
+
+clang.decl.t	.tyabstract	*
+clang.decl.prim.u	.tygvar
+	.tylift
+	.tyref	clang.decl.prim.u
+
+clang.decl.prim.u	.tyexpr
+	.tysum
