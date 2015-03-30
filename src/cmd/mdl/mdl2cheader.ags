@@ -262,15 +262,17 @@ err		.fkarg	0	string.t
 			.undef	ibio.prim.t	record.empty
 		.case	right
 r		.fkarg	0	_mdl.compiler.type.m_res.ty	list.decl.ty
+r.ds			.lfield	res	r
 res			.closure	_ep_body_right_right_res_c
 			.enter	res
 
 _ep_body_right_right_res_c	.impprog	ibio.prim	ibio
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 clang.decl.t	.tygvar
 diff.list.t	.tygvar
-list.t	.tygvar	-- Temp
 ibio.prim.t	.tygvar	-- Temp
 record.empty	.tygvar	-- Temp
 ibio.prim.write	.gvar
@@ -278,11 +280,13 @@ diff.list.tolist	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 clang.decl.print	.gvar
+mdl.compiler.compile.decl	.gvar
 o	.fv	ibio.prim.oport	rune.t
+r.ds	.fv	list.t	mdl.file.decl.t
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 	.lift
-r.ds	.undefined	list.t	clang.decl.t
-dss	.apply	list.map	clang.decl.t	diff.list.rune.ty	|	clang.decl.print	r.ds
+r.ds.c	.apply	list.map	mdl.file.decl.t	clang.decl.t	|	mdl.compiler.compile.decl	r.ds
+dss	.apply	list.map	clang.decl.t	diff.list.rune.ty	|	clang.decl.print	r.ds.c
 ds	.apply	diff.list.concat	rune.t	|	dss
 s	.apply	diff.list.tolist	rune.t	|	ds
 	.bind	.apply	ibio.prim.write	rune.t	|	o	s
