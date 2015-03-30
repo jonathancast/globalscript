@@ -139,6 +139,7 @@ parser.err.t	.tygvar
 mdl.file.t	.tygvar
 _ep_body_k	.subcode
 either.t.out	.cogvar
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 ef	.fv	either.t	parser.err.t	mdl.file.t
 	.force	_ep_body_k
@@ -177,6 +178,7 @@ scc.decl.ty	.tylet	graph.scc.t	mdl.file.decl.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
 compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.file.t
 	.analyze	e0	left	right
@@ -241,6 +243,8 @@ res	.undefined	compile.res.list.decl.ty
 	.enter	either.right	string.t	compile.res.list.decl.ty
 
 _ep_body_right_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.m_res.ty	.tygvar
@@ -248,10 +252,42 @@ list.t	.tygvar
 mdl.file.decl.t	.tygvar
 ibio.prim.t	.tygvar	-- Temp
 record.empty	.tygvar	-- Temp
+_ep_body_right_right_res_c	.subcode
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+o	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	string.t	compile.res.list.decl.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	ibio.prim.t	record.empty
+		.case	right
+r		.fkarg	0	_mdl.compiler.type.m_res.ty	list.decl.ty
+res			.closure	_ep_body_right_right_res_c
+			.enter	res
+
+_ep_body_right_right_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+clang.decl.t	.tygvar
+diff.list.t	.tygvar
+list.t	.tygvar	-- Temp
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+ibio.prim.write	.gvar
+diff.list.tolist	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+clang.decl.print	.gvar
+o	.fv	ibio.prim.oport	rune.t
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.lift
+r.ds	.undefined	list.t	clang.decl.t
+dss	.apply	list.map	clang.decl.t	diff.list.rune.ty	|	clang.decl.print	r.ds
+ds	.apply	diff.list.concat	rune.t	|	dss
+s	.apply	diff.list.tolist	rune.t	|	ds
+	.bind	.apply	ibio.prim.write	rune.t	|	o	s
+	.body	.undefined	ibio.prim.t	record.empty
 
 	.type
 
