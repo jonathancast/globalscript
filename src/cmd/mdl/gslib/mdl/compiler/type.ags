@@ -21,4 +21,4 @@ _mdl.compiler.type.m_res.u	.tygvar
 
 _mdl.compiler.type.m_res.u	.tyexpr
 α	.tylambda	*
-	.typroduct
+	.typroduct	res	α

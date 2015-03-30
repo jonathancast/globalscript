@@ -224,11 +224,10 @@ graph.scc.t	.tygvar
 mdl.file.decl.t	.tygvar
 mdl.compiler.type.m	.tygvar
 list.t	.tygvar
-scc.decl.ty	.tylet	graph.scc.t	mdl.file.decl.t
-list.scc.decl.ty	.tylet	list.t	scc.decl.ty
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
 scc	.larg	graph.scc.t	mdl.file.decl.t
-k	.larg	mdl.compiler.type.m	list.scc.decl.ty
-	.undef	mdl.compiler.type.m	list.scc.decl.ty
+k	.larg	mdl.compiler.type.m	list.decl.ty
+	.undef	mdl.compiler.type.m	list.decl.ty
 
 _ep_body_right_z_c	.expr
 string.t	.tygvar
