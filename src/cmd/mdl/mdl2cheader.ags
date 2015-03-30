@@ -235,9 +235,11 @@ _mdl.compiler.type.m_res.ty	.tygvar
 list.t	.tygvar
 mdl.file.decl.t	.tygvar
 either.right	.gvar
+list.nil	.gvar
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
-res	.undefined	compile.res.list.decl.ty
+nil	.appty	list.nil	mdl.file.decl.t
+res	.lrecord	res	nil	|	_mdl.compiler.type.m_res.ty	list.decl.ty
 	.app	res
 	.enter	either.right	string.t	compile.res.list.decl.ty
 
