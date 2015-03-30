@@ -26,9 +26,33 @@ mdl.file.decl.parser	.appty	parser.fail	rune.t	mdl.file.decl.t
 
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
-_mdl.file.process_res.ty	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar
+_mdl.file.process_k	.subcode
+list.t.out	.cogvar
 f	.larg	mdl.file.t
-	.undef	_mdl.file.process_res.ty
+	.force	_mdl.file.process_k
+	.coerce	list.t.out	mdl.file.decl.t
+	.enter	f
+
+_mdl.file.process_k	.forcecont
+list.prim.u	.tygvar
+mdl.file.decl.t	.tygvar
+list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
+_mdl.file.process_res.u	.tygvar
+_mdl.file.process_res.ty	.tygvar	-- Temp
+list.nil	.gvar
+f0	.karg	list.prim.u	mdl.file.decl.t
+	.analyze	f0	:	nil
+		.case	:
+d0		.fkarg	0	mdl.file.decl.t
+ds1		.fkarg	1	list.t	mdl.file.decl.t
+			.undef	_mdl.file.process_res.ty
+		.case	nil
+ks			.appty	list.nil	mdl.file.decl.key.t
+res			.record	keys	ks	|	_mdl.file.process_res.u
+			.lift
+			.yield	res
 
 -- §section §gs{mdl.file.decl.key.compare}
 
