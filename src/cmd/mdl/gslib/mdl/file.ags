@@ -51,3 +51,16 @@ mdl.file.decl.key.prim.u	.tygvar
 
 mdl.file.decl.key.prim.u	.tyexpr
 	.tysum
+
+-- §section §gs{mdl.file.process}
+
+_mdl.file.process_res.ty	.tyexpr
+_mdl.file.process_res.u	.tygvar
+	.tylift
+	.tyref	_mdl.file.process_res.u
+
+_mdl.file.process_res.u	.tyexpr
+list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
+list.key.ty	.tylet	list.t	mdl.file.decl.key.t
+	.typroduct	keys	list.key.ty
