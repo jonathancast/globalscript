@@ -172,6 +172,7 @@ either.t.out	.cogvar
 list.foldr	.gvar
 graph.tsort	.gvar
 mdl.file.decl.key.compare	.gvar
+mdl.file.process	.gvar
 scc.decl.ty	.tylet	graph.scc.t	mdl.file.decl.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
@@ -189,7 +190,7 @@ f			.closure	_ep_body_right_f_c
 z			.closure	_ep_body_right_z_c
 deps			.undefined	graph.dependencies.t	mdl.file.decl.key.t	mdl.file.decl.t
 get			.undefined	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.t
-fl.p			.undefined	_mdl.file.process_res.ty
+fl.p			.apply	mdl.file.process	|	fl
 fl.keys			.lfield	keys	fl.p
 sccs			.apply	graph.tsort	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file.decl.key.compare	deps	get	fl.keys
 			.force	_ep_body_right_k
