@@ -9,3 +9,5 @@ ok_diff_script '-- mdltype2c: Field in stack frame --' type-stackframe-field ibi
 ok_diff_script '-- mdltype2c: list[gsvalue] field in stack frame --' type-stackframe-list-gsvalue-field ibio ./gslib ./mdltype2c.ags < ./test-fixtures/type-stackframe-list-gsvalue-field.mdltype
 ok_diff_script '-- mdltype2c: Empty API prim --' type-empty-api-prim ibio ./gslib ./mdltype2c.ags < ./test-fixtures/empty-api-prim.mdl
 ok_diff_script '-- mdltype2c: Field in API prim --' type-api-prim-field ibio ./gslib ./mdltype2c.ags < ./test-fixtures/api-prim-field.mdl
+
+ok_diff_script '-- mdl2cheader: Empty file --' header-empty-file ibio ./gslib ./mdl2cheader.ags ./test-fixtures/empty-header.mdi
