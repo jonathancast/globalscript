@@ -275,14 +275,15 @@ ibio.prim.oport	.tygvar
 rune.t	.tygvar
 clang.decl.t	.tygvar
 diff.list.t	.tygvar
-ibio.prim.t	.tygvar	-- Temp
-record.empty	.tygvar	-- Temp
+record.empty	.tygvar
 ibio.prim.write	.gvar
 diff.list.tolist	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 clang.decl.print	.gvar
 mdl.compiler.compile.decl	.gvar
+ibio.prim.unit	.gvar
+record.empty	.gvar
 o	.fv	ibio.prim.oport	rune.t
 r.ds	.fv	list.t	mdl.file.decl.t
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
@@ -292,7 +293,7 @@ dss	.apply	list.map	clang.decl.t	diff.list.rune.ty	|	clang.decl.print	r.ds.c
 ds	.apply	diff.list.concat	rune.t	|	dss
 s	.apply	diff.list.tolist	rune.t	|	ds
 	.bind	.apply	ibio.prim.write	rune.t	|	o	s
-	.body	.undefined	ibio.prim.t	record.empty
+	.body	.apply	ibio.prim.unit	record.empty	|	record.empty
 
 	.type
 
