@@ -6,6 +6,7 @@
 mdl.file.parser	.closure	_mdl.file.parser_c
 
 mdl.file.decl.parser	.closure	_mdl.file.decl.parser_c
+_mdl.file.decl.parser_inline.header.p_literal.0	.closure	_mdl.file.decl.parser_inline.header.p_literal.0_c
 
 mdl.file.process	.closure	_mdl.file.process_c	_mdl.file.process_ty
 
@@ -29,8 +30,47 @@ parser.fail	.gvar	-- Temp
 _mdl.file.decl.parser_c	.expr
 rune.t	.tygvar
 mdl.file.decl.t	.tygvar
+_mdl.file.decl.parser_inline.header.p_c	.subcode
 parser.fail	.gvar	-- Temp
-	.enter	parser.fail	rune.t	mdl.file.decl.t
+inline.header.p	.closure	_mdl.file.decl.parser_inline.header.p_c
+	.enter	inline.header.p
+
+_mdl.file.decl.parser_inline.header.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+mdl.file.decl.t	.tygvar
+_mdl.file.decl.parser_inline.header.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+_mdl.file.decl.parser_inline.header.p_literal.0	.gvar
+parser.fail	.gvar	-- Temp
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+f	.closure	_mdl.file.decl.parser_inline.header.p_f_c
+pos.get	.appty	parser.pos.get	rune.t
+	.app	f	pos.get	_mdl.file.decl.parser_inline.header.p_literal.0
+	.enter	parser.lift2	rune.t	parser.pos.t	diff.list.rune.ty	mdl.file.decl.t
+
+_mdl.file.decl.parser_inline.header.p_f_c	.expr
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+mdl.file.decl.t	.tygvar	-- Temp
+pos	.larg	parser.pos.t
+ds	.larg	diff.list.t	rune.t
+	.undef	mdl.file.decl.t
+
+_mdl.file.decl.parser_inline.header.p_literal.0_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+diff.list.t	.tygvar
+parser.*>	.gvar
+parser.fail	.gvar	-- Temp
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+percent.p	.appty	parser.fail	rune.t	record.empty
+p1	.appty	parser.fail	rune.t	diff.list.rune.ty
+	.app	percent.p	p1
+	.enter	parser.*>	rune.t	record.empty	diff.list.rune.ty
 
 -- §section §gs{mdl.file.process}
 
