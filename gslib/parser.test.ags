@@ -5,7 +5,7 @@
 
 	.closure	_ep_c
 
-_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test_symbol.nil	_test_symbol.cons	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
+_tests	.list	test.property.t	_test_fail.nil	_test_fail.msg.nil	_test_unit.nil	_test_symbol.nil	_test_symbol.cons	_test_symbol.literal.eq	_test_symbol.literal.ne	_test.optional.fail.nil	_test.many.fail.nil	_test.many.fail.cons	_test.match	_test.err	_test.pos	_test.rune.advance.x	_test.rune.advance.nl
 
 _test_fail.nil	.closure	_test_fail.nil_c
 _test_fail.nil_label	.string	parse\sfail\sqq{}
@@ -25,6 +25,14 @@ _test_symbol.nil_expected	.string	./parse-data:$:\sUn-expected\sEOF;\sexpected\s
 _test_symbol.cons	.closure	_test_symbol.cons_c
 _test_symbol.cons_label	.string	parse\ssymbol\sqq{n}
 _test_symbol.cons_string	.string	n
+
+_test_symbol.literal.eq	.closure	_test_symbol.literal.eq_c
+_test_symbol.literal.eq_label	.string	parser\s(symbol.literal\sr/a/)\sqq{a}
+_test_symbol.literal.eq_input	.string	a
+
+_test_symbol.literal.ne	.closure	_test_symbol.literal.ne_c
+_test_symbol.literal.ne_label	.string	parser\s(symbol.literal\sr/a/)\sqq{b}
+_test_symbol.literal.ne_input	.string	b
 
 _test.optional.fail.nil	.closure	_test.optional.fail.nil_c
 _test.optional.fail.nil_label	.string	parse\s(optional\sfail)\sqq{}
@@ -337,6 +345,61 @@ rune.latin.letter.n	.gvar
 r	.larg	rune.t
 	.app	rune.≡	rune.fmtgs	r	rune.latin.letter.n
 	.enter	test.assert.eq	rune.t
+
+-- §section §gs{parse (symbol.literal r/a/) qq{a}}
+
+_test_symbol.literal.eq_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_test_symbol.literal.eq_k	.subcode
+test.property.label	.gvar
+_test_symbol.literal.eq_label	.gvar
+parser.test.assert.passes	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.symbol.literal	.gvar
+rune.≡	.gvar
+rune.latin.letter.a	.gvar
+_test_symbol.literal.eq_input	.gvar
+sym	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.latin.letter.a
+k	.closure	_test_symbol.literal.eq_k
+test	.apply	parser.test.assert.passes	rune.t	record.empty	|	parser.rune.advance	rune.print	sym	_test_symbol.literal.eq_input	k
+	.app	_test_symbol.literal.eq_label	test
+	.enter	test.property.label
+
+_test_symbol.literal.eq_k	.expr
+record.empty	.tygvar
+test.true	.gvar
+r	.larg	record.empty
+	.enter	test.true
+
+-- §section §gs{parse (symbol.literal r/a/) qq{b}}
+
+_test_symbol.literal.ne_c	.expr
+rune.t	.tygvar
+record.empty	.tygvar
+_test_symbol.literal.ne_k	.subcode
+test.property.label	.gvar
+_test_symbol.literal.ne_label	.gvar
+parser.test.assert.fails	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+record.empty.fmtgs	.gvar
+parser.symbol.literal	.gvar
+rune.≡	.gvar
+rune.latin.letter.a	.gvar
+_test_symbol.literal.ne_input	.gvar
+sym	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.latin.letter.a
+k	.closure	_test_symbol.literal.ne_k
+test	.apply	parser.test.assert.fails	rune.t	record.empty	|	parser.rune.advance	rune.print	record.empty.fmtgs	sym	_test_symbol.literal.ne_input	k
+	.app	_test_symbol.literal.ne_label	test
+	.enter	test.property.label
+
+_test_symbol.literal.ne_k	.expr
+parser.err.t	.tygvar
+test.true	.gvar
+r	.larg	parser.err.t
+	.enter	test.true
 
 -- §section §gs{parse (optional fail) qq{}}
 

@@ -43,6 +43,7 @@ parser.mapM	.closure	_parser.mapM_c	_parser.mapM_ty
 
 parser.symbol	.closure	_parser.symbol_c
 _parser.symbol_msg	.string	Un-expected\sEOF;\sexpected\ssymbol
+parser.symbol.literal	.closure	_parser.symbol.literal_c
 parser.symbol.matching.bool	.closure	_parser.symbol.matching.bool_c
 
 parser.match	.closure	_parser.match_c
@@ -3181,6 +3182,70 @@ xn	.larg	list.t	α
 xxn	.apply	list.:	α	|	x	xn
 	.app	xxn
 	.enter	k
+
+-- §section §gs{parser.symbol.literal}
+
+_parser.symbol.literal_c	.expr
+eq.t	.tygvar
+_parser.t_k_ty	.tygvar
+record.empty	.tygvar
+_parser.symbol.literal_sk_c	.subcode
+parser.prim.symbol	.gvar
+parser.prim.fail.msg	.gvar
+_parser.symbol_msg	.gvar
+s	.tyarg	*
+eq	.larg	eq.t	s
+ce	.larg	s
+r	.tyarg	*
+k	.larg	_parser.t_k_ty	s	record.empty	r
+sk	.closure	_parser.symbol.literal_sk_c
+fail	.apply	parser.prim.fail.msg	s	r	|	_parser.symbol_msg
+	.app	sk	fail
+	.yield	parser.prim.symbol	s	r
+
+_parser.symbol.literal_sk_c	.expr
+eq.t	.tygvar
+_parser.t_k_ty	.tygvar
+record.empty	.tygvar
+_parser.symbol.literal_sk_k	.subcode
+bool.t.out	.cogvar
+s	.tyfv	*
+r	.tyfv	*
+eq	.fv	eq.t	s
+ce	.fv	s
+k	.fv	_parser.t_k_ty	s	record.empty	r
+ca	.larg	s
+	.force	_parser.symbol.literal_sk_k
+	.coerce	bool.t.out
+	.app	ce	ca
+	.enter	eq
+
+_parser.symbol.literal_sk_k	.forcecont
+_parser.t_k_ty	.tygvar
+record.empty	.tygvar
+bool.prim.u	.tygvar
+list.t	.tygvar
+string.t	.tygvar
+parser.prim.t	.tygvar
+either.left	.gvar
+list.nil	.gvar
+either.right	.gvar
+record.empty	.gvar
+s	.tyfv	*
+r	.tyfv	*
+k	.fv	_parser.t_k_ty	s	record.empty	r
+list.string.t	.tylet	list.t	string.t
+parser.ty	.tylet	parser.prim.t	s	r
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+nil			.appty	list.nil	string.t
+			.app	nil
+			.enter	either.left	list.string.t	parser.ty
+		.case	true
+kc			.apply	k	|	record.empty
+			.app	kc
+			.enter	either.right	list.string.t	parser.ty
 
 -- §section §gs{parser.symbol.matching.bool}
 
