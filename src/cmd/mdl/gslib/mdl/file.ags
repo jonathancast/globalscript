@@ -5,6 +5,8 @@
 
 mdl.file.parser	.closure	_mdl.file.parser_c
 
+mdl.file.decl.parser	.closure	_mdl.file.decl.parser_c
+
 mdl.file.process	.closure	_mdl.file.process_c	_mdl.file.process_ty
 
 mdl.file.decl.key.compare	.closure	_mdl.file.decl.key.compare_c
@@ -17,10 +19,18 @@ _mdl.file.parser_c	.expr
 rune.t	.tygvar
 mdl.file.decl.t	.tygvar
 parser.many	.gvar
+mdl.file.decl.parser	.gvar
 parser.fail	.gvar	-- Temp
-mdl.file.decl.parser	.appty	parser.fail	rune.t	mdl.file.decl.t
 	.app	mdl.file.decl.parser
 	.enter	parser.many	rune.t	mdl.file.decl.t
+
+-- §section §gs{mdl.file.decl.parser}
+
+_mdl.file.decl.parser_c	.expr
+rune.t	.tygvar
+mdl.file.decl.t	.tygvar
+parser.fail	.gvar	-- Temp
+	.enter	parser.fail	rune.t	mdl.file.decl.t
 
 -- §section §gs{mdl.file.process}
 
