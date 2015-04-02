@@ -36,6 +36,7 @@ rune.space	.closure	_rune.space_c
 rune.number.sign	.closure	_rune.number.sign_c
 rune.colon	.closure	_rune.colon_c
 rune.dot	.closure	_rune.dot_c
+rune.percent	.closure	_rune.percent_c
 rune.star	.closure	_rune.star_c
 rune.plus	.closure	_rune.plus_c
 rune.caret	.closure	_rune.caret_c
@@ -445,6 +446,13 @@ dot	.rune	.
 	.coerce	rune.t.in
 	.lift
 	.yield	dot
+
+_rune.percent_c	.expr
+rune.t.in	.cogvar
+percent	.rune	%
+	.coerce	rune.t.in
+	.lift
+	.yield	percent
 
 _rune.star_c	.expr
 rune.t.in	.cogvar
