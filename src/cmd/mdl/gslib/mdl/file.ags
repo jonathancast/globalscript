@@ -65,9 +65,12 @@ rune.t	.tygvar
 record.empty	.tygvar
 diff.list.t	.tygvar
 parser.*>	.gvar
+parser.symbol.literal	.gvar
+rune.≡	.gvar
+rune.percent	.gvar
 parser.fail	.gvar	-- Temp
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
-percent.p	.appty	parser.fail	rune.t	record.empty
+percent.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.percent
 p1	.appty	parser.fail	rune.t	diff.list.rune.ty
 	.app	percent.p	p1
 	.enter	parser.*>	rune.t	record.empty	diff.list.rune.ty
