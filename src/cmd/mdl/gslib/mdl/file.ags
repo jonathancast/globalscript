@@ -8,6 +8,10 @@ mdl.file.parser	.closure	_mdl.file.parser_c
 mdl.file.decl.parser	.closure	_mdl.file.decl.parser_c
 _mdl.file.decl.parser_inline.header.p_literal.0	.closure	_mdl.file.decl.parser_inline.header.p_literal.0_c
 
+_mdl.file.inline.c_w.0	.closure	_mdl.file.inline.c_w.0_c	_mdl.file.inline.c_w.0_ty
+_mdl.file.inline.c_w.s	.closure	_mdl.file.inline.c_w.s_c	_mdl.file.inline.c_w.s_ty
+_mdl.file.inline.c_w.%	.closure	_mdl.file.inline.c_w.%_c	_mdl.file.inline.c_w.%_ty
+
 mdl.file.process	.closure	_mdl.file.process_c	_mdl.file.process_ty
 
 mdl.file.decl.key.compare	.closure	_mdl.file.decl.key.compare_c
@@ -70,16 +74,115 @@ rune.≡	.gvar
 rune.percent	.gvar
 rune.capital.latin.letter.c	.gvar
 rune.latin.letter.h	.gvar
+rune.left.curly	.gvar
+_mdl.file.inline.c_w.0	.gvar
+diff.list.nil	.gvar
 parser.fail	.gvar	-- Temp
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 percent.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.percent
 capital.c.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.capital.latin.letter.c
 h.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.latin.letter.h
-p3	.appty	parser.fail	rune.t	diff.list.rune.ty
+lbrace.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.left.curly
+nil	.appty	diff.list.nil	rune.t
+w.0	.apply	_mdl.file.inline.c_w.0	|	nil
+p3	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	lbrace.p	w.0
 p2	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	h.p	p3
 p1	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	capital.c.p	p2
 	.app	percent.p	p1
 	.enter	parser.*>	rune.t	record.empty	diff.list.rune.ty
+
+-- §section §gs{mdl.file.inline.c}
+
+_mdl.file.inline.c_w.0_c	.expr
+diff.list.t	.tygvar
+rune.t	.tygvar
+parser.>>=	.gvar
+parser.symbol	.gvar
+_mdl.file.inline.c_w.s	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+ds	.larg	diff.list.t	rune.t
+symbol	.appty	parser.symbol	rune.t
+w.s	.apply	_mdl.file.inline.c_w.s	|	ds
+	.app	symbol	w.s
+	.enter	parser.>>=	rune.t	rune.t	diff.list.rune.ty
+
+_mdl.file.inline.c_w.s_c	.expr
+diff.list.t	.tygvar
+rune.t	.tygvar
+_mdl.file.inline.c_w.s_k	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+rune.percent	.gvar
+ds	.larg	diff.list.t	rune.t
+c	.larg	rune.t
+	.force	_mdl.file.inline.c_w.s_k
+	.coerce	bool.t.out
+	.app	c	rune.percent
+	.enter	rune.≡
+
+_mdl.file.inline.c_w.s_k	.forcecont
+bool.prim.u	.tygvar
+rune.t	.tygvar
+diff.list.t	.tygvar
+_mdl.file.inline.c_w.%	.gvar
+parser.fail	.gvar	-- Temp
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+ds	.fv	diff.list.t	rune.t
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	parser.fail	rune.t	diff.list.rune.ty
+		.case	true
+			.app	ds
+			.enter	_mdl.file.inline.c_w.%
+
+_mdl.file.inline.c_w.%_c	.expr
+diff.list.t	.tygvar
+rune.t	.tygvar
+_mdl.file.inline.c_w.%_k_c	.subcode
+parser.>>=	.gvar
+parser.symbol	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+ds	.larg	diff.list.rune.ty
+symbol	.appty	parser.symbol	rune.t
+k	.closure	_mdl.file.inline.c_w.%_k_c
+	.app	symbol	k
+	.enter	parser.>>=	rune.t	rune.t	diff.list.rune.ty
+
+_mdl.file.inline.c_w.%_k_c	.expr
+diff.list.t	.tygvar
+rune.t	.tygvar
+_mdl.file.inline.c_w.%_k_k	.subcode
+bool.t.out	.cogvar
+rune.≡	.gvar
+rune.right.curly	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+ds	.fv	diff.list.rune.ty
+c	.larg	rune.t
+	.force	_mdl.file.inline.c_w.%_k_k
+	.coerce	bool.t.out
+	.app	c	rune.right.curly
+	.enter	rune.≡
+
+_mdl.file.inline.c_w.%_k_k	.forcecont
+bool.prim.u	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+diff.list.t	.tygvar
+parser.*>	.gvar
+mdl.syntax.whitespace	.gvar
+parser.unit	.gvar
+parser.fail	.gvar	-- Temp
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+ds	.fv	diff.list.rune.ty
+b0	.karg	bool.prim.u
+	.analyze	b0	false	true
+		.case	false
+			.enter	parser.fail	rune.t	diff.list.rune.ty
+		.case	true
+unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
+			.app	mdl.syntax.whitespace	unit.ds
+			.enter	parser.*>	rune.t	string.t	diff.list.rune.ty
 
 -- §section §gs{mdl.file.process}
 
@@ -144,6 +247,37 @@ mdl.file.decl.key.prim.u	.tygvar
 
 mdl.file.decl.key.prim.u	.tyexpr
 	.tysum
+
+-- §section §gs{mdl.file.inline.c}
+
+_mdl.file.inline.c_w.0_ty	.tyexpr
+diff.list.t	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.tylift
+	.tyfun	diff.list.t	rune.t
+	.tyref	parser.t	rune.t	diff.list.rune.ty
+
+_mdl.file.inline.c_w.s_ty	.tyexpr
+diff.list.t	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.tylift
+	.tyfun	diff.list.t	rune.t
+	.tylift
+	.tyfun	rune.t
+	.tyref	parser.t	rune.t	diff.list.rune.ty
+
+_mdl.file.inline.c_w.%_ty	.tyexpr
+diff.list.t	.tygvar
+rune.t	.tygvar
+parser.t	.tygvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.tylift
+	.tyfun	diff.list.t	rune.t
+	.tyref	parser.t	rune.t	diff.list.rune.ty
 
 -- §section §gs{mdl.file.process}
 
