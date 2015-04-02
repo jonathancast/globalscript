@@ -53,6 +53,7 @@ rune.capital.latin.letter.c	.closure	_rune.capital.latin.letter.c_c
 rune.latin.letter.a	.closure	_rune.latin.letter.a_c
 rune.latin.letter.c	.closure	_rune.latin.letter.c_c
 rune.latin.letter.g	.closure	_rune.latin.letter.g_c
+rune.latin.letter.h	.closure	_rune.latin.letter.h_c
 rune.latin.letter.n	.closure	_rune.latin.letter.n_c
 rune.latin.letter.s	.closure	_rune.latin.letter.s_c
 rune.latin.letter.u	.closure	_rune.latin.letter.u_c
@@ -566,6 +567,13 @@ g	.rune	g
 	.coerce	rune.t.in
 	.lift
 	.yield	g
+
+_rune.latin.letter.h_c	.expr
+rune.t.in	.cogvar
+h	.rune	h
+	.coerce	rune.t.in
+	.lift
+	.yield	h
 
 _rune.latin.letter.n_c	.expr
 rune.t.in	.cogvar
