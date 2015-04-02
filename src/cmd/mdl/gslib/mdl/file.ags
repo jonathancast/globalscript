@@ -69,11 +69,14 @@ parser.symbol.literal	.gvar
 rune.≡	.gvar
 rune.percent	.gvar
 rune.capital.latin.letter.c	.gvar
+rune.latin.letter.h	.gvar
 parser.fail	.gvar	-- Temp
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 percent.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.percent
 capital.c.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.capital.latin.letter.c
-p2	.appty	parser.fail	rune.t	diff.list.rune.ty
+h.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.latin.letter.h
+p3	.appty	parser.fail	rune.t	diff.list.rune.ty
+p2	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	h.p	p3
 p1	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	capital.c.p	p2
 	.app	percent.p	p1
 	.enter	parser.*>	rune.t	record.empty	diff.list.rune.ty
