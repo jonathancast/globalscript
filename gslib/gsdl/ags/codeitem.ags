@@ -4399,6 +4399,12 @@ _gsdl.ags.codeitem.prim.u_ubcasecont_decls_u	.tygvar
 _gsdl.ags.codeitem.prim.u_ubcasecont_decls_u	.tyexpr
 	.typroduct
 
+-- §section §gs{gsdl.ags.codeitem.subcode.t}
+
+gsdl.ags.codeitem.subcode.t	.tyexpr
+gsdl.var.t	.tygvar
+	.tyref	gsdl.var.t
+
 -- §section §gs{gsdl.ags.codeitem.tyfv.t}
 
 gsdl.ags.codeitem.tyfv.t	.tyexpr
