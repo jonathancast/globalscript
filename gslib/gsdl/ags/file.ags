@@ -4,10 +4,10 @@
 	.data
 
 gsdl.ags.file.print	.closure	_gsdl.ags.file.print_c
-_gsdl.ags.file.print_calculus.s	.string	#calculus:\sgsdl.string-code\s0.6\n\n
+_gsdl.ags.file.print_calculus.s	.string	#calculus:\sgsdl.string-code\s0.7\n
 
 _gsdl.ags.file.print_filetype	.closure	_gsdl.ags.file.print_filetype_c
-_gsdl.ags.file.print_filetype_doc.s	.string	\t.document\n
+_gsdl.ags.file.print_filetype_doc.s	.string	#type:\sdocument\n
 
 _gsdl.ags.file.print_datasection	.closure	_gsdl.ags.file.print_datasection_c
 _gsdl.ags.file.print_datasection_gsdata.s	.string	\n\t.data\n
