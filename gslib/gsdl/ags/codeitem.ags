@@ -43,6 +43,8 @@ _gsdl.ags.codeitem.tylets.parser_tylet.re	.regex	.tylet
 gsdl.ags.codeitem.subcodes.parser	.closure	_gsdl.ags.codeitem.subcodes.parser_c
 _gsdl.ags.codeitem.subcodes.parser_subcode.kw.re	.regex	.subcode
 
+gsdl.ags.codeitem.subcode.print	.closure	_gsdl.ags.codeitem.subcode.print_c
+
 gsdl.ags.codeitem.cogvars.parser	.closure	_gsdl.ags.codeitem.cogvars.parser_c
 _gsdl.ags.codeitem.cogvars.parser_cogvar.kw.re	.regex	.cogvar
 
@@ -906,6 +908,7 @@ diff.list.<>	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 gsdl.ags.typeitem.decls.tygvar.print	.gvar
+gsdl.ags.codeitem.subcode.print	.gvar
 gsdl.ags.codeitem.arg.print	.gvar
 gsdl.ags.codeitem.alloc.print	.gvar
 ds	.larg	_gsdl.ags.codeitem.prim.u_expr_decls_ty
@@ -1270,6 +1273,15 @@ subcode.p1	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep
 subcode.p	.apply	parser.<*	rune.t	string.t	string.t	|	gsdl.ags.syntax.id	subcode.p1
 	.app	subcode.p
 	.enter	parser.many	rune.t	string.t
+
+-- §section §gs{gsdl.ags.codeitem.subcode.print}
+
+_gsdl.ags.codeitem.subcode.print_c	.expr
+gsdl.ags.codeitem.subcode.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+v	.larg	gsdl.ags.codeitem.subcode.t
+	.undef	diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.cogvars.parser}
 
