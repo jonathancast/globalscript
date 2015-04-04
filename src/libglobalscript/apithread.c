@@ -541,10 +541,10 @@ static struct api_promise *api_alloc_promise(void);
         } \
     } while (0)
 
-#define CHECK_NREGS() \
+#define CHECK_NREGS(a_pos) \
     do { \
         if (nregs >= MAX_NUM_REGISTERS) { \
-            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many registers", pinstr->pos, pinstr->instr); \
+            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: api_unpack_block_statement: too many registers", a_pos); \
             return; \
         } \
     } while (0)
@@ -589,26 +589,20 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
     }
 
     for (i = 0; i < code->numglobals; i++) {
-        if (nregs >= MAX_NUM_REGISTERS) {
-            api_abend_unimpl(thread, __FILE__, __LINE__, "%P: Too many registers", cl->hp.pos);
-            return;
-        }
+        CHECK_NREGS(code->pos);
         pglobal = (gsvalue *)pin;
         regs[nregs++] = *pglobal++;
         pin = pglobal;
     }
 
-    for (i = 0; i < code->numfvs; i++)
-        regs[nregs++] = cl->cl.fvs[i]
-    ;
+    if (code->numfvs + code->numargs > cl->cl.numfvs) {
+        api_abend_unimpl(thread, __FILE__, __LINE__, "%P: Can't actually enter %P: closure has %d free variables, but code has %d free variables and %d arguments = %d values needed", cl->hp.pos, code->pos, cl->cl.numfvs, code->numfvs, code->numargs, code->numfvs + code->numargs);
+        return;
+    }
 
-    for (i = 0; i < code->numargs; i++) {
-        if (nregs >= MAX_NUM_REGISTERS) {
-            api_abend_unimpl(thread, __FILE__, __LINE__, "api_unpack_block_statement: too many registers (max 0x%x)", MAX_NUM_REGISTERS);
-            return;
-        }
-        regs[nregs] = cl->cl.fvs[code->numfvs + i];
-        nregs++;
+    for (i = 0; i < code->numfvs + code->numargs; i++) {
+        CHECK_NREGS(code->pos);
+        regs[nregs++] = cl->cl.fvs[i];
     }
 
     nstatements = 0;
@@ -619,7 +613,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsbco *subexpr;
                 struct gsclosure *cl;
 
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 subexpr = subexprs[ACE_CLOSURE_CODE(pinstr)];
 
@@ -630,9 +624,10 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 cl->hp.type = gsclosure;
                 cl->cl.code = subexpr;
                 cl->cl.numfvs = ACE_CLOSURE_NUMFVS(pinstr);
-                for (i = 0; i < ACE_CLOSURE_NUMFVS(pinstr); i++)
-                    cl->cl.fvs[i] = regs[ACE_CLOSURE_FV(pinstr, i)]
-                ;
+                for (i = 0; i < ACE_CLOSURE_NUMFVS(pinstr); i++) {
+                    CHECK_REG(ACE_CLOSURE_FV(pinstr, i));
+                    cl->cl.fvs[i] = regs[ACE_CLOSURE_FV(pinstr, i)];
+                }
                 regs[nregs] = (gsvalue)cl;
                 nregs++;
 
@@ -640,7 +635,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 continue;
             }
             case gsbc_op_undefined: {
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 regs[nregs] = (gsvalue)gsundefined(pinstr->pos);
                 nregs++;
@@ -648,7 +643,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 continue;
             }
             case gsbc_op_alias: {
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 CHECK_REG(ACE_BODY_ALIAS_SOURCE(pinstr));
                 regs[nregs++] = regs[ACE_BODY_ALIAS_SOURCE(pinstr)];
@@ -659,7 +654,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
             case gsbc_op_apply: {
                 gsvalue fun, args[MAX_NUM_REGISTERS];
 
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 fun = regs[ACE_APPLY_FUN(pinstr)];
                 for (i = 0; i < ACE_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_APPLY_ARG(pinstr, i)];
@@ -673,7 +668,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 struct gsclosure *cl;
 
                 CHECK_NSTATEMENTS();
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 subexpr = subexprs[ACE_BIND_CLOSURE_CODE(pinstr)];
 
@@ -702,7 +697,7 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 gsvalue fun, args[MAX_NUM_REGISTERS];
 
                 CHECK_NSTATEMENTS();
-                CHECK_NREGS();
+                CHECK_NREGS(pinstr->pos);
 
                 fun = regs[ACE_BIND_APPLY_FUN(pinstr)];
                 for (i = 0; i < ACE_BIND_APPLY_NUM_ARGS(pinstr); i++) args[i] = regs[ACE_BIND_APPLY_ARG(pinstr, i)];
