@@ -946,12 +946,15 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	_gsac.gstype.field.annotate_res.ty
 
 _gsac.gstype.field.annotate_object_k	.forcecont
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.annotate_res.ty	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
 either.t	.tygvar	-- Temp
 either.right	.gvar
+gsdl.cgs.gstype.field.object	.gvar
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.annotate_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -959,7 +962,8 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	gsdl.cgs.gstype.field.t
 		.case	right
 ty.rr		.fkarg	0	_gsac.gstype.annotate_res.ty
-res			.undefined	gsdl.cgs.gstype.field.t
+ty.rr.ty			.lfield	gstype	ty.rr
+res			.apply	gsdl.cgs.gstype.field.object	|	v	ty.rr.ty
 			.app	res
 			.enter	either.right	string.t	gsdl.cgs.gstype.field.t
 
