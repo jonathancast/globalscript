@@ -191,8 +191,8 @@ fl		.fkarg	0	mdl.file.t
 f			.closure	_ep_body_right_f_c
 z			.closure	_ep_body_right_z_c
 deps			.undefined	graph.dependencies.t	mdl.file.decl.key.t	mdl.file.decl.t
-get			.undefined	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.t
 fl.p			.apply	mdl.file.process	|	fl
+get			.lfield	get	fl.p
 fl.keys			.lfield	keys	fl.p
 sccs			.apply	graph.tsort	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file.decl.key.compare	deps	get	fl.keys
 			.force	_ep_body_right_k
