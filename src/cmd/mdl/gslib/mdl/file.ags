@@ -62,9 +62,11 @@ parser.pos.t	.tygvar
 diff.list.t	.tygvar
 rune.t	.tygvar
 mdl.file.decl.t	.tygvar	-- Temp
+mdl.file.decl.inline.header	.gvar
 pos	.larg	parser.pos.t
 ds	.larg	diff.list.t	rune.t
-	.undef	mdl.file.decl.t
+	.app	pos	ds
+	.enter	mdl.file.decl.inline.header
 
 _mdl.file.decl.parser_inline.header.p_literal.0_c	.expr
 rune.t	.tygvar
