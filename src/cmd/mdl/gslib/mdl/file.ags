@@ -193,30 +193,39 @@ unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
+mdl.file.decl.key.t	.tygvar
 _mdl.file.process_w	.gvar
+diff.list.nil	.gvar
 f	.larg	mdl.file.t
-	.app	f
+ks	.appty	diff.list.nil	mdl.file.decl.key.t
+	.app	ks	f
 	.enter	_mdl.file.process_w
 
 _mdl.file.process_w_c	.expr
+diff.list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
 mdl.file.t	.tygvar
 mdl.file.decl.t	.tygvar
 _mdl.file.process_w_k	.subcode
 list.t.out	.cogvar
+ks.ds	.larg	diff.list.t	mdl.file.decl.key.t
 f	.larg	mdl.file.t
 	.force	_mdl.file.process_w_k
 	.coerce	list.t.out	mdl.file.decl.t
 	.enter	f
 
 _mdl.file.process_w_k	.forcecont
+diff.list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
 list.prim.u	.tygvar
 mdl.file.decl.t	.tygvar
 list.t	.tygvar
-mdl.file.decl.key.t	.tygvar
 _mdl.file.process_res.u	.tygvar
 _mdl.file.process_w_:_k	.subcode
 mdl.file.decl.t.out	.cogvar
 list.nil	.gvar
+diff.list.tolist	.gvar
+ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
 f0	.karg	list.prim.u	mdl.file.decl.t
 	.analyze	f0	:	nil
 		.case	:
@@ -226,7 +235,7 @@ ds1		.fkarg	1	list.t	mdl.file.decl.t
 			.coerce	mdl.file.decl.t.out
 			.enter	d0
 		.case	nil
-ks			.appty	list.nil	mdl.file.decl.key.t
+ks			.apply	diff.list.tolist	mdl.file.decl.key.t	|	ks.ds
 res			.record	keys	ks	|	_mdl.file.process_res.u
 			.lift
 			.yield	res
@@ -340,8 +349,12 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 -- §section §gs{mdl.file.process}
 
 _mdl.file.process_w_ty	.tyexpr
+diff.list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
 mdl.file.t	.tygvar
 _mdl.file.process_res.ty	.tygvar
+	.tylift
+	.tyfun	diff.list.t	mdl.file.decl.key.t
 	.tylift
 	.tyfun	mdl.file.t
 	.tyref	_mdl.file.process_res.ty
