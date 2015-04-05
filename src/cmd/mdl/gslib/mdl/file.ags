@@ -241,21 +241,24 @@ res			.record	keys	ks	|	_mdl.file.process_res.u
 			.yield	res
 
 _mdl.file.process_w_:_k	.forcecont
+diff.list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
 list.t	.tygvar
 mdl.file.decl.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
-diff.list.t	.tygvar
 rune.t	.tygvar
-mdl.file.decl.key.t	.tygvar	-- Temp
 _mdl.file.process_w	.gvar
+diff.list.snoc	.gvar
+ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
 ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
 	.analyze	d0.0	inline.header
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-ks1			.undefined	diff.list.t	mdl.file.decl.key.t
+k0			.undefined	mdl.file.decl.key.t
+ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
 			.app	ks1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
