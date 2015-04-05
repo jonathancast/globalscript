@@ -12,7 +12,8 @@ _mdl.file.inline.c_w.0	.closure	_mdl.file.inline.c_w.0_c	_mdl.file.inline.c_w.0_
 _mdl.file.inline.c_w.s	.closure	_mdl.file.inline.c_w.s_c	_mdl.file.inline.c_w.s_ty
 _mdl.file.inline.c_w.%	.closure	_mdl.file.inline.c_w.%_c	_mdl.file.inline.c_w.%_ty
 
-mdl.file.process	.closure	_mdl.file.process_c	_mdl.file.process_ty
+mdl.file.process	.closure	_mdl.file.process_c
+_mdl.file.process_w	.closure	_mdl.file.process_w_c	_mdl.file.process_w_ty
 
 mdl.file.decl.inline.header	.closure	_mdl.file.decl.inline.header_c
 
@@ -192,21 +193,28 @@ unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
+_mdl.file.process_w	.gvar
+f	.larg	mdl.file.t
+	.app	f
+	.enter	_mdl.file.process_w
+
+_mdl.file.process_w_c	.expr
+mdl.file.t	.tygvar
 mdl.file.decl.t	.tygvar
-_mdl.file.process_k	.subcode
+_mdl.file.process_w_k	.subcode
 list.t.out	.cogvar
 f	.larg	mdl.file.t
-	.force	_mdl.file.process_k
+	.force	_mdl.file.process_w_k
 	.coerce	list.t.out	mdl.file.decl.t
 	.enter	f
 
-_mdl.file.process_k	.forcecont
+_mdl.file.process_w_k	.forcecont
 list.prim.u	.tygvar
 mdl.file.decl.t	.tygvar
 list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 _mdl.file.process_res.u	.tygvar
-_mdl.file.process_:_k	.subcode
+_mdl.file.process_w_:_k	.subcode
 mdl.file.decl.t.out	.cogvar
 list.nil	.gvar
 f0	.karg	list.prim.u	mdl.file.decl.t
@@ -214,7 +222,7 @@ f0	.karg	list.prim.u	mdl.file.decl.t
 		.case	:
 d0		.fkarg	0	mdl.file.decl.t
 ds1		.fkarg	1	list.t	mdl.file.decl.t
-			.force	_mdl.file.process_:_k
+			.force	_mdl.file.process_w_:_k
 			.coerce	mdl.file.decl.t.out
 			.enter	d0
 		.case	nil
@@ -223,7 +231,7 @@ res			.record	keys	ks	|	_mdl.file.process_res.u
 			.lift
 			.yield	res
 
-_mdl.file.process_:_k	.forcecont
+_mdl.file.process_w_:_k	.forcecont
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 diff.list.t	.tygvar
@@ -331,7 +339,7 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 
 -- §section §gs{mdl.file.process}
 
-_mdl.file.process_ty	.tyexpr
+_mdl.file.process_w_ty	.tyexpr
 mdl.file.t	.tygvar
 _mdl.file.process_res.ty	.tygvar
 	.tylift
