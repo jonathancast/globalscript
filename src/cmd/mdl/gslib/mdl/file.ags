@@ -310,9 +310,18 @@ res	.constr	mdl.file.decl.prim.u	inline.header	0	pos	1	ds
 
 _mdl.file.decl.key.compare_c	.expr
 mdl.file.decl.key.t	.tygvar
-order.total.ord.t	.tygvar
+_mdl.file.decl.key.compare_k0	.subcode
+mdl.file.decl.key.t.out	.cogvar
 k0	.larg	mdl.file.decl.key.t
 k1	.larg	mdl.file.decl.key.t
+	.force	_mdl.file.decl.key.compare_k0
+	.coerce	mdl.file.decl.key.t.out
+	.enter	k0
+
+_mdl.file.decl.key.compare_k0	.forcecont
+mdl.file.decl.key.prim.u	.tygvar
+order.total.ord.t	.tygvar	-- Temp
+k0.0	.karg	mdl.file.decl.key.prim.u
 	.undef	order.total.ord.t
 
 	.type
