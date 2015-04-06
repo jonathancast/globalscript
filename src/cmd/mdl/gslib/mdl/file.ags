@@ -194,21 +194,26 @@ unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
 mdl.file.decl.key.t	.tygvar
+ordered.map.t	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar	-- Temp
 _mdl.file.process_w	.gvar
 diff.list.nil	.gvar
 f	.larg	mdl.file.t
 ks	.appty	diff.list.nil	mdl.file.decl.key.t
-	.app	ks	f
+ktod	.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+	.app	ks	ktod	f
 	.enter	_mdl.file.process_w
 
 _mdl.file.process_w_c	.expr
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-mdl.file.t	.tygvar
+ordered.map.t	.tygvar
 mdl.file.decl.t	.tygvar
+mdl.file.t	.tygvar
 _mdl.file.process_w_k	.subcode
 list.t.out	.cogvar
 ks.ds	.larg	diff.list.t	mdl.file.decl.key.t
+ktod	.larg	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 f	.larg	mdl.file.t
 	.force	_mdl.file.process_w_k
 	.coerce	list.t.out	mdl.file.decl.t
@@ -217,8 +222,9 @@ f	.larg	mdl.file.t
 _mdl.file.process_w_k	.forcecont
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-list.prim.u	.tygvar
+ordered.map.t	.tygvar
 mdl.file.decl.t	.tygvar
+list.prim.u	.tygvar
 list.t	.tygvar
 _mdl.file.process_res.u	.tygvar
 _mdl.file.process_w_:_k	.subcode
@@ -227,6 +233,7 @@ mdl.file.decl.t.out	.cogvar
 list.nil	.gvar
 diff.list.tolist	.gvar
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 f0	.karg	list.prim.u	mdl.file.decl.t
 	.analyze	f0	:	nil
 		.case	:
@@ -250,6 +257,7 @@ mdl.file.decl.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 rune.t	.tygvar
+ordered.map.t	.tygvar	-- Temp
 _mdl.file.process_w	.gvar
 diff.list.snoc	.gvar
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
@@ -261,7 +269,8 @@ pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
 k0			.undefined	mdl.file.decl.key.t
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
-			.app	ks1	ds1
+ktod1			.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+			.app	ks1	ktod1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
 
@@ -369,10 +378,14 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 _mdl.file.process_w_ty	.tyexpr
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
+ordered.map.t	.tygvar
+mdl.file.decl.t	.tygvar
 mdl.file.t	.tygvar
 _mdl.file.process_res.ty	.tygvar
 	.tylift
 	.tyfun	diff.list.t	mdl.file.decl.key.t
+	.tylift
+	.tyfun	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 	.tylift
 	.tyfun	mdl.file.t
 	.tyref	_mdl.file.process_res.ty
