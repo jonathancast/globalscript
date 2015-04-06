@@ -275,11 +275,15 @@ ktod1			.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 	-- > :: _mdl.file.process_res.ty
 
 _mdl.file.process_w_nil_get_c	.expr
+ordered.map.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-maybe.t	.tygvar	-- Temp
-mdl.file.decl.t	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar
+ordered.map.get	.gvar
+mdl.file.decl.key.compare	.gvar
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 k	.larg	mdl.file.decl.key.t
-	.undef	maybe.t	mdl.file.decl.t
+	.app	mdl.file.decl.key.compare	k	ktod
+	.enter	ordered.map.get	mdl.file.decl.key.t	mdl.file.decl.t
 
 -- §section §gs{mdl.file.decl.t} constructors
 
