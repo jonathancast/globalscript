@@ -194,13 +194,13 @@ unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-ordered.map.t	.tygvar	-- Temp
-mdl.file.decl.t	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar
 _mdl.file.process_w	.gvar
 diff.list.nil	.gvar
+ordered.map.empty	.gvar
 f	.larg	mdl.file.t
 ks	.appty	diff.list.nil	mdl.file.decl.key.t
-ktod	.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.appty	ordered.map.empty	mdl.file.decl.key.t	mdl.file.decl.t
 	.app	ks	ktod	f
 	.enter	_mdl.file.process_w
 
@@ -252,24 +252,30 @@ res			.record	get	get	keys	ks	|	_mdl.file.process_res.u
 _mdl.file.process_w_:_k	.forcecont
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-list.t	.tygvar
+ordered.map.t	.tygvar
 mdl.file.decl.t	.tygvar
+list.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 rune.t	.tygvar
-ordered.map.t	.tygvar	-- Temp
+mdl.file.decl.t.in	.cogvar
 _mdl.file.process_w	.gvar
 diff.list.snoc	.gvar
+ordered.map.insert	.gvar
+mdl.file.decl.key.compare	.gvar
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
+d0.0.l	.lifted	d0.0
+d0.0.cl	.cast	d0.0.l	mdl.file.decl.t.in
 	.analyze	d0.0	inline.header
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
 k0			.undefined	mdl.file.decl.key.t
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
-ktod1			.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file.decl.key.compare	k0	d0.0.cl	ktod
 			.app	ks1	ktod1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
