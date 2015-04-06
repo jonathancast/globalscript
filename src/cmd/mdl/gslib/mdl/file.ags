@@ -424,3 +424,8 @@ mdl.file.decl.t.out	.tycoercion
 mdl.file.decl.t	.tygvar
 	.tyinvert
 	.tydefinition	mdl.file.decl.t
+
+mdl.file.decl.key.t.out	.tycoercion
+mdl.file.decl.key.t	.tygvar
+	.tyinvert
+	.tydefinition	mdl.file.decl.key.t
