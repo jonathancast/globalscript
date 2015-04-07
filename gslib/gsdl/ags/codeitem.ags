@@ -38,6 +38,7 @@ _gsdl.ags.codeitem.tyargs.parser_tyarg.re	.regex	.tyarg
 
 gsdl.ags.codeitem.tylets.parser	.closure	_gsdl.ags.codeitem.tylets.parser_c
 gsdl.ags.codeitem.tylet.parser	.closure	_gsdl.ags.codeitem.tylet.parser_c
+gsdl.ags.codeitem.tylet.filter.p	.closure	_gsdl.ags.codeitem.tylet.filter.p_c
 _gsdl.ags.codeitem.tylets.parser_tylet.re	.regex	.tylet
 
 gsdl.ags.codeitem.subcodes.parser	.closure	_gsdl.ags.codeitem.subcodes.parser_c
@@ -308,7 +309,7 @@ gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 _gsdl.ags.codeitem.parser_expr.p_decls.p_f_c	.subcode
-parser.lift10	.gvar
+parser.lift11	.gvar
 gsdl.ags.typeitem.tygvars.parser	.gvar
 gsdl.ags.codeitem.subcodes.parser	.gvar
 gsdl.ags.codeitem.cogvars.parser	.gvar
@@ -332,18 +333,18 @@ fs	.larg	gsdl.ags.syntax.features.t
 f	.closure	_gsdl.ags.codeitem.parser_expr.p_decls.p_f_c
 gvars.p	.apply	gsdl.ags.codeitem.gvars.parser	|	fs
 allocs.p	.apply	gsdl.ags.codeitem.allocs.parser	|	fs
-	.app	f	gsdl.ags.typeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gvars.p	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.tyargs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.args.parser	allocs.p
-	.enter	parser.lift10	rune.t	list.tygvar.ty	list.string.ty	list.string.ty	list.gvar.ty	list.tyfv.ty	list.tyarg.ty	list.tylet.ty	list.fv.ty	list.arg.ty	list.alloc.ty	_gsdl.ags.codeitem.prim.u_expr_decls_ty
+	.app	f	gsdl.ags.typeitem.tygvars.parser	gsdl.ags.codeitem.subcodes.parser	gsdl.ags.codeitem.cogvars.parser	gvars.p	gsdl.ags.codeitem.tyfvs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.fvs.parser	gsdl.ags.codeitem.tyargs.parser	gsdl.ags.codeitem.tylets.parser	gsdl.ags.codeitem.args.parser	allocs.p
+	.enter	parser.lift11	rune.t	list.tygvar.ty	list.string.ty	list.string.ty	list.gvar.ty	list.tyfv.ty	list.tylet.ty	list.fv.ty	list.tyarg.ty	list.tylet.ty	list.arg.ty	list.alloc.ty	_gsdl.ags.codeitem.prim.u_expr_decls_ty
 
 _gsdl.ags.codeitem.parser_expr.p_decls.p_f_c	.expr
 list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 string.t	.tygvar
 gsdl.ags.codeitem.tyfv.t	.tygvar
+gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.tyarg.t	.tygvar
 gsdl.ags.codeitem.tylet.t	.tygvar
 gsdl.ags.codeitem.gvar.t	.tygvar
-gsdl.ags.codeitem.fv.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 _gsdl.ags.codeitem.prim.u_expr_decls_u	.tygvar
@@ -352,9 +353,10 @@ subcodes	.larg	list.t	string.t
 cogvars	.larg	list.t	string.t
 gvars	.larg	list.t	gsdl.ags.codeitem.gvar.t
 tyfvs	.larg	list.t	gsdl.ags.codeitem.tyfv.t
-tyas	.larg	list.t	gsdl.ags.codeitem.tyarg.t
-tyls	.larg	list.t	gsdl.ags.codeitem.tylet.t
+tyls0	.larg	list.t	gsdl.ags.codeitem.tylet.t
 fvs	.larg	list.t	gsdl.ags.codeitem.fv.t
+tyas	.larg	list.t	gsdl.ags.codeitem.tyarg.t
+tyls1	.larg	list.t	gsdl.ags.codeitem.tylet.t
 args	.larg	list.t	gsdl.ags.codeitem.arg.t
 allocs	.larg	list.t	gsdl.ags.codeitem.alloc.t
 r	.record	allocs	allocs	args	args	cogvars	cogvars	gvars	gvars	subcodes	subcodes	tygvars	tygvs	|	_gsdl.ags.codeitem.prim.u_expr_decls_u
@@ -1201,11 +1203,20 @@ ki	.larg	gsdl.ags.typeitem.gskind.t
 
 _gsdl.ags.codeitem.tylets.parser_c	.expr
 rune.t	.tygvar
+list.t	.tygvar
 gsdl.ags.codeitem.tylet.t	.tygvar
+record.empty	.tygvar
+string.t	.tygvar
+parser.<*	.gvar
 parser.many	.gvar
 gsdl.ags.codeitem.tylet.parser	.gvar
-	.app	gsdl.ags.codeitem.tylet.parser
-	.enter	parser.many	rune.t	gsdl.ags.codeitem.tylet.t
+parser.neg.lookahead	.gvar
+gsdl.ags.codeitem.tylet.filter.p	.gvar
+list.tylet.ty	.tylet	list.t	gsdl.ags.codeitem.tylet.t
+p	.apply	parser.many	rune.t	gsdl.ags.codeitem.tylet.t	|	gsdl.ags.codeitem.tylet.parser
+neg.tylet.p	.apply	parser.neg.lookahead	rune.t	string.t	|	gsdl.ags.codeitem.tylet.filter.p
+	.app	p	neg.tylet.p
+	.enter	parser.<*	rune.t	list.tylet.ty	record.empty
 
 -- §section §gs{gsdl.ags.codeitem.tylet.parser}
 
@@ -1251,6 +1262,21 @@ nm	.larg	string.t
 tyf	.larg	string.t
 tyas	.larg	list.t	string.t
 	.undef	gsdl.ags.codeitem.tylet.t
+
+_gsdl.ags.codeitem.tylet.filter.p_c	.expr
+rune.t	.tygvar
+string.t	.tygvar
+parser.*>	.gvar
+gsdl.ags.syntax.id	.gvar
+gsdl.ags.syntax.columnsep	.gvar
+parser.match	.gvar
+rune.compare	.gvar
+_gsdl.ags.codeitem.tylets.parser_tylet.re	.gvar
+tylet.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.tylets.parser_tylet.re
+p1	.apply	parser.*>	rune.t	string.t	string.t	|	tylet.p	gsdl.ags.syntax.columnsep
+p	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	p1
+	.app	gsdl.ags.syntax.id	p
+	.enter	parser.*>	rune.t	string.t	string.t
 
 -- §section §gs{gsdl.ags.codeitem.subcodes.parser}
 
