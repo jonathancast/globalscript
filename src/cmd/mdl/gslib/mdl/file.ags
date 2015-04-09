@@ -19,6 +19,8 @@ mdl.file.decl.inline.header	.closure	_mdl.file.decl.inline.header_c
 
 mdl.file.decl.key.compare	.closure	_mdl.file.decl.key.compare_c
 
+mdl.file.decl.key.inline	.closure	_mdl.file.decl.key.inline_c
+
 	.code
 
 -- §section §gs{mdl.file.parser}
@@ -324,6 +326,18 @@ order.total.ord.t	.tygvar	-- Temp
 k0.0	.karg	mdl.file.decl.key.prim.u
 	.undef	order.total.ord.t
 
+-- §section §gs{mdl.file.decl.key.t} constructors
+
+_mdl.file.decl.key.inline_c	.expr
+natural.t	.tygvar
+mdl.file.decl.key.prim.u	.tygvar
+mdl.file.decl.key.t.in	.cogvar
+n	.larg	natural.t
+res	.constr	mdl.file.decl.key.prim.u	inline	0	n
+	.coerce	mdl.file.decl.key.t.in
+	.lift
+	.yield	res
+
 	.type
 
 -- §section §gs{mdl.file.t}
@@ -359,7 +373,12 @@ mdl.file.decl.key.prim.u	.tygvar
 	.tyref	mdl.file.decl.key.prim.u
 
 mdl.file.decl.key.prim.u	.tyexpr
-	.tysum
+_mdl.file.decl.key.prim.u_inline_ty	.tygvar
+	.tysum	inline	_mdl.file.decl.key.prim.u_inline_ty
+
+_mdl.file.decl.key.prim.u_inline_ty	.tyexpr
+natural.t	.tygvar
+	.tyubproduct	0	natural.t
 
 -- §section §gs{mdl.file.inline.c}
 
@@ -433,6 +452,10 @@ mdl.file.decl.t.out	.tycoercion
 mdl.file.decl.t	.tygvar
 	.tyinvert
 	.tydefinition	mdl.file.decl.t
+
+mdl.file.decl.key.t.in	.tycoercion
+mdl.file.decl.key.t	.tygvar
+	.tydefinition	mdl.file.decl.key.t
 
 mdl.file.decl.key.t.out	.tycoercion
 mdl.file.decl.key.t	.tygvar
