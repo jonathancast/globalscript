@@ -198,15 +198,17 @@ mdl.file.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 mdl.file.decl.t	.tygvar
 _mdl.file.process_w	.gvar
+natural.0	.gvar
 diff.list.nil	.gvar
 ordered.map.empty	.gvar
 f	.larg	mdl.file.t
 ks	.appty	diff.list.nil	mdl.file.decl.key.t
 ktod	.appty	ordered.map.empty	mdl.file.decl.key.t	mdl.file.decl.t
-	.app	ks	ktod	f
+	.app	natural.0	ks	ktod	f
 	.enter	_mdl.file.process_w
 
 _mdl.file.process_w_c	.expr
+natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
@@ -214,6 +216,7 @@ mdl.file.decl.t	.tygvar
 mdl.file.t	.tygvar
 _mdl.file.process_w_k	.subcode
 list.t.out	.cogvar
+num.inline	.larg	natural.t
 ks.ds	.larg	diff.list.t	mdl.file.decl.key.t
 ktod	.larg	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
 f	.larg	mdl.file.t
@@ -260,6 +263,7 @@ list.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 rune.t	.tygvar
+natural.t	.tygvar	-- Temp
 mdl.file.decl.t.in	.cogvar
 _mdl.file.process_w	.gvar
 diff.list.snoc	.gvar
@@ -275,10 +279,11 @@ d0.0.cl	.cast	d0.0.l	mdl.file.decl.t.in
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
+num.inline.1			.undefined	natural.t
 k0			.undefined	mdl.file.decl.key.t
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
 ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file.decl.key.compare	k0	d0.0.cl	ktod
-			.app	ks1	ktod1	ds1
+			.app	num.inline.1	ks1	ktod1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
 
@@ -414,12 +419,15 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 -- §section §gs{mdl.file.process}
 
 _mdl.file.process_w_ty	.tyexpr
+natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
 mdl.file.decl.t	.tygvar
 mdl.file.t	.tygvar
 _mdl.file.process_res.ty	.tygvar
+	.tylift
+	.tyfun	natural.t
 	.tylift
 	.tyfun	diff.list.t	mdl.file.decl.key.t
 	.tylift
