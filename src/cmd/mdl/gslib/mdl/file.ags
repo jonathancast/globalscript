@@ -330,10 +330,32 @@ k1	.larg	mdl.file.decl.key.t
 	.enter	k0
 
 _mdl.file.decl.key.compare_k0	.forcecont
+mdl.file.decl.key.t	.tygvar
 mdl.file.decl.key.prim.u	.tygvar
-order.total.ord.t	.tygvar	-- Temp
+_mdl.file.decl.key.compare_k1	.subcode
+mdl.file.decl.key.t.out	.cogvar
+k1	.fv	mdl.file.decl.key.t
 k0.0	.karg	mdl.file.decl.key.prim.u
-	.undef	order.total.ord.t
+	.force	_mdl.file.decl.key.compare_k1
+	.coerce	mdl.file.decl.key.t.out
+	.enter	k1
+
+_mdl.file.decl.key.compare_k1	.forcecont
+mdl.file.decl.key.prim.u	.tygvar
+natural.t	.tygvar
+order.total.ord.t	.tygvar	-- Temp
+natural.compare	.gvar
+k0.0	.fv	mdl.file.decl.key.prim.u
+k1.0	.karg	mdl.file.decl.key.prim.u
+	.analyze	k0.0	inline
+		.case	inline
+n0		.fkarg	0	natural.t
+			.analyze	k1.0	inline
+				.case	inline
+n1				.fkarg	0	natural.t
+					.app	n0	n1
+					.enter	natural.compare
+	-- > :: order.total.ord.t
 
 -- §section §gs{mdl.file.decl.key.t} constructors
 
