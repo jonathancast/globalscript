@@ -196,14 +196,14 @@ unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 _mdl.file.process_c	.expr
 mdl.file.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 _mdl.file.process_w	.gvar
 natural.0	.gvar
 diff.list.nil	.gvar
 ordered.map.empty	.gvar
 f	.larg	mdl.file.t
 ks	.appty	diff.list.nil	mdl.file.decl.key.t
-ktod	.appty	ordered.map.empty	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.appty	ordered.map.empty	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 	.app	natural.0	ks	ktod	f
 	.enter	_mdl.file.process_w
 
@@ -212,13 +212,14 @@ natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 mdl.file.t	.tygvar
+mdl.file.decl.t	.tygvar
 _mdl.file.process_w_k	.subcode
 list.t.out	.cogvar
 num.inline	.larg	natural.t
 ks.ds	.larg	diff.list.t	mdl.file.decl.key.t
-ktod	.larg	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.larg	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 f	.larg	mdl.file.t
 	.force	_mdl.file.process_w_k
 	.coerce	list.t.out	mdl.file.decl.t
@@ -229,8 +230,9 @@ natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 list.prim.u	.tygvar
+mdl.file.decl.t	.tygvar
 list.t	.tygvar
 _mdl.file.process_res.u	.tygvar
 _mdl.file.process_w_:_k	.subcode
@@ -240,7 +242,7 @@ list.nil	.gvar
 diff.list.tolist	.gvar
 num.inline	.fv	natural.t
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
-ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 f0	.karg	list.prim.u	mdl.file.decl.t
 	.analyze	f0	:	nil
 		.case	:
@@ -261,8 +263,9 @@ natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 list.t	.tygvar
+mdl.file.decl.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 rune.t	.tygvar
@@ -274,7 +277,7 @@ ordered.map.insert	.gvar
 mdl.file.decl.key.compare	.gvar
 num.inline	.fv	natural.t
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
-ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
 d0.0.l	.lifted	d0.0
@@ -286,7 +289,8 @@ ds		.fkarg	1	diff.list.t	rune.t
 num.inline.1			.undefined	natural.t
 k0			.apply	mdl.file.decl.key.inline	|	num.inline
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
-ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file.decl.key.compare	k0	d0.0.cl	ktod
+k0.d0			.undefined	mdl.file.decl.key.decl.t
+ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|	mdl.file.decl.key.compare	k0	k0.d0	ktod
 			.app	num.inline.1	ks1	ktod1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
@@ -294,13 +298,13 @@ ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.t	|	mdl.file
 _mdl.file.process_w_nil_get_c	.expr
 ordered.map.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 ordered.map.get	.gvar
 mdl.file.decl.key.compare	.gvar
-ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 k	.larg	mdl.file.decl.key.t
 	.app	mdl.file.decl.key.compare	k	ktod
-	.enter	ordered.map.get	mdl.file.decl.key.t	mdl.file.decl.t
+	.enter	ordered.map.get	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 
 -- §section §gs{mdl.file.decl.t} constructors
 
@@ -411,6 +415,18 @@ _mdl.file.decl.key.prim.u_inline_ty	.tyexpr
 natural.t	.tygvar
 	.tyubproduct	0	natural.t
 
+-- §section §gs{mdl.file.decl.key.decl.t}
+
+mdl.file.decl.key.decl.t	.tyexpr
+mdl.file.decl.key.decl.u	.tygvar
+	.tylift
+	.tyref	mdl.file.decl.key.decl.u
+
+mdl.file.decl.key.decl.u	.tyexpr
+mdl.file.decl.key.t	.tygvar
+mdl.file.decl.t	.tygvar
+	.typroduct	0	mdl.file.decl.key.t	1	mdl.file.decl.t
+
 -- §section §gs{mdl.file.inline.c}
 
 _mdl.file.inline.c_w.0_ty	.tyexpr
@@ -449,7 +465,7 @@ natural.t	.tygvar
 diff.list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 ordered.map.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 mdl.file.t	.tygvar
 _mdl.file.process_res.ty	.tygvar
 	.tylift
@@ -457,7 +473,7 @@ _mdl.file.process_res.ty	.tygvar
 	.tylift
 	.tyfun	diff.list.t	mdl.file.decl.key.t
 	.tylift
-	.tyfun	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.t
+	.tyfun	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 	.tylift
 	.tyfun	mdl.file.t
 	.tyref	_mdl.file.process_res.ty
@@ -470,9 +486,9 @@ _mdl.file.process_res.u	.tygvar
 _mdl.file.process_res.u	.tyexpr
 graph.lookup.t	.tygvar
 mdl.file.decl.key.t	.tygvar
-mdl.file.decl.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 list.t	.tygvar
-lookup.key.decl.ty	.tylet	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.t
+lookup.key.decl.ty	.tylet	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 list.key.ty	.tylet	list.t	mdl.file.decl.key.t
 	.typroduct	get	lookup.key.decl.ty	keys	list.key.ty
 
