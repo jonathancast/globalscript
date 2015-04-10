@@ -236,6 +236,7 @@ mdl.file.decl.t	.tygvar
 list.t	.tygvar
 _mdl.file.process_res.u	.tygvar
 _mdl.file.process_w_:_k	.subcode
+_mdl.file.process_w_nil_deps_c	.subcode
 _mdl.file.process_w_nil_get_c	.subcode
 mdl.file.decl.t.out	.cogvar
 list.nil	.gvar
@@ -252,9 +253,10 @@ ds1		.fkarg	1	list.t	mdl.file.decl.t
 			.coerce	mdl.file.decl.t.out
 			.enter	d0
 		.case	nil
+deps			.closure	_mdl.file.process_w_nil_deps_c
 get			.closure	_mdl.file.process_w_nil_get_c
 ks			.apply	diff.list.tolist	mdl.file.decl.key.t	|	ks.ds
-res			.record	get	get	keys	ks	|	_mdl.file.process_res.u
+res			.record	deps	deps	get	get	keys	ks	|	_mdl.file.process_res.u
 			.lift
 			.yield	res
 
@@ -294,6 +296,13 @@ ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|
 			.app	num.inline.1	ks1	ktod1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
+
+_mdl.file.process_w_nil_deps_c	.expr
+mdl.file.decl.key.decl.t	.tygvar
+list.t	.tygvar	-- Temp
+mdl.file.decl.key.t	.tygvar	-- Temp
+v	.larg	mdl.file.decl.key.decl.t
+	.undef	list.t	mdl.file.decl.key.t
 
 _mdl.file.process_w_nil_get_c	.expr
 ordered.map.t	.tygvar
@@ -484,13 +493,15 @@ _mdl.file.process_res.u	.tygvar
 	.tyref	_mdl.file.process_res.u
 
 _mdl.file.process_res.u	.tyexpr
+graph.dependencies.t	.tygvar
 graph.lookup.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 mdl.file.decl.key.decl.t	.tygvar
 list.t	.tygvar
+dependencies.key.decl.ty	.tylet	graph.dependencies.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 lookup.key.decl.ty	.tylet	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 list.key.ty	.tylet	list.t	mdl.file.decl.key.t
-	.typroduct	get	lookup.key.decl.ty	keys	list.key.ty
+	.typroduct	deps	dependencies.key.decl.ty	get	lookup.key.decl.ty	keys	list.key.ty
 
 	.coercion
 
