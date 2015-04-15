@@ -334,7 +334,12 @@ list.t	.tygvar
 mdl.file.decl.key.t	.tygvar
 list.key.ty	.tylet	list.t	mdl.file.decl.key.t
 mb0	.karg	maybe.prim.u	list.key.ty
-	.undef	list.t	mdl.file.decl.key.t
+	.analyze	mb0	just	nothing
+		.case	just
+ks1		.fkarg	0	list.t	mdl.file.decl.key.t
+			.enter	ks1
+		.case	nothing
+			.undef	list.t	mdl.file.decl.key.t
 
 _mdl.file.process_w_nil_get_c	.expr
 ordered.map.t	.tygvar
