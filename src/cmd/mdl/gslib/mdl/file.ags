@@ -285,10 +285,12 @@ _mdl.file.process_w	.gvar
 diff.list.snoc	.gvar
 ordered.map.insert	.gvar
 mdl.file.decl.key.compare	.gvar
-list.key.ty	.tylet	list.t	mdl.file.decl.key.t	-- Temp
+diff.list.tolist	.gvar
+list.key.ty	.tylet	list.t	mdl.file.decl.key.t
 num.inline	.fv	natural.t
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
 ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
+ktoks	.fv	ordered.map.t	mdl.file.decl.key.t	list.key.ty
 ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
 d0.0.l	.lifted	d0.0
@@ -302,7 +304,8 @@ k0			.apply	mdl.file.decl.key.inline	|	num.inline
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
 k0.d0			.undefined	mdl.file.decl.key.decl.t
 ktod1			.apply	ordered.map.insert	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|	mdl.file.decl.key.compare	k0	k0.d0	ktod
-ktoks1			.undefined	ordered.map.t	mdl.file.decl.key.t	list.key.ty
+ks.s			.apply	diff.list.tolist	mdl.file.decl.key.t	|	ks.ds
+ktoks1			.apply	ordered.map.insert	mdl.file.decl.key.t	list.key.ty	|	mdl.file.decl.key.compare	k0	ks.s	ktoks
 			.app	num.inline.1	ks1	ktod1	ktoks1	ds1
 			.enter	_mdl.file.process_w
 	-- > :: _mdl.file.process_res.ty
