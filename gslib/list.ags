@@ -807,18 +807,18 @@ bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.≡_arg_ty	.tygvar
-_list.≡.k1	.subcode
+_list.≡_k1	.subcode
 list.t.out	.cogvar
 α	.tyfv	*
 c	.fv	_list.≡_arg_ty	α
 ys	.fv	list.t	α
 t	.tylet	list.prim.u	α
 xn0	.karg	t
-	.force	_list.≡.k1
+	.force	_list.≡_k1
 	.coerce	list.t.out	α
 	.enter	ys
 
-_list.≡.k1	.forcecont
+_list.≡_k1	.forcecont
 list.prim.u	.tygvar
 list.t	.tygvar
 _list.≡_arg_ty	.tygvar
