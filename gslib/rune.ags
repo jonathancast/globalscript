@@ -79,15 +79,15 @@ y	.larg	rune.t
 _rune.≡_k0	.forcecont
 rune.prim.rune	.tygvar
 rune.t	.tygvar
-_rune.≡.k1	.subcode
+_rune.≡_k1	.subcode
 rune.t.out	.cogvar
 y	.fv	rune.t
 x0	.karg	rune.prim.rune
-	.force	_rune.≡.k1
+	.force	_rune.≡_k1
 	.coerce	rune.t.out
 	.enter	y
 
-_rune.≡.k1	.forcecont
+_rune.≡_k1	.forcecont
 bool.t	.tygvar
 rune.prim.rune	.tygvar
 _rune.prim.eq_ty	.tygvar
