@@ -68,15 +68,15 @@ rune.underscore	.closure	_rune.underscore_c
 
 _rune.≡_c	.expr
 rune.t	.tygvar
-_rune.≡.k0	.subcode
+_rune.≡_k0	.subcode
 rune.t.out	.cogvar
 x	.larg	rune.t
 y	.larg	rune.t
-	.force	_rune.≡.k0
+	.force	_rune.≡_k0
 	.coerce	rune.t.out
 	.enter	x
 
-_rune.≡.k0	.forcecont
+_rune.≡_k0	.forcecont
 rune.prim.rune	.tygvar
 rune.t	.tygvar
 _rune.≡.k1	.subcode
