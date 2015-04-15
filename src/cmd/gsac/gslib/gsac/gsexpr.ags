@@ -4570,6 +4570,7 @@ rhs			.apply	ak	|	nil.vs
 
 _gsac.gsexpr.compileArgsToGenRHS_:_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar
 _gsac.gsexpr.compileToGenRHS_k_ty	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
@@ -4586,6 +4587,7 @@ _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.subcode
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.subcode
 gsdl.cgs.gsexpr.t.out	.cogvar
 pos	.fv	gsdl.sourcepos.t
+ak	.fv	_gsac.gsexpr.compileArgsToGenRHS_k_ty
 rhsk	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -4612,6 +4614,7 @@ ea		.fkarg	0	gsdl.cgs.gsexpr.t
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar
 _gsac.gsexpr.compileToGenRHS_k_ty	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
@@ -4624,6 +4627,7 @@ _gsac.gsexpr.compileToVar_k_ty	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_c	.subcode
 gsac.gsexpr.compileToVar	.gvar
 pos	.fv	gsdl.sourcepos.t
+ak	.fv	_gsac.gsexpr.compileArgsToGenRHS_k_ty
 rhsk	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -4637,6 +4641,7 @@ k1	.closure	_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_c
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_c	.expr
 gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar
 _gsac.gsexpr.compileToGenRHS_k_ty	.tygvar
 list.t	.tygvar
 gsdl.cgs.gsexpr.arg.t	.tygvar
@@ -4644,9 +4649,10 @@ gsdl.var.t	.tygvar
 ordered.set.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
-_gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar	-- Temp
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_ak1_c	.subcode
 gsac.gsexpr.compileArgsToGenRHS	.gvar
 pos	.fv	gsdl.sourcepos.t
+ak	.fv	_gsac.gsexpr.compileArgsToGenRHS_k_ty
 rhsk	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
 as1	.fv	list.t	gsdl.cgs.gsexpr.arg.t
 av0	.larg	gsdl.var.t
@@ -4654,9 +4660,20 @@ tyem1	.larg	ordered.set.t	gsdl.var.t
 pem1	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs1	.larg	list.t	gsdl.var.t
 svs1	.larg	list.t	gsdl.var.t
-ak1	.undefined	_gsac.gsexpr.compileArgsToGenRHS_k_ty
+ak1	.closure	_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_ak1_c
 	.app	pos	ak1	rhsk	as1	tyem1	pem1	tysvs1	svs1
 	.enter	gsac.gsexpr.compileArgsToGenRHS
+
+_gsac.gsexpr.compileArgsToGenRHS_:_expr.lifted_k1_ak1_c	.expr
+_gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar
+list.t	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+ak	.fv	_gsac.gsexpr.compileArgsToGenRHS_k_ty
+avs1	.larg	list.t	gsdl.var.t
+avs	.undefined	list.t	gsdl.var.t
+	.app	avs
+	.enter	ak
 
 _gsac.gsexpr.compileArgsToGenRHS_:_expr.unlifted_k	.forcecont
 gsdl.sourcepos.t	.tygvar
