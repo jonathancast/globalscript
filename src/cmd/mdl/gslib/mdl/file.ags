@@ -247,9 +247,11 @@ _mdl.file.process_w_nil_get_c	.subcode
 mdl.file.decl.t.out	.cogvar
 list.nil	.gvar
 diff.list.tolist	.gvar
+list.key.ty	.tylet	list.t	mdl.file.decl.key.t
 num.inline	.fv	natural.t
 ks.ds	.fv	diff.list.t	mdl.file.decl.key.t
 ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
+ktoks	.fv	ordered.map.t	mdl.file.decl.key.t	list.key.ty
 f0	.karg	list.prim.u	mdl.file.decl.t
 	.analyze	f0	:	nil
 		.case	:
@@ -306,10 +308,29 @@ ktoks1			.undefined	ordered.map.t	mdl.file.decl.key.t	list.key.ty
 	-- > :: _mdl.file.process_res.ty
 
 _mdl.file.process_w_nil_deps_c	.expr
+ordered.map.t	.tygvar
+mdl.file.decl.key.t	.tygvar
+list.t	.tygvar
 mdl.file.decl.key.decl.t	.tygvar
-list.t	.tygvar	-- Temp
-mdl.file.decl.key.t	.tygvar	-- Temp
+_mdl.file.process_w_nil_deps_k	.subcode
+maybe.t.out	.cogvar
+ordered.map.get	.gvar
+mdl.file.decl.key.compare	.gvar
+list.key.ty	.tylet	list.t	mdl.file.decl.key.t
+ktoks	.fv	ordered.map.t	mdl.file.decl.key.t	list.key.ty
 v	.larg	mdl.file.decl.key.decl.t
+v.k	.lfield	0	v
+	.force	_mdl.file.process_w_nil_deps_k
+	.coerce	maybe.t.out	list.key.ty
+	.app	mdl.file.decl.key.compare	v.k	ktoks
+	.enter	ordered.map.get	mdl.file.decl.key.t	list.key.ty
+
+_mdl.file.process_w_nil_deps_k	.forcecont
+maybe.prim.u	.tygvar
+list.t	.tygvar
+mdl.file.decl.key.t	.tygvar
+list.key.ty	.tylet	list.t	mdl.file.decl.key.t
+mb0	.karg	maybe.prim.u	list.key.ty
 	.undef	list.t	mdl.file.decl.key.t
 
 _mdl.file.process_w_nil_get_c	.expr
