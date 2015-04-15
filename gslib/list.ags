@@ -791,18 +791,18 @@ _list.≡_c	.expr
 bool.t	.tygvar
 list.t	.tygvar
 _list.≡_arg_ty	.tygvar
-_list.≡.k0	.subcode
+_list.≡_k0	.subcode
 list.t.out	.cogvar
 α	.tyarg	*
 at	.tylet	_list.≡_arg_ty	α
 c	.larg	at
 xn	.larg	list.t	α
 ys	.larg	list.t	α
-	.force	_list.≡.k0
+	.force	_list.≡_k0
 	.coerce	list.t.out	α
 	.enter	xn
 
-_list.≡.k0	.forcecont
+_list.≡_k0	.forcecont
 bool.t	.tygvar
 list.prim.u	.tygvar
 list.t	.tygvar
