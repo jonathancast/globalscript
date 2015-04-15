@@ -532,16 +532,16 @@ n	.apply	list.nil	α
 
 _list.<>_c	.expr
 list.t	.tygvar
-_list.<>.code.cont	.subcode
+_list.<>_k	.subcode
 list.t.out	.cogvar
 α	.tyarg	*
 xn	.larg	list.t	α
 ys	.larg	list.t	α
-	.force	_list.<>.code.cont
+	.force	_list.<>_k
 	.coerce	list.t.out	α
 	.enter	xn
 
-_list.<>.code.cont	.forcecont
+_list.<>_k	.forcecont
 list.t	.tygvar
 list.prim.u	.tygvar
 list.t.in	.cogvar
