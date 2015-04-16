@@ -631,8 +631,8 @@ _parser.<*>_res_c	.subcode
 s	.tyarg	*
 α	.tyarg	*
 β	.tyarg	*
-f_ty	.tylet	_parser.<*>_f_ty	α	β
-pf	.larg	parser.t	s	f_ty
+f.ty	.tylet	_parser.<*>_f_ty	α	β
+pf	.larg	parser.t	s	f.ty
 px	.larg	parser.t	s	α
 res	.closure	_parser.<*>_res_c
 	.enter	res
