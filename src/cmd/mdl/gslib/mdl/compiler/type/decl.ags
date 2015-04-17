@@ -1,0 +1,27 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.data
+
+mdl.compiler.type.decl	.closure	_mdl.compiler.type.decl_c	_mdl.compiler.type.decl_ty
+
+	.code
+
+-- §section §gs{mdl.compiler.type.decl}
+
+_mdl.compiler.type.decl_c	.expr
+mdl.file.decl.t	.tygvar	-- Temp
+mdl.compiler.type.m	.tygvar	-- Temp
+d	.larg	mdl.file.decl.t
+	.undef	mdl.compiler.type.m	mdl.file.decl.t
+
+	.type
+
+-- §section §gs{mdl.compiler.type.decl}
+
+_mdl.compiler.type.decl_ty	.tyexpr
+mdl.file.decl.t	.tygvar
+mdl.compiler.type.m	.tygvar
+	.tylift
+	.tyfun	mdl.file.decl.t
+	.tyref	mdl.compiler.type.m	mdl.file.decl.t
