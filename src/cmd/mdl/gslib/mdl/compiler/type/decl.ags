@@ -25,3 +25,8 @@ mdl.compiler.type.m	.tygvar
 	.tylift
 	.tyfun	mdl.file.decl.t
 	.tyref	mdl.compiler.type.m	mdl.file.decl.t
+
+_mdl.compiler.type.decl_res.ty	.tyexpr
+_mdl.compiler.type.m_res.ty	.tygvar
+mdl.file.decl.t	.tygvar
+	.tyref	_mdl.compiler.type.m_res.ty	mdl.file.decl.t
