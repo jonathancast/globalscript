@@ -92,17 +92,17 @@ bool.t	.tygvar
 rune.prim.rune	.tygvar
 _rune.prim.eq_ty	.tygvar
 _rune.≡_k1.0	.subcode
-_rune.≡.k1.1	.subcode
+_rune.≡_k1.1	.subcode
 x0	.fv	rune.prim.rune
 y0	.karg	rune.prim.rune
-	.ubanalyze	0	_rune.≡_k1.0	1	_rune.≡.k1.1
+	.ubanalyze	0	_rune.≡_k1.0	1	_rune.≡_k1.1
 	.ubprim	rune.prim	eq	_rune.prim.eq_ty	|	x0	y0
 
 _rune.≡_k1.0	.ubcasecont
 bool.false	.gvar
 	.enter	bool.false
 
-_rune.≡.k1.1	.ubcasecont
+_rune.≡_k1.1	.ubcasecont
 bool.true	.gvar
 	.enter	bool.true
 
