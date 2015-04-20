@@ -685,7 +685,7 @@ list.nil	.gvar
 α	.tyarg	*
 cmp	.larg	order.total.t	α
 xn	.larg	list.t	α
-nil	.apply list.nil	α
+nil	.apply	list.nil	α
 	.app	cmp	xn	nil
 	.yield	_list.sort_w	α
 
