@@ -1036,7 +1036,7 @@ _list.prim.u_cons_ty	.tyexpr
 list.t	.tygvar
 α	.tylambda	*
 _list_α	.tylet	list.t	α
-	.tyubproduct	0	α	1	_list_α	
+	.tyubproduct	0	α	1	_list_α
 
 _list.prim.u_nil_ty	.tyexpr
 α	.tylambda	*
