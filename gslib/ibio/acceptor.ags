@@ -239,7 +239,7 @@ p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	res.ty	β
 x	.larg	α
 k1	.closure	_ibio.acceptor.many.prim_cr_k1_c
-	.app	p k1
+	.app	p	k1
 	.enter	ibio.acceptor.many.prim	s	α	β
 
 _ibio.acceptor.many.prim_cr_k1_c	.expr
@@ -289,7 +289,7 @@ s	.tyfv	*
 p	.fv	ibio.acceptor.prim.cont.t	s	α	β
 k	.fv	ibio.acceptor.prim.kt	s	record.empty	β
 x	.larg	α
-	.app	p k
+	.app	p	k
 	.enter	ibio.acceptor.many.void.prim	s	α	β
 
 -- §section §gs{ibio.acceptor.prim.<|>}
