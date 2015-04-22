@@ -2697,7 +2697,7 @@ r0.args	.fv	list.t	gsdl.ags.codeitem.arg.t
 b0	.karg	_gsac.gsexpr.compileToLambdaExpr_res_res_body.prim.u
 cogvs	.undefined	list.t	string.t
 gvs	.undefined	list.t	gsdl.ags.codeitem.gvar.t
-scs	.undefined	list.t	string.t
+scs	.undefined	list.t	gsdl.var.t
 ds.tygvs	.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tygvar.t	|	tygvs
 ds.tyls	.apply	diff.list.tolist	gsdl.ags.typeitem.decls.tylet.t	|	tyls
 	.analyze	b0	expr	impprog
