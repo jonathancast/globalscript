@@ -10,10 +10,32 @@ mdl.compiler.type.decl	.closure	_mdl.compiler.type.decl_c	_mdl.compiler.type.dec
 -- §section §gs{mdl.compiler.type.decl}
 
 _mdl.compiler.type.decl_c	.expr
-mdl.file.decl.t	.tygvar	-- Temp
-mdl.compiler.type.m	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar
+_mdl.compiler.type.decl_k	.subcode
+mdl.file.decl.t.out	.cogvar
 d	.larg	mdl.file.decl.t
-	.undef	mdl.compiler.type.m	mdl.file.decl.t
+	.force	_mdl.compiler.type.decl_k
+	.coerce	mdl.file.decl.t.out
+	.enter	d
+
+_mdl.compiler.type.decl_k	.forcecont
+mdl.file.decl.prim.u	.tygvar
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.decl_res.ty	.tygvar
+mdl.compiler.type.m	.tygvar	-- Temp
+either.right	.gvar
+d0	.karg	mdl.file.decl.prim.u
+	.analyze	d0	inline.header
+		.case	inline.header
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+res			.undefined	_mdl.compiler.type.decl_res.ty
+			.app	res
+			.enter	either.right	string.t	_mdl.compiler.type.decl_res.ty
+	-- > :: mdl.compiler.type.m	mdl.file.decl.t
 
 	.type
 
