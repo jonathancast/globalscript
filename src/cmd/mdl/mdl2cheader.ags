@@ -236,17 +236,18 @@ k	.larg	mdl.compiler.type.m	list.decl.ty
 	.enter	scc
 
 _ep_body_right_f_k	.forcecont
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
 graph.scc.prim.u	.tygvar
 mdl.file.decl.key.decl.t	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.decl_res.ty	.tygvar
-mdl.compiler.type.m	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
-mdl.file.decl.t	.tygvar	-- Temp
 _ep_body_right_f_nonrecursive_k	.subcode
 either.t.out	.cogvar
 mdl.compiler.type.decl	.gvar
-list.decl.ty	.tylet	list.t	mdl.file.decl.t	-- Temp
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+k	.fv	mdl.compiler.type.m	list.decl.ty
 scc0	.karg	graph.scc.prim.u	mdl.file.decl.key.decl.t
 	.analyze	scc0	nonrecursive
 		.case	nonrecursive
@@ -259,15 +260,52 @@ kd.d			.lfield	1	kd
 	-- > :: mdl.compiler.type.m	list.decl.ty
 
 _ep_body_right_f_nonrecursive_k	.forcecont
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.decl_res.ty	.tygvar
+_ep_body_right_k_res.ty	.tygvar
+_ep_body_right_f_nonrecursive_right_k	.subcode
+either.t.out	.cogvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+k	.fv	mdl.compiler.type.m	list.decl.ty
+e0	.karg	either.prim.u	string.t	_mdl.compiler.type.decl_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	mdl.compiler.type.m	list.decl.ty
+		.case	right
+d.r		.fkarg	0	_mdl.compiler.type.decl_res.ty
+d.r.r			.lfield	res	d.r
+			.force	_ep_body_right_f_nonrecursive_right_k
+			.coerce	either.t.out	string.t	_ep_body_right_k_res.ty
+			.enter	k
+
+_ep_body_right_f_nonrecursive_right_k	.forcecont
+mdl.file.decl.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_ep_body_right_k_res.ty	.tygvar
 mdl.compiler.type.m	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
-mdl.file.decl.t	.tygvar	-- Temp
+either.right	.gvar
+list.:	.gvar
 list.decl.ty	.tylet	list.t	mdl.file.decl.t	-- Temp
-e0	.karg	either.prim.u	string.t	_mdl.compiler.type.decl_res.ty
+d.r.r	.fv	mdl.file.decl.t
+e0	.karg	either.prim.u	string.t	_ep_body_right_k_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	mdl.compiler.type.m	list.decl.ty
+		.case	right
+k.r		.fkarg	0	_ep_body_right_k_res.ty
+k.r.r			.lfield	res	k.r
+r			.apply	list.:	mdl.file.decl.t	|	d.r.r	k.r.r
+res			.lrecord	res	r	|	_ep_body_right_k_res.ty
+			.app	res
+			.enter	either.right	string.t	_ep_body_right_k_res.ty
 
 _ep_body_right_z_c	.expr
 string.t	.tygvar
@@ -342,3 +380,10 @@ ibio.m	.tygvar
 rune.t	.tygvar
 record.empty	.tygvar
 	.tyref	ibio.m	rune.t	rune.t	record.empty
+
+_ep_body_right_k_res.ty	.tyexpr
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+	.tyref	_mdl.compiler.type.m_res.ty	list.decl.ty
