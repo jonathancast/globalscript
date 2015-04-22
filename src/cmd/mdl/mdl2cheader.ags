@@ -238,16 +238,36 @@ k	.larg	mdl.compiler.type.m	list.decl.ty
 _ep_body_right_f_k	.forcecont
 graph.scc.prim.u	.tygvar
 mdl.file.decl.key.decl.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.decl_res.ty	.tygvar
 mdl.compiler.type.m	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 mdl.file.decl.t	.tygvar	-- Temp
+_ep_body_right_f_nonrecursive_k	.subcode
+either.t.out	.cogvar
+mdl.compiler.type.decl	.gvar
 list.decl.ty	.tylet	list.t	mdl.file.decl.t	-- Temp
 scc0	.karg	graph.scc.prim.u	mdl.file.decl.key.decl.t
 	.analyze	scc0	nonrecursive
 		.case	nonrecursive
 kd		.fkarg	0	mdl.file.decl.key.decl.t
-			.undef	mdl.compiler.type.m	list.decl.ty
+kd.d			.lfield	1	kd
+			.force	_ep_body_right_f_nonrecursive_k
+			.coerce	either.t.out	string.t	_mdl.compiler.type.decl_res.ty
+			.app	kd.d
+			.enter	mdl.compiler.type.decl
 	-- > :: mdl.compiler.type.m	list.decl.ty
+
+_ep_body_right_f_nonrecursive_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.decl_res.ty	.tygvar
+mdl.compiler.type.m	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar	-- Temp
+list.decl.ty	.tylet	list.t	mdl.file.decl.t	-- Temp
+e0	.karg	either.prim.u	string.t	_mdl.compiler.type.decl_res.ty
+			.undef	mdl.compiler.type.m	list.decl.ty
 
 _ep_body_right_z_c	.expr
 string.t	.tygvar
