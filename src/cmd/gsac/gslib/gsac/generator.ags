@@ -940,10 +940,11 @@ tye		.fkarg	3	gsdl.cgs.typeenv.typeexpansion.t
 cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
 cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.appty	diff.list.nil	gsdl.ags.dataitem.t
+nil.var			.appty	diff.list.nil	gsdl.var.t
 tygvs			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 ts			.appty	diff.list.nil	gsdl.ags.typeitem.t
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.generator.doc.compile_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subcodes	nil.var	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.generator.doc.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.doc.compile_res.ty
 		.case	undef
@@ -1009,10 +1010,11 @@ just.v			.apply	maybe.just	gsdl.var.t	|	v
 ty.r.nm			.lfield	nm	ty.r
 d			.apply	gsdl.ags.dataitem.undefined	|	pos1	just.v	ty.r.nm
 ds			.apply	diff.list.singleton	gsdl.ags.dataitem.t	|	d
+nil.var			.apply	diff.list.nil	gsdl.var.t
 tygvs			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tygvar.t
 tyls			.appty	diff.list.nil	gsdl.ags.typeitem.decls.tylet.t
 ts			.lfield	typeitems	ty.r
-res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.generator.doc.compile_res.ty
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	prim.emitted	pem	res	record.empty	subcodes	nil.var	subvars	svs	ty.emitted	tyem	ty.subvars	tysvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.generator.doc.compile_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.generator.doc.compile_res.ty
 
