@@ -1885,4 +1885,4 @@ _ep.in	.tycoercion
 ibio.m	.tygvar
 rune.t	.tygvar
 record.empty	.tygvar
-	.tydefinition ibio.m	rune.t	rune.t	record.empty
+	.tydefinition	ibio.m	rune.t	rune.t	record.empty
