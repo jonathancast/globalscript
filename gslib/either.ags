@@ -105,12 +105,24 @@ _either.elim_c	.expr
 _either.elim_f_ty	.tygvar
 _either.elim_g_ty	.tygvar
 either.t	.tygvar
+_either.elim_k	.subcode
+either.t.out	.cogvar
 α	.tyarg	*
 β	.tyarg	*
 γ	.tyarg	*
 f	.larg	_either.elim_f_ty	α	γ
 g	.larg	_either.elim_g_ty	β	γ
 e	.larg	either.t	α	β
+	.force	_either.elim_k
+	.coerce	either.t.out	α	β
+	.enter	e
+
+_either.elim_k	.forcecont
+either.prim.u	.tygvar
+α	.tyfv	*
+β	.tyfv	*
+γ	.tyfv	*
+e0	.karg	either.prim.u	α	β
 	.undef	γ
 
 -- §section §gs{either.mapM}
