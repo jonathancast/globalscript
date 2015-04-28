@@ -3919,7 +3919,7 @@ pem1			.lfield	prim.emitted	k.r
 r.a0			.apply	gsdl.ags.codeitem.alloc.record	|	sv0	pos
 r.as			.apply	list.:	gsdl.ags.codeitem.alloc.t	|	r.a0	k.r.as
 r			.apply	_gsac.gsexpr.compileToExpr_res_res.expr	|	r.as	k.r.e
-scs			.undefined	diff.list.t	gsdl.var.t
+scs			.lfield	subcodes	k.r
 svs2			.lfield	subvars	k.r
 tyem1			.lfield	ty.emitted	k.r
 tysvs1			.lfield	ty.subvars	k.r
