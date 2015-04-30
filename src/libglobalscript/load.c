@@ -280,27 +280,6 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         if (n == 1) gsfatal("%s:$: EOF before %s", pos.real_filename, (features & gsstring_code_type_as_pragma) ? "first section" : ".document or .prefix");
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
-    if (!strcmp(calculus_version, "0.5")) {
-        static int should_disable_string_code_0_5, should_disable_string_code_0_5_initialized;
-
-        if (!should_disable_string_code_0_5_initialized) {
-            struct uxio_ichannel *chan;
-            char buf[0x10];
-            long n;
-            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_5"))) {
-                should_disable_string_code_0_5_initialized = 1;
-                goto decided_on_disabling;
-            }
-            if ((n = gsbio_get_contents(chan, buf, 0x10)) < 0)
-                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_5: %r")
-            ;
-            should_disable_string_code_0_5 = n > 0;
-            should_disable_string_code_0_5_initialized = 1;
-            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_5 fd: %r");
-        }
-    decided_on_disabling:
-        if (should_disable_string_code_0_5) gsfatal("%s: Illegally old calculus string code 0.5", pos.real_filename);
-    }
 
     if ((n = gsac_tokenize(pos.real_filename, pos.real_lineno, features, line, fields, NUM_FIELDS)) < 0)
         gsfatal("%s:%d: Fatal error in lexer: %r", pos.real_filename, pos.real_lineno)
@@ -327,6 +306,27 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         ;
         *is_doc = 1;
         return 0;
+    }
+    if (!strcmp(calculus_version, "0.6")) {
+        static int should_disable_string_code_0_6, should_disable_string_code_0_6_initialized;
+
+        if (!should_disable_string_code_0_6_initialized) {
+            struct uxio_ichannel *chan;
+            char buf[0x10];
+            long n;
+            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_6"))) {
+                should_disable_string_code_0_6_initialized = 1;
+                goto decided_on_disabling;
+            }
+            if ((n = gsbio_get_contents(chan, buf, 0x10)) < 0)
+                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_6: %r")
+            ;
+            should_disable_string_code_0_6 = n > 0;
+            should_disable_string_code_0_6_initialized = 1;
+            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_6 fd: %r");
+        }
+    decided_on_disabling:
+        if (should_disable_string_code_0_6) gsfatal("%s: Illegally old calculus string code 0.6", pos.real_filename);
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);

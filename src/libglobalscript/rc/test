@@ -2,8 +2,6 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
-SHOULD_DISABLE_STRING_CODE_0_5=1
-
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
@@ -187,6 +185,8 @@ ok_grep_errors '-- .body .apply in .impprogs --' 'body-apply.ags:21: undefined' 
 ok_grep_errors '-- .impprogs are un-lifted, by default --' 'lift-impprog.ags:18: undefined' ./$O.test-gsexec lift-impprog.ags
 
 echo '# Version 0.7 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_6=1
 
 ok_diff_fail '-- type as a pragma --' ./$O.test-gsi undef-type-pragma.ags
 ok_diff_fail '-- comments between pragmas and code --' ./$O.test-gsi undef-comments-after-pragmas.ags
