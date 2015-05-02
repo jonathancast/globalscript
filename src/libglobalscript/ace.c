@@ -720,6 +720,11 @@ ace_instr_extract_efv(struct ace_thread *thread, struct ace_eval_state *eval)
     nreg = ACE_EFV_REGNUM(ip);
 
 again:
+    if (nreg > eval->nregs) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".efv register out of range");
+        return;
+    }
+
     st = GS_SLOW_EVALUATE(ip->pos, eval->regs[nreg]);
 
     switch (st) {
@@ -924,6 +929,11 @@ ace_instr_extract_field(struct ace_thread *thread, struct ace_eval_state *st)
 
     ip = st->ip;
 
+    if (st->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return;
+    }
+
     record = (struct gsrecord_fields *)st->regs[ACE_FIELD_RECORD(ip)];
     st->regs[st->nregs++] = record->fields[ACE_FIELD_FIELD(ip)];
     st->ip = ACE_FIELD_SKIP(ip);
@@ -937,6 +947,11 @@ ace_instr_alloc_lfield(struct ace_thread *thread, struct ace_eval_state *st)
 
     ip = st->ip;
 
+    if (st->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return;
+    }
+
     st->regs[st->nregs++] = gslfield(ip->pos, ACE_LFIELD_FIELD(ip), st->regs[ACE_LFIELD_RECORD(ip)]);
     st->ip = ACE_LFIELD_SKIP(ip);
     return;
@@ -949,6 +964,11 @@ ace_instr_alloc_undef(struct ace_thread *thread, struct ace_eval_state *st)
 
     ip = st->ip;
 
+    if (st->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return;
+    }
+
     st->regs[st->nregs++] = (gsvalue)gsundefined(ip->pos);
     st->ip = ACE_UNDEFINED_SKIP(ip);
     return;
@@ -960,6 +980,11 @@ ace_instr_copy_alias(struct ace_thread *thread, struct ace_eval_state *st)
     struct gsbc *ip;
 
     ip = st->ip;
+
+    if (st->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return;
+    }
 
     st->regs[st->nregs++] = st->regs[ACE_ALIAS_SOURCE(ip)];
     st->ip = ACE_ALIAS_SKIP(ip);
@@ -974,6 +999,11 @@ ace_instr_alloc_apply(struct ace_thread *thread, struct ace_eval_state *st)
     int i;
 
     ip = st->ip;
+
+    if (st->nregs >= MAX_NUM_REGISTERS) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, "Too many registers");
+        return;
+    }
 
     fun = st->regs[ACE_APPLY_FUN(ip)];
 
@@ -1442,7 +1472,7 @@ gsprim_return_ubsum(struct ace_thread *thread, struct gspos pos, int constr, int
     gsvalue *args;
     int i;
 
-    if (((uchar*)thread->stacktop - (uchar*)thread->stacklimit) < nargs * sizeof(gsvalue)) {
+    if (((uchar*)thread->stacktop - (uchar*)thread->stacklimit) < (1 + nargs) * sizeof(gsvalue)) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "gsprim_return_ubsum: no space for result on stack");
         return 0;
     }
@@ -1602,6 +1632,7 @@ ace_remove_thread(struct ace_thread *thread)
     if (ace_thread_queue->num_active_threads > thread->tid) {
         int last_tid, cur_tid;
 
+        /* The ->tid element of threads is controlled by the ace_thread_queue->lock, not the thread->lock */
         last_tid = ace_thread_queue->num_active_threads;
         cur_tid = thread->tid;
         ace_thread_queue->threads[cur_tid] = ace_thread_queue->threads[last_tid];
