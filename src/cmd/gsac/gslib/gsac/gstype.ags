@@ -3360,6 +3360,7 @@ gsdl.var.t	.tygvar
 ordered.map.t	.tygvar
 _gsac.gstype_primname.t	.tygvar
 list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 gsdl.cgs.gstype.field.prim.u	.tygvar
 gsdl.cgs.gstype.t	.tygvar
 string.t	.tygvar
@@ -3373,6 +3374,7 @@ pos	.fv	gsdl.sourcepos.t
 em	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 gvs	.fv	list.t	gsdl.var.t
+fs1	.fv	list.t	gsdl.cgs.gstype.field.t
 f0.0	.karg	gsdl.cgs.gstype.field.prim.u
 	.analyze	f0.0	object
 		.case	object
@@ -3385,12 +3387,40 @@ ty		.fkarg	1	gsdl.cgs.gstype.t
 	-- > :: either.t	string.t	_gsac.gstype.fields.compile_res.ty
 
 _gsac.gstype.fields.compile_:_object_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+list.t	.tygvar
+gsdl.cgs.gstype.field.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 _gsac.gstype.fields.compile_res.ty	.tygvar	-- Temp
+_gsac.gstype.fields.compile_:_object_right_k	.subcode
+either.t.out	.cogvar
+gsac.gstype.fields.compile	.gvar
+pos	.fv	gsdl.sourcepos.t
+fs1	.fv	list.t	gsdl.cgs.gstype.field.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
+		.case	right
+ty.r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+em1			.lfield	emitted	ty.r
+pem1			.lfield	prim.emitted	ty.r
+gvs1			.lfield	subvars	ty.r
+			.force	_gsac.gstype.fields.compile_:_object_right_k
+			.coerce	either.t.out	string.t	_gsac.gstype.fields.compile_res.ty
+			.app	pos	fs1	em1	pem1	gvs1
+			.enter	gsac.gstype.fields.compile
+
+_gsac.gstype.fields.compile_:_object_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gstype.fields.compile_res.ty	.tygvar
+either.t	.tygvar	-- Temp
+e0	.karg	either.prim.u	string.t	_gsac.gstype.fields.compile_res.ty
 			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
 
 -- §section §gs{gsac.gstype.constr.compile}
