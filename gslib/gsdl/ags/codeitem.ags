@@ -918,6 +918,7 @@ _gsdl.ags.codeitem.prim.u_expr_decls_ty	.tygvar
 rune.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 diff.list.t	.tygvar
+gsdl.ags.codeitem.subcode.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 list.t	.tygvar	-- Temp
@@ -933,13 +934,17 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 tygvs	.lfield	tygvars	ds
 tygvs.dss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
 tygvs.ds	.apply	diff.list.concat	rune.t	|	tygvs.dss
+cs	.lfield	subcodes	ds
+cs.dss	.apply	list.map	gsdl.ags.codeitem.subcode.t	diff.list.rune.ty	|	gsdl.ags.codeitem.subcode.print	cs
+cs.ds	.apply	diff.list.concat	rune.t	|	cs.dss
 args	.lfield	args	ds
 args.dss	.apply	list.map	gsdl.ags.codeitem.arg.t	diff.list.rune.ty	|	gsdl.ags.codeitem.arg.print	args
 args.ds	.apply	diff.list.concat	rune.t	|	args.dss
 allocs	.lfield	allocs	ds
 allocs.dss	.apply	list.map	gsdl.ags.codeitem.alloc.t	diff.list.rune.ty	|	gsdl.ags.codeitem.alloc.print	allocs
 allocs.ds	.apply	diff.list.concat	rune.t	|	allocs.dss
-ds1	.apply	diff.list.<>	rune.t	|	args.ds	allocs.ds
+ds2	.apply	diff.list.<>	rune.t	|	args.ds	allocs.ds
+ds1	.apply	diff.list.<>	rune.t	|	cs.ds	ds2
 	.app	tygvs.ds	ds1
 	.enter	diff.list.<>	rune.t
 
