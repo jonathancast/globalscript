@@ -20,10 +20,19 @@ d	.larg	mdl.file.decl.t
 
 _mdl.compiler.compile.decl_k	.forcecont
 mdl.file.decl.prim.u	.tygvar
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+clang.decl.t	.tygvar
 either.t	.tygvar	-- Temp
-diff.list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
-clang.decl.t	.tygvar	-- Temp
+either.left	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t	-- Temp
 d0	.karg	mdl.file.decl.prim.u
-	.undef	either.t	diff.list.rune.ty	clang.decl.t
+	.analyze	d0	inline.header
+		.case	inline.header
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+ds1			.undefined	diff.list.t	rune.t
+			.app	ds1
+			.enter	either.left	diff.list.rune.ty	clang.decl.t
+	-- > :: either.t	diff.list.rune.ty	clang.decl.t
