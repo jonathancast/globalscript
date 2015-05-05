@@ -118,12 +118,21 @@ e	.larg	either.t	α	β
 	.enter	e
 
 _either.elim_k	.forcecont
+_either.elim_f_ty	.tygvar
 either.prim.u	.tygvar
 α	.tyfv	*
 β	.tyfv	*
 γ	.tyfv	*
+f	.fv	_either.elim_f_ty	α	γ
 e0	.karg	either.prim.u	α	β
-	.undef	γ
+	.analyze	e0	left	right
+		.case	left
+x		.fkarg	0	α
+			.app	x
+			.enter	f
+		.case	right
+x		.fkarg	0	β
+			.undef	γ
 
 -- §section §gs{either.mapM}
 
