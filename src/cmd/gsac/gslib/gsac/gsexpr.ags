@@ -4261,6 +4261,7 @@ err		.fkarg	0	string.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.ds			.lfield	dataitems	e.r
+v.c			.undefined	gsdl.var.t
 rhs			.undefined	gsdl.ags.codeitem.alloc.rhs.t
 			.force	_gsac.gsexpr.compileToGenRHS_default_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -4270,17 +4271,19 @@ rhs			.undefined	gsdl.ags.codeitem.alloc.rhs.t
 _gsac.gsexpr.compileToGenRHS_default_right_k	.forcecont
 diff.list.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.codeitem.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
+diff.list.:	.gvar
 e.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
+v.c	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -4294,7 +4297,8 @@ k.r.ds			.lfield	dataitems	k.r
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	e.r.ds	k.r.ds
 pem1			.lfield	prim.emitted	k.r
 r			.lfield	res	k.r
-scs			.undefined	diff.list.t	gsdl.var.t
+k.r.scs			.lfield	subcodes	k.r
+scs			.apply	diff.list.:	gsdl.var.t	|	v.c	k.r.scs
 svs1			.lfield	subvars	k.r
 tyem1			.lfield	ty.emitted	k.r
 tysvs1			.lfield	ty.subvars	k.r
