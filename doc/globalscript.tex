@@ -508,6 +508,44 @@ use a pattern matching algorithm as follows:
         \end{itemize}
 \end{itemize}
 
+\chapter{Generators}
+
+The judgment form for generators is:
+\begin{haskell}
+  \Gamma \sequent g \provides \Gamma'
+\end{haskell}
+\<g\> can be a single generator, or a sequence of (semicolon-terminated) generators.
+This is read ``In type environment \<\Gamma\>,
+the generator(s) \<g\> is (are) well-typed
+and induce(s) the type environment \<\Gamma'\>.
+
+\defn{Monoidal} generators can fail at run time, which is indicated by using a judgment of the form
+\begin{haskell}
+  \Gamma \sequent g \provides^? \Gamma'
+\end{haskell}
+
+\defn{Monadic} generators run in a particular monad, which is indicated by using a judgment of the form
+\begin{haskell}
+  \Gamma \sequent g \provides_m \Gamma'
+\end{haskell}
+
+And, finally, there are \defn{monadic monoidal} generators:
+\begin{haskell}
+  \Gamma \sequent g \provides_m^? \Gamma'
+\end{haskell}
+
+Some simple generators are:
+\begin{prooftree}
+  \AxiomC{\<\Gamma \sequent p :: \tau \provides \Gamma'\>}
+  \AxiomC{\<\Gamma \sequent e :: \tau\>}
+  \BinaryInfC{\<\Gamma \sequent p \propto e \provides \Gamma'\>}
+\end{prooftree}
+\begin{prooftree}
+  \AxiomC{\<\Gamma \sequent p :: \tau \provides^? \Gamma'\>}
+  \AxiomC{\<\Gamma \sequent e :: \tau\>}
+  \BinaryInfC{\<\Gamma \sequent p \propto e \provides^? \Gamma'\>}
+\end{prooftree}
+
 \chapter{Types}
 
 \chapter{Modules}
