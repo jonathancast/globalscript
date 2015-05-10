@@ -3420,8 +3420,35 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.fields.compile_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+ordered.map.t	.tygvar	-- Temp
+_gsac.gstype_primname.t	.tygvar	-- Temp
+_gsac.gstype.fields.compile_res_res.ty	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
+either.right	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gstype.fields.compile_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gstype.fields.compile_res.ty
+		.case	right
+fs1.k		.fkarg	0	_gsac.gstype.fields.compile_res.ty
+em1			.undefined	ordered.set.t	gsdl.var.t
+pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+r			.undefined	_gsac.gstype.fields.compile_res_res.ty
+svs1			.undefined	list.t	gsdl.var.t
+tyfvs			.undefined	diff.list.t	gsdl.var.t
+tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	emitted	em1	prim.emitted	pem1	res	r	subvars	svs1	tyfvs	tyfvs	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gstype.fields.compile_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gstype.fields.compile_res.ty
 
 -- §section §gs{gsac.gstype.constr.compile}
 
