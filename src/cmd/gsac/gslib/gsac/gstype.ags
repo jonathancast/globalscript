@@ -3390,6 +3390,7 @@ _gsac.gstype.fields.compile_:_object_k	.forcecont
 gsdl.sourcepos.t	.tygvar
 list.t	.tygvar
 gsdl.cgs.gstype.field.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compileToVar_res.ty	.tygvar
@@ -3400,6 +3401,7 @@ either.t.out	.cogvar
 gsac.gstype.fields.compile	.gvar
 pos	.fv	gsdl.sourcepos.t
 fs1	.fv	list.t	gsdl.cgs.gstype.field.t
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.compileToVar_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -3409,6 +3411,7 @@ err		.fkarg	0	string.t
 ty.r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
 em1			.lfield	emitted	ty.r
 pem1			.lfield	prim.emitted	ty.r
+ty.r.r			.lfield	res	ty.r
 gvs1			.lfield	subvars	ty.r
 ty.r.tygvs			.lfield	tygvars	ty.r
 ty.r.tyls			.lfield	tylets	ty.r
@@ -3418,6 +3421,7 @@ ty.r.tyls			.lfield	tylets	ty.r
 			.enter	gsac.gstype.fields.compile
 
 _gsac.gstype.fields.compile_:_object_right_k	.forcecont
+gsdl.var.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
@@ -3427,7 +3431,6 @@ _gsac.gstype.fields.compile_res.ty	.tygvar
 gsdl.ags.typeitem.field.t	.tygvar
 either.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
@@ -3435,6 +3438,8 @@ gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
 diff.list.<>	.gvar
+v	.fv	gsdl.var.t
+ty.r.r	.fv	gsdl.var.t
 ty.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ty.r.tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 e0	.karg	either.prim.u	string.t	_gsac.gstype.fields.compile_res.ty
@@ -3446,7 +3451,7 @@ err		.fkarg	0	string.t
 fs1.r		.fkarg	0	_gsac.gstype.fields.compile_res.ty
 em1			.undefined	ordered.set.t	gsdl.var.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-f0			.undefined	gsdl.ags.typeitem.field.t
+f0			.lrecord	0	v	1	ty.r.r	|	gsdl.ags.typeitem.field.t
 fs1.r.r			.lfield	res	fs1.r
 r			.apply	diff.list.:	gsdl.ags.typeitem.field.t	|	f0	fs1.r.r
 svs1			.undefined	list.t	gsdl.var.t
