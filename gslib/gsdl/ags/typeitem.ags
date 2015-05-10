@@ -1882,12 +1882,21 @@ rune.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 diff.list.fromlist	.gvar
 _gsdl.ags.typeitem.expr.print_fields.print_nl.s	.gvar
+diff.list.:	.gvar
+rune.tab	.gvar
+diff.list.<>	.gvar
+gsdl.ags.syntax.var.print	.gvar
 fs0	.karg	list.prim.u	gsdl.ags.typeitem.field.t
 	.analyze	fs0	:	nil
 		.case	:
 f0		.fkarg	0	gsdl.ags.typeitem.field.t
 fs1		.fkarg	1	list.t	gsdl.ags.typeitem.field.t
-			.undef	diff.list.t	rune.t
+f0.v			.lfield	0	f0
+f0.v.s			.apply	gsdl.ags.syntax.var.print	|	f0.v
+s1			.undefined	diff.list.t	rune.t
+s			.apply	diff.list.<>	rune.t	|	f0.v.s	s1
+			.app	rune.tab	s
+			.enter	diff.list.:	rune.t
 		.case	nil
 			.app	_gsdl.ags.typeitem.expr.print_fields.print_nl.s
 			.enter	diff.list.fromlist	rune.t
