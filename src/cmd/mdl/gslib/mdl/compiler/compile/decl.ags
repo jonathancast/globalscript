@@ -29,13 +29,17 @@ either.t	.tygvar	-- Temp
 either.left	.gvar
 diff.list.prepend	.gvar
 _mdl.compiler.compile.decl_inline.header_line.s	.gvar
+natural.fmtdecimal	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t	-- Temp
 d0	.karg	mdl.file.decl.prim.u
 	.analyze	d0	inline.header
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-ds1.1			.undefined	diff.list.t	rune.t
+pos.n			.lfield	line	pos
+pos.n.s			.apply	natural.fmtdecimal	|	pos.n
+ds1.2			.undefined	diff.list.t	rune.t
+ds1.1			.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
 ds1			.apply	diff.list.prepend	rune.t	|	_mdl.compiler.compile.decl_inline.header_line.s	ds1.1
 			.app	ds1
 			.enter	either.left	diff.list.rune.ty	clang.decl.t
