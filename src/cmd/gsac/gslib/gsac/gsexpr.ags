@@ -4508,6 +4508,7 @@ nil	.appty	list.nil	gsdl.var.t
 
 _gsac.gsexpr.compileTyArgsToGenRHS_:_type_k	.forcecont
 gsdl.sourcepos.t	.tygvar
+_gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar
 _gsac.gsexpr.compileToGenRHS_k_ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
@@ -4520,6 +4521,7 @@ _gsac.gsexpr.compileToGenRHS_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileTyArgsToGenRHS_:_type_right_k1_c	.subcode
 gsac.gsexpr.compileTyArgsToGenRHS	.gvar
 pos	.fv	gsdl.sourcepos.t
+k	.fv	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
 rhsk	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
 svs	.fv	list.t	gsdl.var.t
 as1	.fv	list.t	gsdl.cgs.gsexpr.arg.t
@@ -4538,12 +4540,16 @@ tysvs1			.lfield	subvars	tya.r
 			.enter	gsac.gsexpr.compileTyArgsToGenRHS
 
 _gsac.gsexpr.compileTyArgsToGenRHS_:_type_right_k1_c	.expr
+_gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar
 list.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+k	.fv	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
-	.undef	gsdl.ags.codeitem.alloc.rhs.t
+tyas1	.undefined	list.t	gsdl.var.t
+	.app	tyas1	as
+	.enter	k
 
 -- §section §gs{gsac.gsexpr.compileArgsToGenRHS}
 
