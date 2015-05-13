@@ -2406,7 +2406,7 @@ either.left	.gvar
 gsdl.cgs.typeenv.typeexpansion.togstype	.gvar
 list.foldl	.gvar
 gsdl.cgs.typeenv.typeexpansion.app	.gvar
-list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t 
+list.gstype.ty	.tylet	list.t	gsdl.cgs.gstype.t
 tyf.exp	.fv	gsdl.cgs.typeenv.typeexpansion.t
 e0	.karg	either.prim.u	string.t	list.gstype.ty
 	.analyze	e0	left	right
