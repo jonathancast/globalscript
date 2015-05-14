@@ -173,14 +173,14 @@ ok_grep_errors '-- API dis-allows  .bind-bound variables of unlifted type as arg
 
 ok_grep_errors '-- .appty in .impprogs --' 'impprog-appty.ags:21: undefined' ./$O.test-gsexec impprog-appty.ags
 
-ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-tokens-in-impprog.ags:17: undefined' ./$O.test-gsexec undef-body-closure-two-tokens-in-impprog.ags
-ok_grep_errors '-- .bind	.closure in .impprogs --' 'undef-bind-closure-two-tokens-in-impprog.ags:19: undefined' ./$O.test-gsexec undef-bind-closure-two-tokens-in-impprog.ags
-ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-body-closure-in-impprog.ags:13: Unimplemented imp op .body' ./$O.test-gsexec illegal-body-closure-in-impprog.ags
-ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:14: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
-
 echo '# Version 0.7 and up:'
 
 SHOULD_DISABLE_STRING_CODE_0_6=1
+
+ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-tokens-in-impprog.ags:16: undefined' ./$O.test-gsexec undef-body-closure-two-tokens-in-impprog.ags
+ok_grep_errors '-- .bind	.closure in .impprogs --' 'undef-bind-closure-two-tokens-in-impprog.ags:18: undefined' ./$O.test-gsexec undef-bind-closure-two-tokens-in-impprog.ags
+ok_grep_errors '-- single-token .body.closure illegal in .impprogs --' 'illegal-body-closure-in-impprog.ags:12: Unimplemented imp op .body' ./$O.test-gsexec illegal-body-closure-in-impprog.ags
+ok_grep_errors '-- single-token .bind.closure illegal in .impprogs --' 'illegal-bind-closure-in-impprog.ags:13: Unimplemented imp op .bind' ./$O.test-gsexec illegal-bind-closure-in-impprog.ags
 
 ok_grep_errors '-- .body	.undefined in .impprogs --' 'body-undefined.ags:12: undefined' ./$O.test-gsexec body-undefined.ags
 ok_grep_errors '-- .body .appty in .impprogs --' 'body-appty.ags:19: undefined' ./$O.test-gsexec body-appty.ags
