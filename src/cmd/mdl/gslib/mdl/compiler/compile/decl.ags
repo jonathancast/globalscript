@@ -33,6 +33,8 @@ natural.fmtdecimal	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
 rune.double.quote	.gvar
+ibio.file.name.out	.gvar
+rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 d0	.karg	mdl.file.decl.prim.u
 	.analyze	d0	inline.header
@@ -41,7 +43,11 @@ pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
 pos.n			.lfield	line	pos
 pos.n.s			.apply	natural.fmtdecimal	|	pos.n
-ds1.4			.undefined	diff.list.t	rune.t
+pos.fn			.lfield	file	pos
+pos.fn.s			.apply	ibio.file.name.out	|	pos.fn
+ds1.6			.apply	diff.list.:	rune.t	|	rune.new.line	ds
+ds1.5			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.6
+ds1.4			.apply	diff.list.prepend	rune.t	|	pos.fn.s	ds1.5
 ds1.3			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.4
 ds1.2			.apply	diff.list.:	rune.t	|	rune.space	ds1.3
 ds1.1			.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
