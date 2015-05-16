@@ -11,3 +11,4 @@ ok_diff_script '-- mdltype2c: Empty API prim --' type-empty-api-prim ibio ./gsli
 ok_diff_script '-- mdltype2c: Field in API prim --' type-api-prim-field ibio ./gslib ./mdltype2c.ags < ./test-fixtures/api-prim-field.mdl
 
 ok_diff_script '-- mdl2cheader: Empty file --' header-empty-file ibio ./gslib ./mdl2cheader.ags ./test-fixtures/empty-header.mdi
+ok_diff_script '-- mdl2cheader: Only inline C --' header-inline-c ibio ./gslib ./mdl2cheader.ags ./test-fixtures/inline-c.mdi
