@@ -32,6 +32,7 @@ _mdl.compiler.compile.decl_inline.header_line.s	.gvar
 natural.fmtdecimal	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
+rune.double.quote	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 d0	.karg	mdl.file.decl.prim.u
 	.analyze	d0	inline.header
@@ -40,7 +41,8 @@ pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
 pos.n			.lfield	line	pos
 pos.n.s			.apply	natural.fmtdecimal	|	pos.n
-ds1.3			.undefined	diff.list.t	rune.t
+ds1.4			.undefined	diff.list.t	rune.t
+ds1.3			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.4
 ds1.2			.apply	diff.list.:	rune.t	|	rune.space	ds1.3
 ds1.1			.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
 ds1			.apply	diff.list.prepend	rune.t	|	_mdl.compiler.compile.decl_inline.header_line.s	ds1.1
