@@ -4350,6 +4350,7 @@ either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToGenRHS_v.k_c	.subcode
 gsac.gsexpr.compileFunToGenRHS	.gvar
 list.:	.gvar
 gsac.gsexpr.compileTyArgsToGenRHS	.gvar
@@ -4361,6 +4362,7 @@ pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.fv	list.t	gsdl.var.t
 svs	.fv	list.t	gsdl.var.t
 f0	.karg	gsdl.cgs.gsexpr.prim.u
+v.k	.closure	_gsac.gsexpr.compileFunToGenRHS_v.k_c
 	.danalyze	f0	app	pos	var.lifted	var.unlifted
 		.default
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -4382,10 +4384,19 @@ k			.undefined	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
 			.enter	gsac.gsexpr.compileTyArgsToGenRHS
 		.case	var.unlifted
 v		.fkarg	0	gsdl.var.t
-k			.undefined	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
+k			.apply	v.k	|	v
 			.app	pos	k	rhsk	as	tyem	pem	tysvs	svs
 			.enter	gsac.gsexpr.compileTyArgsToGenRHS
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
+
+_gsac.gsexpr.compileFunToGenRHS_v.k_c	.expr
+gsdl.var.t	.tygvar
+list.t	.tygvar
+gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+v	.larg	gsdl.var.t
+tyas	.larg	list.t	gsdl.var.t
+as	.larg	list.t	gsdl.var.t
+	.undef	gsdl.ags.codeitem.alloc.rhs.t
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToGenRHS}
 
