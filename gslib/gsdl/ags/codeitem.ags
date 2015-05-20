@@ -54,6 +54,8 @@ _gsdl.ags.codeitem.gvars.parser_gvar.p_gvar.re	.regex	.gvar
 _gsdl.ags.codeitem.gvars.parser_natural.p_natural.re	.regex	.natural
 _gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.regex	.rune
 
+gsdl.ags.codeitem.gvar.print	.closure	_gsdl.ags.codeitem.gvar.print_c
+
 gsdl.ags.codeitem.gvar.≡	.closure	_gsdl.ags.codeitem.gvar.≡_c
 
 gsdl.ags.codeitem.gvar.fmtgs	.closure	_gsdl.ags.codeitem.gvar.fmtgs_c
@@ -1493,6 +1495,15 @@ pos	.larg	parser.pos.t
 nm	.larg	string.t
 lit	.larg	string.t
 	.undef	gsdl.ags.codeitem.gvar.t
+
+-- §section §gs{gsdl.ags.codeitem.gvar.print}
+
+_gsdl.ags.codeitem.gvar.print_c	.expr
+gsdl.ags.codeitem.gvar.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+gv	.larg	gsdl.ags.codeitem.gvar.t
+	.undef	diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.gvar.≡}
 
