@@ -1762,7 +1762,7 @@ v.c.v			.apply	gsdl.var.<>	|	v	_gsac.gsexpr_c.v
 e.r0.scs			.lfield	subcodes	e.r0
 e.r0.tygvs			.lfield	tygvars	e.r0
 e.r0.tyls			.lfield	tylets	e.r0
-c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	v.c.v	e.r0.scs	e.r0.tygvs	e.r0.tyls	e.r0.res
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	v.c.v	e.r0.tygvs	e.r0.scs	e.r0.tyls	e.r0.res
 cs1			.lfield	codeitems	e.r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.lfield	coercionitems	e.r0
@@ -2059,7 +2059,7 @@ x.c.v			.apply	gsdl.var.<>	|	x	_gsac.gsexpr_c.v
 r0.scs			.lfield	subcodes	r0
 r0.tygvs			.lfield	tygvars	r0
 r0.tyls			.lfield	tylets	r0
-c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	x.c.v	r0.scs	r0.tygvs	r0.tyls	r0.res
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	x.c.v	r0.tygvs	r0.scs	r0.tyls	r0.res
 cs1			.lfield	codeitems	r0
 cs			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	cs1
 cos			.lfield	coercionitems	r0
@@ -2677,8 +2677,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem_k	.subcode
 _gsac.gsexpr.compileToLambdaExpr_res_res_body.t.out	.cogvar
 pos	.larg	gsdl.sourcepos.t
 x	.larg	gsdl.var.t
-scs	.larg	diff.list.t	gsdl.var.t
 tygvs	.larg	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+scs	.larg	diff.list.t	gsdl.var.t
 tyls	.larg	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 r0	.larg	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 r0.args	.lfield	args	r0
