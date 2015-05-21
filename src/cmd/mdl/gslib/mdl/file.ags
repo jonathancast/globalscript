@@ -128,17 +128,21 @@ c	.larg	rune.t
 	.enter	rune.≡
 
 _mdl.file.inline.c_w.s_k	.forcecont
-bool.prim.u	.tygvar
-rune.t	.tygvar
 diff.list.t	.tygvar
+rune.t	.tygvar
+bool.prim.u	.tygvar
+_mdl.file.inline.c_w.0	.gvar
+diff.list.snoc	.gvar
 _mdl.file.inline.c_w.%	.gvar
 parser.fail	.gvar	-- Temp
-diff.list.rune.ty	.tylet	diff.list.t	rune.t
 ds	.fv	diff.list.t	rune.t
+c	.fv	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.enter	parser.fail	rune.t	diff.list.rune.ty
+ds1			.apply	diff.list.snoc	rune.t	|	ds	c
+			.app	ds1
+			.enter	_mdl.file.inline.c_w.0
 		.case	true
 			.app	ds
 			.enter	_mdl.file.inline.c_w.%
