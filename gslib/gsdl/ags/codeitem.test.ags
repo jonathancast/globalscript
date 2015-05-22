@@ -1938,8 +1938,27 @@ ci	.larg	gsdl.ags.codeitem.expr.t
 _test.parse_expr.app_k_k	.forcecont
 gsdl.ags.codeitem.expr.prim.u	.tygvar
 gsdl.sourcepos.t	.tygvar
-string.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar
+_test.parse_expr.app_k_pos_k	.subcode
+gsdl.ags.codeitem.expr.t.out	.cogvar
+test.property.false	.gvar
+_test.parse_expr.app_k_k_wrong.constr.s	.gvar
+ci0	.karg	gsdl.ags.codeitem.expr.prim.u
+	.danalyze	ci0	pos
+		.default
+			.app	_test.parse_expr.app_k_k_wrong.constr.s
+			.enter	test.property.false
+		.case	pos
+pos		.fkarg	0	gsdl.sourcepos.t
+ci1		.fkarg	1	gsdl.ags.codeitem.expr.t
+			.force	_test.parse_expr.app_k_pos_k
+			.coerce	gsdl.ags.codeitem.expr.t.out
+			.enter	ci1
+
+_test.parse_expr.app_k_pos_k	.forcecont
+gsdl.ags.codeitem.expr.prim.u	.tygvar
 list.t	.tygvar
+string.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 test.property.false	.gvar
 _test.parse_expr.app_k_k_wrong.constr.s	.gvar
@@ -1950,15 +1969,14 @@ list.fmtgs.byDefault	.gvar
 string.fmtgs	.gvar
 _test.parse_expr.app_k_as.expected	.gvar
 list.string.ty	.tylet	list.t	string.t
-ci0	.karg	gsdl.ags.codeitem.expr.prim.u
-	.danalyze	ci0	app
+ci1.0	.karg	gsdl.ags.codeitem.expr.prim.u
+	.danalyze	ci1.0	app
 		.default
 			.app	_test.parse_expr.app_k_k_wrong.constr.s
 			.enter	test.property.false
 		.case	app
-pos		.fkarg	0	gsdl.sourcepos.t
-as		.fkarg	1	list.t	string.t
-e		.fkarg	2	gsdl.ags.codeitem.expr.t
+as		.fkarg	0	list.t	string.t
+e		.fkarg	1	gsdl.ags.codeitem.expr.t
 list.string.≡			.apply	list.≡	string.t	|	string.≡
 list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
 			.app	list.string.≡	list.string.fmtgs	as	_test.parse_expr.app_k_as.expected
