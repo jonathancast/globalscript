@@ -3220,9 +3220,19 @@ as	.larg	list.t	gsdl.var.t
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.expr
 list.t	.tygvar
 gsdl.var.t	.tygvar
-gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToExpr_var.unlifted_k_k	.subcode
+list.t.out	.cogvar
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
+	.force	_gsac.gsexpr.compileFunToExpr_var.unlifted_k_k
+	.coerce	list.t.out	gsdl.var.t
+	.enter	as
+
+_gsac.gsexpr.compileFunToExpr_var.unlifted_k_k	.forcecont
+list.prim.u	.tygvar
+gsdl.var.t	.tygvar
+gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+as0	.karg	list.prim.u	gsdl.var.t
 	.undef	gsdl.ags.codeitem.expr.t
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToExpr}
