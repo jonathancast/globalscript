@@ -4285,7 +4285,9 @@ gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToGenRHS_default_right_k	.subcode
 either.t.out	.cogvar
 gsdl.var.<>	.gvar
+_gsac.gsexpr_c.v	.gvar
 tv	.fv	gsdl.var.t
+sv	.fv	gsdl.var.t
 k	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
 tyem	.fv	ordered.set.t	gsdl.var.t
 pem	.fv	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -4299,8 +4301,8 @@ err		.fkarg	0	string.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.ds			.lfield	dataitems	e.r
-sv1			.undefined	gsdl.var.t	-- > sv <> _gsac.gsexpr_c.v
-sv.c			.apply	gsdl.var.<>	|	tv	sv1
+sv0			.apply	gsdl.var.<>	|	tv	sv
+sv.c			.apply	gsdl.var.<>	|	sv0	_gsac.gsexpr_c.v
 rhs			.undefined	gsdl.ags.codeitem.alloc.rhs.t
 			.force	_gsac.gsexpr.compileToGenRHS_default_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
