@@ -2539,6 +2539,7 @@ gsdl.ags.sourcepos.print	.gvar
 gsdl.ags.syntax.var.print	.gvar
 diff.list.:	.gvar
 rune.tab	.gvar
+diff.list.snoc	.gvar
 gsdl.ags.codeitem.alloc.rhs.print	.gvar
 diff.list.prepend	.gvar
 _gsdl.ags.codeitem.alloc.print_record_record.s	.gvar
@@ -2553,7 +2554,8 @@ rhs		.fkarg	2	gsdl.ags.codeitem.alloc.rhs.t
 pos.s			.apply	gsdl.ags.sourcepos.print	|	pos
 nm.s			.apply	gsdl.ags.syntax.var.print	|	nm
 rhs.s			.apply	gsdl.ags.codeitem.alloc.rhs.print	|	rhs
-s1			.apply	diff.list.:	rune.t	|	rune.tab	rhs.s
+s2			.apply	diff.list.snoc	rune.t	|	rhs.s	rune.new.line
+s1			.apply	diff.list.:	rune.t	|	rune.tab	s2
 s			.apply	diff.list.<>	rune.t	|	nm.s	s1
 			.app	pos.s	s
 			.enter	diff.list.<>	rune.t
