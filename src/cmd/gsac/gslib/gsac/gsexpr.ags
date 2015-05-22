@@ -4270,6 +4270,7 @@ r			.apply	gsdl.ags.codeitem.alloc.rhs.appty	|	pos	v	nil.vs
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 _gsac.gsexpr.compileToGenRHS_default_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 _gsac.gsexpr.compileToGenRHS_k_ty	.tygvar
 ordered.set.t	.tygvar
@@ -4286,6 +4287,8 @@ _gsac.gsexpr.compileToGenRHS_default_right_k	.subcode
 either.t.out	.cogvar
 gsdl.var.<>	.gvar
 _gsac.gsexpr_c.v	.gvar
+gsdl.ags.codeitem.alloc.rhs.closure	.gvar
+pos	.fv	gsdl.sourcepos.t
 tv	.fv	gsdl.var.t
 sv	.fv	gsdl.var.t
 k	.fv	_gsac.gsexpr.compileToGenRHS_k_ty
@@ -4303,7 +4306,7 @@ e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.ds			.lfield	dataitems	e.r
 sv0			.apply	gsdl.var.<>	|	tv	sv
 sv.c			.apply	gsdl.var.<>	|	sv0	_gsac.gsexpr_c.v
-rhs			.undefined	gsdl.ags.codeitem.alloc.rhs.t
+rhs			.apply	gsdl.ags.codeitem.alloc.rhs.closure	|	pos	sv.c
 			.force	_gsac.gsexpr.compileToGenRHS_default_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
 			.app	rhs	tyem	pem	tysvs	svs
