@@ -127,6 +127,21 @@ An implementation of one language \emph{simpliciter} never need link in an imple
 
 \chapter{Syntax}
 
+This document contains no formal syntax for the language;
+instead, the intention is that the mapping from the abstract syntax given here back to concrete syntax be simple enough to not need a repetitive specification.
+
+Global Script has a handful of special symbols: \<, ; . ( ) [ ] \{ \}\>;
+otherwise, most non-whitespace symbols are treated as being part of identifiers (or keywords).
+
+An identifier consists of a sequence of one or more components separated by \<.\> characters (with no intervening whitespace);
+the three types of components are
+\begin{itemize}
+  \item \defn{alphanumeric} components, which consist of a lower-case letter followed by 0 or more alphanumeric letters;
+  \item \defn{numeric} components, which consist of a sequence of 1 or more decimal digits (two numeric components with the same value, e.g. \<01\> and \<1\>, are considered identical); and
+  \item \defn{symbolic} components, which consist of a sequence of 1 or more symbols, other than \<, ; . ( ) [ ] \{ \}\>.
+\end{itemize}
+A symbolic component may only be the final component in an identifier.
+
 \chapter{Type System}
 
 Global Script has a standard natural deduction-based type system, based on \defn{judgment}s of the form
