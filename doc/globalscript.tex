@@ -85,11 +85,11 @@ This document specifies the \defn{Global Script Program Calculus}, a purely-func
 
 \section{Excursus on the Term `Programming Language'}
 
-The term `programming language' has an odd, and in the opinion of the developer of this system deleterious, connotation in normal usage.
+The term `programming language' has an odd, and in the opinion of the developer of this system deleterious, definition in normal usage.
 `Programming language' clearly derives from the verb `program', (rather than the noun);
 it does not mean `language that is engaged in programming', so it must mean `language for the act of programming'.
 But the verb `program' is a transitive verb: `program the i686 processor', `program the fuel injection system', `program the accounting system', etc.
-To program a machine is to make it do what the programmer wishes;
+To \defn{program} a machine is to make it do what the programmer wishes;
 the act of programming makes no sense except in reference to a machine.
 So `machine-independent programming language' is, properly speaking, a nonsensical concept.
 
@@ -97,20 +97,20 @@ Originally, it simply meant `programming language which targets multiple machine
 (or, usually rather, `family of programming languages indexed by multiple machines'),
 which really means (if it means anything) `programming language which targets a family of machines sharing similar capabilities'.
 Typically this class of machines encompases most of the machines typically encountered by programmers
-(but not most programmable machines in use!),
+(but not most programmable machines in use!),\footnote{Most software is actually embedded software, which lacks access to the familiar keyboard / screen / mouse facilities assumed by the typical definition of `general-purpose' language.}
 so the myth has grown up that typical languages `support all computers';
-and even that languages lacking I/O facilities are not Turing-complete!
+and even that languages lacking I/O facilities are not Turing-complete!\footnote{The Intercal manual (implicitly) makes this claim.}
 
 Meanwhile, `programming language' has come to mean something like what this document intends by `program calculus':
 methods for algorithmic computation, variable naming, function definition, program partitioning, etc.
-I/O `isn't part of the language' or `shouldn't be part of the language' (!) (thus excluding denotational semantics from `the language'\ldots).
-The problem with this position --- beyond the fact that you can't interpret I/O operations in an arbitrary model of a language that lacks them! ---
+I/O `isn't part of the language' or `shouldn't be part of the language' (!).\footnote{Thus excluding denotational semantics from `the language'\ldots.}
+The problem with this position\footnote{Beyond the fact that you can't interpret I/O operations in an arbitrary model of a language that lacks them!}
 is that it justifies the neglect of I/O that programming language designers have traditionally lavished on it.
 Almost every language has genuinely wretched I/O facilities,
 precisely because of the second-class status assigned to I/O by the concept of the `general-purpose programming language'.
 Global Script thus includes I/O in `the language', not only because that is the only way to give a denotation for I/O,
 but because I/O deserves the same careful design as any other aspect of the language.
-The Global Script Program Calculus is thus a genuine programming language --- environment-dependent and I/Oful ---
+The Global Script Program Calculus is thus a genuine programming language (to wit, environment-dependent and I/Oful)
 stripped of its environment-specific and I/O-related facilities.
 In fact, because the calculus and the I/O system are so largely orthogonal, it is several (distinct) languages so stripped of their environmental facilities;
 the list includes at least:
