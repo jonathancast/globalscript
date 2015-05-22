@@ -3569,12 +3569,14 @@ k2	.closure	_gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k2_c
 
 _gsac.gsexpr.compileArgsToExpr_:_expr.lifted_k2_c	.expr
 _gsac.gsexpr.compileArgsToExpr_k_ty	.tygvar
-list.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+list.:	.gvar
 k	.fv	_gsac.gsexpr.compileArgsToExpr_k_ty
+a0.r	.fv	gsdl.var.t
 as1.r	.larg	list.t	gsdl.var.t
-as	.undefined	list.t	gsdl.var.t
+as	.apply	list.:	gsdl.var.t	|	a0.r	as1.r
 	.app	as
 	.enter	k
 
