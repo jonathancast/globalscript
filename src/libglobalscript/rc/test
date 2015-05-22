@@ -165,17 +165,17 @@ ok_grep_errors '-- undefined block statement API entry points --' './test-fixtur
 ok_grep_errors '-- block statement API entry points with mis-typed binds --' './test-fixtures/mistyped-bind-api.ags:13: I don''t think' ./$O.test-gsexec mistyped-bind-api.ags
 ok_grep_errors '-- block statement API entry points with undefined binds --' './test-fixtures/undef-bind-api.ags:20: undefined' ./$O.test-gsexec undef-bind-api.ags
 
-ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
-ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
-
-ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:15: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
-ok_grep_errors '-- API dis-allows  .bind-bound variables of unlifted type as arguments to .apply --' './test-fixtures/invalid-apply-arg.ags:16: ''x'' is .bind-bound but passed as an argument in a .apply \(must use a .closure and .efv-bind the variable\)' ./$O.test-gsexec invalid-apply-arg.ags
-
-ok_grep_errors '-- .appty in .impprogs --' 'impprog-appty.ags:21: undefined' ./$O.test-gsexec impprog-appty.ags
-
 echo '# Version 0.7 and up:'
 
 SHOULD_DISABLE_STRING_CODE_0_6=1
+
+ok_diff '-- simple unit statements --' ./$O.test-gsexec simple-unit-api.ags
+ok_diff '-- trivial use of .closure --' ./$O.test-gsexec simple-closure-api.ags
+
+ok_grep_errors '-- API dis-allows .fv free variables for .bind-bound variables of unlifted type --' './test-fixtures/invalid-fv.ags:14: ''x'' is .bind-bound but passed for a .fv-bound variable \(should be .efv-bound\)' ./$O.test-gsexec invalid-fv.ags
+ok_grep_errors '-- API dis-allows  .bind-bound variables of unlifted type as arguments to .apply --' './test-fixtures/invalid-apply-arg.ags:15: ''x'' is .bind-bound but passed as an argument in a .apply \(must use a .closure and .efv-bind the variable\)' ./$O.test-gsexec invalid-apply-arg.ags
+
+ok_grep_errors '-- .appty in .impprogs --' 'impprog-appty.ags:20: undefined' ./$O.test-gsexec impprog-appty.ags
 
 ok_grep_errors '-- .body	.closure in .impprogs --' 'undef-body-closure-two-tokens-in-impprog.ags:16: undefined' ./$O.test-gsexec undef-body-closure-two-tokens-in-impprog.ags
 ok_grep_errors '-- .bind	.closure in .impprogs --' 'undef-bind-closure-two-tokens-in-impprog.ags:18: undefined' ./$O.test-gsexec undef-bind-closure-two-tokens-in-impprog.ags
