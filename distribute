@@ -10,9 +10,16 @@ for (source in $dist_files) {
     if (test -d $source ) mkdir -p $target
     if not {
         mkdir -p `{dirname $target}
-        cp $source $target
-        u sed -i 's,^#! '^$GLOBALSCRIPT^',#! /usr/local/globalscript,' $target
-        u sed -i 's,^#! '^$PLAN9^',#! /usr/local/plan9,' $target
+        cp -a $source $target
+        if (head -1 $source | 9 grep -s '^#!') {
+            u sed -i 's,^#! '^$GLOBALSCRIPT^',#! /usr/local/globalscript,' $target
+            u sed -i 's,^#! '^$PLAN9^',#! /usr/local/plan9,' $target
+        }
+        if (~ $source *.mdi) {
+            source_h=`{echo $source | sed 's,\.mdi$,.h,'}
+            target_h=`{echo $target | sed 's,\.mdi$,.h,'}
+            if (test -f $source_h) cp -a $source_h $target_h
+        }
     }
 }
 u tar -czf globalscript-$ver.tar.gz globalscript-$ver
