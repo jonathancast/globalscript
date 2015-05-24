@@ -3,6 +3,12 @@
 prog=$1; shift
 
 if (test -x $GLOBALSCRIPT/bin/$prog) exec $GLOBALSCRIPT/bin/$prog $*
-if (test -x $OLDGLOBALSCRIPT/bin/$prog) GLOBALSCRIPT=$OLDGLOBALSCRIPT exec $OLDGLOBALSCRIPT/bin/$prog $*
-echo Invalid bootstrapping command: No $prog in $GLOBALSCRIPT/bin or $OLDGLOBALSCRIPT/bin >[1=2]
-exit noprog
+if (! ~ $#OLDGLOBALSCRIPT 0) {
+    if (test -x $OLDGLOBALSCRIPT/bin/$prog) GLOBALSCRIPT=$OLDGLOBALSCRIPT exec $OLDGLOBALSCRIPT/bin/$prog $*
+    echo Invalid bootstrapping command: No $prog in $GLOBALSCRIPT/bin or $OLDGLOBALSCRIPT/bin >[1=2]
+    exit noprog
+}
+if not {
+    echo Invalid bootstrapping command: No $prog in $GLOBALSCRIPT/bin and OLDGLOBALSCRIPT not set >[1=2]
+    exit no
+}
