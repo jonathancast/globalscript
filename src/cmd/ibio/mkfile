@@ -34,6 +34,8 @@ TARG=ibio
 
 < $PLAN9/src/mkone
 
+< $GLOBALSCRIPT/src/mkcommon-mdl-source
+
 $PROG: $GLOBALSCRIPT/lib/libglobalscript.a
 
 all install:V: test
