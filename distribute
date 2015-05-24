@@ -1,0 +1,19 @@
+#! /usr/local/plan9/bin/rc -e
+
+ver=0.0a
+dist_files=`{darcs show files}
+
+rm -rf globalscript-*
+mkdir globalscript-$ver
+for (source in $dist_files) {
+    target=globalscript-$ver/$source
+    if (test -d $source ) mkdir -p $target
+    if not {
+        mkdir -p `{dirname $target}
+        cp $source $target
+        u sed -i 's,^#! '^$GLOBALSCRIPT^',#! /usr/local/globalscript,' $target
+        u sed -i 's,^#! '^$PLAN9^',#! /usr/local/plan9,' $target
+    }
+}
+u tar -czf globalscript-$ver.tar.gz globalscript-$ver
+rm -rf globalscript-$ver

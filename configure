@@ -2,7 +2,9 @@
 
 GLOBALSCRIPT=${GLOBALSCRIPT:-$PWD}
 
-SCRIPTS="$GLOBALSCRIPT/src/test-all $GLOBALSCRIPT/src/mk-all $GLOBALSCRIPT/src/libglobalscript/rc/test"
+SCRIPTS="$GLOBALSCRIPT/distribute"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/test-all $GLOBALSCRIPT/src/mk-all"
+SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/libglobalscript/rc/test"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/bin/globalscript"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/bin/bootstrap"
 SCRIPTS="$SCRIPTS $GLOBALSCRIPT/src/libglobalscript/rc/test-core-source"
