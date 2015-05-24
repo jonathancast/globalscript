@@ -1,4 +1,4 @@
-#! /home/jcast/globalscript/bin/ibio
+#! /usr/local/globalscript/bin/ibio
 
 for 'as ← env.arguments. analyze as
     case nil. cat

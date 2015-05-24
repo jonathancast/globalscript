@@ -1,4 +1,4 @@
-#! /home/jcast/globalscript/bin/ibio
+#! /usr/local/globalscript/bin/ibio
 
 for
         'opt.n ← env.option ch{n};
