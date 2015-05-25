@@ -10,5 +10,5 @@ if (! ~ $#OLDGLOBALSCRIPT 0) {
 }
 if not {
     echo Invalid bootstrapping command: No $prog in $GLOBALSCRIPT/bin and OLDGLOBALSCRIPT not set >[1=2]
-    exit no
+    exit noprog
 }
