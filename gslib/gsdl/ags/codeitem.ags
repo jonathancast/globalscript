@@ -3375,8 +3375,9 @@ gsdl.ags.syntax.features.t	.tygvar
 rune.t	.tygvar
 parser.pos.t	.tygvar
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
+string.t	.tygvar
 _gsdl.ags.codeitem.expr.parser_app.p_f_c	.subcode
 parser.lift3	.gvar
 parser.pos.get	.gvar
@@ -3386,34 +3387,36 @@ parser.match	.gvar
 rune.compare	.gvar
 _gsdl.ags.codeitem.expr.parser_app.p_app.re	.gvar
 parser.many	.gvar
-gsdl.ags.syntax.id	.gvar
+gsdl.var.parser	.gvar
+natural.1	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 gsdl.ags.codeitem.expr.parser	.gvar
 parser.fail	.gvar	-- Temp
 fs	.fv	gsdl.ags.syntax.features.t
-list.string.ty	.tylet	list.t	string.t
+list.var.ty	.tylet	list.t	gsdl.var.t
 f	.closure	_gsdl.ags.codeitem.expr.parser_app.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 app.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.codeitem.expr.parser_app.p_app.re
-as.p3	.apply	parser.*>	rune.t	string.t	string.t	|	gsdl.ags.syntax.columnsep	gsdl.ags.syntax.id
-as.p2	.apply	parser.many	rune.t	string.t	|	as.p3
-as.p1	.apply	parser.*>	rune.t	string.t	list.string.ty	|	app.p	as.p2
-as.p	.apply	parser.*>	rune.t	string.t	list.string.ty	|	gsdl.ags.syntax.columnsep	as.p1
+var.p	.apply	gsdl.var.parser	|	natural.1
+as.p3	.apply	parser.*>	rune.t	string.t	gsdl.var.t	|	gsdl.ags.syntax.columnsep	var.p
+as.p2	.apply	parser.many	rune.t	gsdl.var.t	|	as.p3
+as.p1	.apply	parser.*>	rune.t	string.t	list.var.ty	|	app.p	as.p2
+as.p	.apply	parser.*>	rune.t	string.t	list.var.ty	|	gsdl.ags.syntax.columnsep	as.p1
 expr.p	.apply	gsdl.ags.codeitem.expr.parser	|	fs
 e.p	.apply	parser.*>	rune.t	string.t	gsdl.ags.codeitem.expr.t	|	gsdl.ags.syntax.whitespace	expr.p
 	.app	f	pos.get	as.p	e.p
-	.enter	parser.lift3	rune.t	parser.pos.t	list.string.ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t
+	.enter	parser.lift3	rune.t	parser.pos.t	list.var.ty	gsdl.ags.codeitem.expr.t	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.parser_app.p_f_c	.expr
 parser.pos.t	.tygvar
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.ags.codeitem.expr.pos	.gvar
 gsdl.sourcepos	.gvar
 gsdl.ags.codeitem.expr.app	.gvar
 pos0	.larg	parser.pos.t
-as	.larg	list.t	string.t
+as	.larg	list.t	gsdl.var.t
 e	.larg	gsdl.ags.codeitem.expr.t
 pos1	.undefined	parser.pos.t
 pos	.apply	gsdl.sourcepos	|	pos0	pos1
@@ -3994,9 +3997,10 @@ e	.larg	gsdl.ags.codeitem.expr.t
 _gsdl.ags.codeitem.expr.print_k	.forcecont
 gsdl.ags.codeitem.expr.prim.u	.tygvar
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.sourcepos.t	.tygvar
+string.t	.tygvar
 rune.t	.tygvar
 gsdl.var.t	.tygvar
 diff.list.t	.tygvar	-- Temp
@@ -4018,7 +4022,7 @@ e0	.karg	gsdl.ags.codeitem.expr.prim.u
 cons.tab	.apply	diff.list.:	rune.t	|	rune.tab
 	.analyze	e0	app	coerce	enter	force	pos	undef	yield
 		.case	app
-as		.fkarg	0	list.t	string.t
+as		.fkarg	0	list.t	gsdl.var.t
 e1		.fkarg	1	gsdl.ags.codeitem.expr.t
 			.undef	diff.list.t	rune.t
 		.case	coerce
@@ -4113,7 +4117,7 @@ e0.0	.fv	gsdl.ags.codeitem.expr.prim.u
 e1.0	.karg	gsdl.ags.codeitem.expr.prim.u
 	.analyze	e0.0	app	coerce	enter	force	pos	undef	yield
 		.case	app
-as0		.fkarg	0	list.t	string.t
+as0		.fkarg	0	list.t	gsdl.var.t
 e0.1		.fkarg	1	gsdl.ags.codeitem.expr.t
 			.undef	bool.t
 		.case	coerce
@@ -4181,11 +4185,11 @@ c	.constr	gsdl.ags.codeitem.expr.prim.u	pos	0	pos	1	e
 
 _gsdl.ags.codeitem.expr.app_c	.expr
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 gsdl.ags.codeitem.expr.prim.u	.tygvar
 gsdl.ags.codeitem.expr.t.in	.cogvar
-as	.arg	list.t	string.t
+as	.arg	list.t	gsdl.var.t
 e	.arg	gsdl.ags.codeitem.expr.t
 c	.constr	gsdl.ags.codeitem.expr.prim.u	app	0	as	1	e
 	.coerce	gsdl.ags.codeitem.expr.t.in
@@ -4754,10 +4758,10 @@ _gsdl.ags.codeitem.expr.prim.u_yield_ty	.tygvar
 
 _gsdl.ags.codeitem.expr.prim.u_app_ty	.tyexpr
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
-list.string.ty	.tylet	list.t	string.t
-	.tyubproduct	0	list.string.ty	1	gsdl.ags.codeitem.expr.t
+list.var.ty	.tylet	list.t	gsdl.var.t
+	.tyubproduct	0	list.var.ty	1	gsdl.ags.codeitem.expr.t
 
 _gsdl.ags.codeitem.expr.prim.u_coerce_ty	.tyexpr
 gsdl.sourcepos.t	.tygvar

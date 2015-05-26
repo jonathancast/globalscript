@@ -246,8 +246,7 @@ _test.parse_expr.app	.closure	_test.parse_expr.app_c
 _test.parse_expr.app_label	.string	qq{\\t.app\\tbar\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
 _test.parse_expr.app_input	.string	\t.app\tbar\n\t.enter\tfoo\n
 _test.parse_expr.app_k_k_wrong.constr.s	.string	Parse\sresult\sis\snot\san\s.app\sconstructor
-_test.parse_expr.app_k_as.expected	.list	string.t	_test.parse_expr.app_k_as.expected_0
-_test.parse_expr.app_k_as.expected_0	.string	bar
+_test.parse_expr.app_k_as.expected	.list	gsdl.var.t	_fixtures_bar.v
 
 _test.parse_expr.ubanalyze	.closure	_test.parse_expr.ubanalyze_c
 _test.parse_expr.ubanalyze_label	.string	qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n}\s=~\sexpr.parser
@@ -1958,29 +1957,29 @@ ci1		.fkarg	1	gsdl.ags.codeitem.expr.t
 _test.parse_expr.app_k_pos_k	.forcecont
 gsdl.ags.codeitem.expr.prim.u	.tygvar
 list.t	.tygvar
-string.t	.tygvar
+gsdl.var.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar
 test.property.false	.gvar
 _test.parse_expr.app_k_k_wrong.constr.s	.gvar
 test.assert.eq	.gvar
 list.≡	.gvar
-string.≡	.gvar
+gsdl.var.≡	.gvar
 list.fmtgs.byDefault	.gvar
-string.fmtgs	.gvar
+gsdl.var.fmtgs	.gvar
 _test.parse_expr.app_k_as.expected	.gvar
-list.string.ty	.tylet	list.t	string.t
+list.var.ty	.tylet	list.t	gsdl.var.t
 ci1.0	.karg	gsdl.ags.codeitem.expr.prim.u
 	.danalyze	ci1.0	app
 		.default
 			.app	_test.parse_expr.app_k_k_wrong.constr.s
 			.enter	test.property.false
 		.case	app
-as		.fkarg	0	list.t	string.t
+as		.fkarg	0	list.t	gsdl.var.t
 e		.fkarg	1	gsdl.ags.codeitem.expr.t
-list.string.≡			.apply	list.≡	string.t	|	string.≡
-list.string.fmtgs			.apply	list.fmtgs.byDefault	string.t	|	string.fmtgs
-			.app	list.string.≡	list.string.fmtgs	as	_test.parse_expr.app_k_as.expected
-			.enter	test.assert.eq	list.string.ty
+list.var.≡			.apply	list.≡	gsdl.var.t	|	gsdl.var.≡
+list.var.fmtgs			.apply	list.fmtgs.byDefault	gsdl.var.t	|	gsdl.var.fmtgs
+			.app	list.var.≡	list.var.fmtgs	as	_test.parse_expr.app_k_as.expected
+			.enter	test.assert.eq	list.var.ty
 
 -- §subsubsection §gs{qq{\\t.ubanalyze\\t0\\t_foo_k0\\n\\t.enter\\tfoo\\n} =~ expr.parser}
 
