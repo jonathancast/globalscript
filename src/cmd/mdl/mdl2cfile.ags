@@ -3,7 +3,77 @@
 
 	.data
 
-	.undefined	_ep_ty
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+_ep_c	.impprog	ibio.prim	ibio
+ibio.prim.iport	.tygvar
+rune.t	.tygvar
+ibio.prim.oport	.tygvar
+record.empty	.tygvar
+ibio.file.name.t	.tygvar	-- Temp
+ibio.prim.t	.tygvar	-- Temp
+_ep_if_c	.subcode
+ibio.m.in	.cogvar
+ibio.prim.env.args.get	.gvar
+	.coerce	ibio.m.in	rune.t	rune.t	record.empty
+i	.larg	ibio.prim.iport	rune.t
+o	.larg	ibio.prim.oport	rune.t
+eo	.larg	ibio.prim.oport	rune.t
+	.lift
+as	.bind	.apply	ibio.prim.env.args.get
+fn	.undefined	ibio.file.name.t
+if	.bind	.closure	_ep_if_c
+	.body	.undefined	ibio.prim.t	record.empty
+
+_ep_if_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+ibio.file.name.t	.tygvar
+_ep_if_body_c	.subcode
+ibio.file.read.open.prim	.gvar
+ibio.rune.external.io	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+fn	.fv	ibio.file.name.t
+eif	.bind	.apply	ibio.file.read.open.prim	rune.t	|	ibio.rune.external.io	fn
+	.body	.closure	_ep_if_body_c
+
+_ep_if_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_ibio.prim.file.read.open_res.ty	.tygvar
+string.t	.tygvar
+ibio.prim.iport	.tygvar
+_ep_if_body_0_res_c	.subcode
+ibio.prim.unit	.gvar
+iport.rune.ty	.tylet	ibio.prim.iport	rune.t
+eo	.fv	ibio.prim.oport	rune.t
+eif	.efv	_ibio.prim.file.read.open_res.ty	rune.t
+	.analyze	eif	0	1
+		.case	0
+err		.karg	string.t
+res			.closure	_ep_if_body_0_res_c
+			.enter	res
+		.case	1
+if		.karg	ibio.prim.iport	rune.t
+			.lift
+			.app	if
+			.yield	ibio.prim.unit	iport.rune.ty
+
+_ep_if_body_0_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+string.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+ibio.prim.iport	.tygvar	-- Temp
+ibio.prim.write	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	string.t
+iport.rune.ty	.tylet	ibio.prim.iport	rune.t	-- Temp
+	.lift
+	.bind	.apply	ibio.prim.write	rune.t	|	eo	err
+	.body	.undefined	ibio.prim.t	iport.rune.ty
 
 	.type
 
