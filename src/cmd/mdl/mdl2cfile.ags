@@ -1,0 +1,16 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.undefined	_ep_ty
+
+	.type
+
+-- §section Entry Point
+
+_ep_ty	.tyexpr
+ibio.m	.tygvar
+rune.t	.tygvar
+record.empty	.tygvar
+	.tyref	ibio.m	rune.t	rune.t	record.empty
