@@ -3231,9 +3231,22 @@ as	.larg	list.t	gsdl.var.t
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_k	.forcecont
 list.prim.u	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+list.t.in	.cogvar
+gsdl.ags.codeitem.expr.app	.gvar
 as0	.karg	list.prim.u	gsdl.var.t
-	.undef	gsdl.ags.codeitem.expr.t
+e1	.undefined	gsdl.ags.codeitem.expr.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	gsdl.var.t
+as1		.fkarg	1	list.t	gsdl.var.t
+as0.l			.lifted	as0
+as0.cl			.cast	as0.l	list.t.in	gsdl.var.t
+			.app	as0.cl	e1
+			.yield	gsdl.ags.codeitem.expr.app
+		.case	nil
+			.undef	gsdl.ags.codeitem.expr.t
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToExpr}
 
