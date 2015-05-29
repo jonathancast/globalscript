@@ -188,6 +188,31 @@ The denotation of the type environment $\Gamma$, which will be written $\Den{\la
 
 \chapter{Equational Theory}
 
+The equational theory of Global Script, like the type system, consists of judgments of the form
+\begin{equation}
+    \Gamma \sequent P
+\end{equation}
+where, however, \<\Gamma\> is a sequence of type assignments and \emph{equational propositions} and \<P\> is an equational proposition.
+If you like, you can read this as `\<P\> is deducible from \<\Gamma\>'.
+
+An equational proposition is formed from the propositional connective \<\land\>,
+universal quantifiers \<\forall\>
+(over Global Script type assignments, so \<\forall \pvar{x} :: \tau\> where \<x\> is a Global Script variable and \<\tau\> its type),
+and seven forms of atoms:
+\begin{itemize}
+    \item \defn{Equations} of the form \<e₀ = e₁\>, between two expressions of the same type;
+    \item \defn{Pattern match success assertions} of the form \<p \match e\>, read `\<p\> \defn{matches} \<e\>';
+    \item \defn{Pattern match failure  assertions} of the form \<p \match e\fails\>, read `\<p\> \defn{fails to match} \<e\>';
+    \item \defn{Pattern match divergence assertions} of the form \<p \match e\diverges\>, read `the match of \<p\> against \<e\> \defn{diverges}';
+    \item \defn{Generator success assertions} of the form \<g\>, read `\<g\> \defn{succeeds}';
+    \item \defn{Generator failure assertions} of the form \<g\fails\>, read `\<g\> \defn{fails}'; and
+    \item \defn{Generator divergence assertions} of the form \<g\diverges\>, read `\<g\> \defn{diverges}'.
+\end{itemize}
+There is a technical ambiguity wether the propositions \<p \match e\>, \<p \match e\fails\>, and \<p \match e\diverges\>
+are about the pattern \<p\> and expression \<e\> or the generator \<p \match e\>,
+but since the meaning is the same in either case the ambiguity does not matter,
+and will be clarified in those cases where which is meant is not immediate.
+
 \chapter{Operational Model}
 
 \chapter{Implementations}
