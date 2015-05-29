@@ -14,6 +14,7 @@ ibio.prim.oport	.tygvar
 record.empty	.tygvar
 ibio.file.name.t	.tygvar	-- Temp
 ibio.prim.t	.tygvar	-- Temp
+_ep_fn_c	.subcode
 _ep_if_c	.subcode
 ibio.m.in	.cogvar
 ibio.prim.env.args.get	.gvar
@@ -23,9 +24,35 @@ o	.larg	ibio.prim.oport	rune.t
 eo	.larg	ibio.prim.oport	rune.t
 	.lift
 as	.bind	.apply	ibio.prim.env.args.get
-fn	.undefined	ibio.file.name.t
+fn	.closure	_ep_fn_c
 if	.bind	.closure	_ep_if_c
 	.body	.undefined	ibio.prim.t	record.empty
+
+_ep_fn_c	.expr
+list.t	.tygvar
+string.t	.tygvar
+_ep_fn_k	.subcode
+list.t.out	.cogvar
+as	.fv	list.t	string.t
+	.force	_ep_fn_k
+	.coerce	list.t.out	string.t
+	.enter	as
+
+_ep_fn_k	.forcecont
+list.prim.u	.tygvar
+string.t	.tygvar
+list.t	.tygvar
+ibio.file.name.t	.tygvar	-- Temp
+ibio.file.name.in	.gvar
+as0	.karg	list.prim.u	string.t
+	.analyze	as0	:	nil
+		.case	:
+a0		.fkarg	0	string.t
+as1		.fkarg	1	list.t	string.t
+			.app	a0
+			.enter	ibio.file.name.in
+		.case	nil
+			.undef	ibio.file.name.t
 
 _ep_if_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
