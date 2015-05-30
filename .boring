@@ -28,6 +28,7 @@ bin/gsac$
 \.stats$
 bin/mdltype2c$
 bin/mdl2cheader$
+bin/mdl2cfile$
 bin/mdl2clib$
 bin/gscr$
 bin/gscr-deps$

@@ -9,7 +9,7 @@ test:V: all
 integration-test:V: all test
 	./rc/test-interpreted-ags
 
-install:V: all test $GLOBALSCRIPT/bin/mdltype2c $GLOBALSCRIPT/bin/mdl2cheader
+install:V: all test $GLOBALSCRIPT/bin/mdltype2c $GLOBALSCRIPT/bin/mdl2cheader $GLOBALSCRIPT/bin/mdl2cfile
 
 $GLOBALSCRIPT/bin/%: %.rc all test lint-%
 	cp $stem.rc $GLOBALSCRIPT/bin/$stem
