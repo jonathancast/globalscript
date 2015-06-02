@@ -2491,7 +2491,6 @@ gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.lift	.gvar
@@ -2505,7 +2504,7 @@ r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	r0
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	r0
 pem			.lfield	prim.emitted	r0
 r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
