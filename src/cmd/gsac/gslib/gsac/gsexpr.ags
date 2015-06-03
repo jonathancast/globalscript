@@ -3817,7 +3817,6 @@ string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToVar_default_:_k1_right_r_c	.subcode
 either.right	.gvar
 pos	.fv	gsdl.sourcepos.t
@@ -3833,7 +3832,7 @@ k.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 cs			.lfield	codeitems	k.r
 cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	k.r
 pem1			.lfield	prim.emitted	k.r
 k.r.r			.lfield	res	k.r
 r			.closure	_gsac.gsexpr.compileToVar_default_:_k1_right_r_c
