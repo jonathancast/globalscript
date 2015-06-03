@@ -2358,7 +2358,6 @@ gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -2371,7 +2370,7 @@ r0		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 cs			.lfield	codeitems	r0
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	r0
 pem1			.lfield	prim.emitted	r0
 r.as			.appty	list.nil	gsdl.ags.codeitem.arg.t
 r0.r			.lfield	res	r0
@@ -2463,7 +2462,7 @@ b.r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	b.r0
 cos			.lfield	coercionitems	b.r0
 ds			.lfield	dataitems	b.r0
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	b.r0
 b.r0.pem			.lfield	prim.emitted	b.r0
 a0			.apply	gsdl.ags.codeitem.arg.arg	|	x	ty.r0.tyf	ty.r0.as
 b.e			.lfield	res	b.r0
@@ -2533,7 +2532,6 @@ gsdl.ags.codeitem.arg.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 either.right	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.arg.pos	.gvar
@@ -2548,7 +2546,7 @@ r0		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 cs			.lfield	codeitems	r0
 cos			.lfield	coercionitems	r0
 ds			.lfield	dataitems	r0
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	r0
 pem			.lfield	prim.emitted	r0
 r0.res			.lfield	res	r0
 r0.as			.lfield	args	r0.res
@@ -2641,12 +2639,12 @@ _gsac.gsexpr.compileToLambdaExpr_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
@@ -2668,7 +2666,7 @@ r0		.fkarg	0	_gsac.gstype.compileToApp_res.ty
 cs			.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos			.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.apply	diff.list.nil	gsdl.ags.dataitem.t
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.appty	diff.list.nil	gsdl.ags.codeitem.gvar.t
 pem			.lfield	prim.emitted	r0
 e.as			.apply	list.nil	gsdl.ags.codeitem.arg.t
 e.b.as			.apply	list.nil	gsdl.ags.codeitem.alloc.t
@@ -3092,11 +3090,11 @@ _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
@@ -3112,7 +3110,7 @@ svs	.larg	list.t	gsdl.var.t
 cs	.apply	diff.list.nil	gsdl.ags.codeitem.t
 cos	.apply	diff.list.nil	gsdl.ags.coercionitem.t
 ds	.apply	diff.list.nil	gsdl.ags.dataitem.t
-gvs	.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs	.appty	diff.list.nil	gsdl.ags.codeitem.gvar.t
 r.as	.apply	list.nil	gsdl.ags.codeitem.alloc.t
 nil.vs	.apply	list.nil	gsdl.var.t
 r.e	.apply	gsdl.ags.codeitem.expr.yield	|	pos	res.v	nil.vs
@@ -4016,7 +4014,6 @@ gsdl.ags.codeitem.impbody.t	.tygvar
 -- §par
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 either.right	.gvar
 list.nil	.gvar
 _gsac.gsexpr.compileToExpr_res_res.expr	.gvar
@@ -4033,7 +4030,7 @@ k.r.e		.fkarg	1	gsdl.ags.codeitem.expr.t
 cs			.lfield	codeitems	k.r
 cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	k.r
 pem1			.lfield	prim.emitted	k.r
 r.a0			.apply	gsdl.ags.codeitem.alloc.record	|	sv0	pos
 r.as			.apply	list.:	gsdl.ags.codeitem.alloc.t	|	r.a0	k.r.as
