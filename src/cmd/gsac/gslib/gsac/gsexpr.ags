@@ -3479,13 +3479,13 @@ _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.alloc.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
 _gsac.gsexpr.compileArgsToExpr_:_k	.subcode
 gsdl.cgs.gsexpr.arg.t.out	.cogvar
@@ -3512,7 +3512,7 @@ as1		.fkarg	1	list.t	gsdl.cgs.gsexpr.arg.t
 cs			.appty	diff.list.nil	gsdl.ags.codeitem.t
 cos			.appty	diff.list.nil	gsdl.ags.coercionitem.t
 ds			.appty	diff.list.nil	gsdl.ags.dataitem.t
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.appty	diff.list.nil	gsdl.ags.codeitem.gvar.t
 nil.as			.appty	list.nil	gsdl.ags.codeitem.alloc.t
 nil.vs			.appty	list.nil	gsdl.var.t
 r.e			.apply	k	|	nil.vs
