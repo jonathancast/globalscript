@@ -12,13 +12,21 @@ ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
 record.empty	.tygvar
-ibio.file.name.t	.tygvar	-- Temp
-ibio.prim.t	.tygvar	-- Temp
+mdl.file.t	.tygvar
+string.t	.tygvar
+parser.pos.t	.tygvar	-- Temp
 _ep_fn_c	.subcode
 _ep_if_c	.subcode
 _ep_s_c	.subcode
+_ep_body_c	.subcode
 ibio.m.in	.cogvar
 ibio.prim.env.args.get	.gvar
+parser.parse	.gvar
+parser.rune.advance	.gvar
+rune.print	.gvar
+parser.*>	.gvar
+mdl.syntax.whitespace	.gvar
+mdl.file.parser	.gvar
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
 i	.larg	ibio.prim.iport	rune.t
 o	.larg	ibio.prim.oport	rune.t
@@ -27,8 +35,11 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.bind	.apply	ibio.prim.env.args.get
 fn	.closure	_ep_fn_c
 if	.bind	.closure	_ep_if_c
+pos	.undefined	parser.pos.t
+p	.apply	parser.*>	rune.t	string.t	mdl.file.t	|	mdl.syntax.whitespace	mdl.file.parser
 s	.bind	.closure	_ep_s_c
-	.body	.undefined	ibio.prim.t	record.empty
+ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
+	.body	.closure	_ep_body_c
 
 _ep_fn_c	.expr
 list.t	.tygvar
@@ -116,6 +127,86 @@ sym	.appty	ibio.lex.receiver.symbol	rune.t
 ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 	.app	ms	if
 	.enter	ibio.lex.receive	rune.t	string.t
+
+_ep_body_c	.expr
+either.t	.tygvar
+parser.err.t	.tygvar
+mdl.file.t	.tygvar
+record.empty	.tygvar	-- Temp
+_ep_body_k	.subcode
+either.t.out	.cogvar
+ef	.fv	either.t	parser.err.t	mdl.file.t
+	.force	_ep_body_k
+	.coerce	either.t.out	parser.err.t	mdl.file.t
+	.enter	ef
+
+_ep_body_k	.forcecont
+either.prim.u	.tygvar
+parser.err.t	.tygvar
+mdl.file.t	.tygvar
+graph.scc.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+ibio.prim.t	.tygvar	 -- Temp
+record.empty	.tygvar	-- Temp
+_ep_body_right_f_c	.subcode
+_ep_body_right_z_c	.subcode
+_ep_body_right_k	.subcode
+either.t.out	.cogvar
+list.foldr	.gvar
+scc.decl.key.decl.ty	.tylet	graph.scc.t	mdl.file.decl.key.decl.t
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+e0	.karg	either.prim.u	parser.err.t	mdl.file.t
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	parser.err.t
+			.undef	ibio.prim.t	record.empty
+		.case	right
+fl		.fkarg	0	mdl.file.t
+f			.closure	_ep_body_right_f_c
+z			.closure	_ep_body_right_z_c
+sccs			.undefined	list.t	scc.decl.key.decl.ty
+			.force	_ep_body_right_k
+			.coerce	either.t.out	string.t	compile.res.list.decl.ty
+			.app	f	z	sccs
+			.enter	list.foldr scc.decl.key.decl.ty	compile.list.decl.ty
+
+_ep_body_right_f_c	.expr
+graph.scc.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+scc	.larg	graph.scc.t	mdl.file.decl.key.decl.t
+k	.larg	mdl.compiler.type.m	list.decl.ty
+	.undef	mdl.compiler.type.m	list.decl.ty
+
+_ep_body_right_z_c	.expr
+mdl.compiler.type.m	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+mdl.file.decl.t	.tygvar	-- Temp
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+	.undef	mdl.compiler.type.m	list.decl.ty
+
+_ep_body_right_k	.forcecont
+either.prim.u	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+ibio.prim.t	.tygvar	 -- Temp
+record.empty	.tygvar	-- Temp
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+e0	.karg	either.prim.u	string.t	compile.res.list.decl.ty
+			.undef	ibio.prim.t	record.empty
 
 	.type
 
