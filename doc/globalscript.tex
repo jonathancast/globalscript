@@ -217,6 +217,47 @@ and will be clarified in those cases where which is meant is not immediate.
 
 \section{Implementations}
 
+An \defn{implementation} of a Global Script program is a program or machine that stores the program internally.
+On request, it will evaluate that program to WHNF and, if successful, reports the value;
+if the value is a function it will further permit Global Script expressions of the correct type to be supplied as arguments,
+and will calculate and report their values.
+If the value is a data value, of sum or product type, it will allow the components to be evaluated in the same way.
+
+Note that an implementation is necessarily interactive and works with a client;
+implementations on general-purpose computers will generally be libraries rather than complete programs.
+Nothing in this chapter is intended to disallow the creation of interpreters that take programs, evaluate them to normal form, and print the results;
+however, such a program, because it attaches additional semantics beyond that of the pure calculus,
+is properly an implementation of a language based on the calculus and not of the Global Script program calculus itself.
+Similar considerations apply to an implementation that assigns semantics to Global Script expressions to encode
+I/O, database access, web servers, GUIs, or type-setting
+and allow those to be programmed in Global Script.
+
+A \defn{correct} implementation of the Global Script program calculus is an implementation that, given a program or component thereof,
+exhibits the following behavior:
+\begin{itemize}
+  \item Correctly reports that the expression has a WHNF if it has one, and provides correct access to its components or gives the value if it is a primitive;
+  \item Correctly reports that the expression has no WHNF if it lacks one; or
+  \item Runs forever if the expression has no WHNF.
+\end{itemize}
+Note that it is impossible to realize a correct implementation of the Global Script program calculus as a physical object,
+or to implement one on a general-purpose computer.
+We thus say that Global Script is \defn{un-implementable}.
+Any two expressions of the same type that lack a WHNF are equivalent according to the calculus;
+however, two such expressions may exhibit different behavior when run by such an implementation,
+if it is able to determine that the one expression lacks a WHNF but is unable to make that determination for the other.
+
+A \defn{partially correct} implementation of the Global Script program calculus is an implementation that, given a program or component thereof,
+exhibits the following behavior:
+\begin{itemize}
+  \item Correctly reports that the expression has a WHNF if it has one, and provides partially correct access to its components or gives the value if it is a primitive;
+  \item Correctly reports that the expression has no WHNF if it lacks one;
+  \item Runs forever if the expression has no WHNF; or
+  \item Reports that it is unable to find a WHNF for the given expression.
+\end{itemize}
+Note that two expressions that are equivalent according to the calculus may exhibit different behavior when run by such an implementation,
+even if they have a WHNF,
+because the implementation may be able to find a WHNF for one program but unable to do so for the other.
+
 \chapter{Object Expressions}
 
 The judgment form for an expression $e$ in context $\Gamma$ is
