@@ -79,7 +79,7 @@
 
 \tableofcontents
 
-\chapter{Introduction}
+\chapter{Introduction and General Remarks}
 
 This document specifies the \defn{Global Script Program Calculus}, a purely-functional, completely machine-independent program calculus designed to support the Global Script Type-Setting System.
 
@@ -125,7 +125,7 @@ the list includes at least:
 These share the same calculus; the type system distinguishes between the operations of different languages.
 An implementation of one language \emph{simpliciter} never need link in an implementation of any of the others.
 
-\chapter{Syntax}
+\section{Syntax}
 
 This document contains no formal syntax for the language;
 instead, the intention is that the mapping from the abstract syntax given here back to concrete syntax be simple enough to not need a repetitive specification.
@@ -142,7 +142,7 @@ the three types of components are
 \end{itemize}
 A symbolic component may only be the final component in an identifier.
 
-\chapter{Type System}
+\section{Type System}
 
 Global Script has a standard natural deduction-based type system, based on \defn{judgment}s of the form
 \begin{displaymath}
@@ -152,7 +152,7 @@ The context \<\Gamma\> several classes of variables (type variables, object vari
 Nevertheless, the context will generally be treated as a single object, except in the denotational semantics,
 where it will be split into a kind context \<\Delta\> and a type context \<\Gamma\>.
 
-\chapter{Models and Denotations}
+\section{Models and Denotations}
 
 Note: `semantics' means `meaning'; specifically, the kind of detailed meaning that might be found in a language specification.
 `Denotation' means `meaning'; specifically, the kind of formal meaning that might be found in a language specification.
@@ -186,7 +186,7 @@ the denotation of a kind is a category, and the denotation of a type environment
 \end{displaymath}
 The denotation of the type environment $\Gamma$, which will be written $\Den{\lambda\Delta.\Gamma}$, will be a functor $F : \Den{\Delta} \to \mathcal{C}$.
 
-\chapter{Equational Theory}
+\section{Equational Theory}
 
 The equational theory of Global Script, like the type system, consists of judgments of the form
 \begin{equation}
@@ -213,9 +213,9 @@ are about the pattern \<p\> and expression \<e\> or the generator \<p \match e\>
 but since the meaning is the same in either case the ambiguity does not matter,
 and will be clarified in those cases where which is meant is not immediate.
 
-\chapter{Operational Model}
+\section{Operational Model}
 
-\chapter{Implementations}
+\section{Implementations}
 
 \chapter{Object Expressions}
 
