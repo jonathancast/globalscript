@@ -149,15 +149,21 @@ mdl.file.decl.key.decl.t	.tygvar
 mdl.compiler.type.m	.tygvar
 list.t	.tygvar
 mdl.file.decl.t	.tygvar
+mdl.file.decl.key.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.m_res.ty	.tygvar
 ibio.prim.t	.tygvar	 -- Temp
 record.empty	.tygvar	-- Temp
+graph.dependencies.t	.tygvar	-- Temp
+graph.lookup.t	.tygvar	-- Temp
 _ep_body_right_f_c	.subcode
 _ep_body_right_z_c	.subcode
 _ep_body_right_k	.subcode
 either.t.out	.cogvar
 list.foldr	.gvar
+graph.tsort	.gvar
+mdl.file.decl.key.compare	.gvar
 scc.decl.key.decl.ty	.tylet	graph.scc.t	mdl.file.decl.key.decl.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
@@ -171,7 +177,10 @@ err		.fkarg	0	parser.err.t
 fl		.fkarg	0	mdl.file.t
 f			.closure	_ep_body_right_f_c
 z			.closure	_ep_body_right_z_c
-sccs			.undefined	list.t	scc.decl.key.decl.ty
+deps			.undefined	graph.dependencies.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
+get			.undefined	graph.lookup.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
+fl.keys			.undefined	list.t	mdl.file.decl.key.t
+sccs			.apply	graph.tsort	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|	mdl.file.decl.key.compare	deps	get	fl.keys
 			.force	_ep_body_right_k
 			.coerce	either.t.out	string.t	compile.res.list.decl.ty
 			.app	f	z	sccs
