@@ -68,7 +68,7 @@ natural.t	.tygvar
 _natural.+_k1	.subcode
 natural.t.out	.cogvar
 n1	.fv	natural.t
-n0_0	.karg	natural.prim.u
+n0.0	.karg	natural.prim.u
 	.force	_natural.+_k1
 	.coerce	natural.t.out
 	.enter	n1
@@ -78,11 +78,11 @@ natural.prim.u	.tygvar
 natural.t	.tygvar
 natural.t.in	.cogvar
 natural.prim.+	.gvar
-n0_0	.fv	natural.prim.u
-n1_0	.karg	natural.prim.u
+n0.0	.fv	natural.prim.u
+n1.0	.karg	natural.prim.u
 	.coerce	natural.t.in
 	.lift
-	.app	n0_0	n1_0
+	.app	n0.0	n1.0
 	.yield	natural.prim.+
 
 -- §section §gs{natural.*}
