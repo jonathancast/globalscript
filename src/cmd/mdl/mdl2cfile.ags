@@ -201,11 +201,18 @@ k	.larg	mdl.compiler.type.m	list.decl.ty
 	.undef	mdl.compiler.type.m	list.decl.ty
 
 _ep_body_right_z_c	.expr
-mdl.compiler.type.m	.tygvar	-- Temp
-list.t	.tygvar	-- Temp
-mdl.file.decl.t	.tygvar	-- Temp
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+either.right	.gvar
+list.nil	.gvar
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
-	.undef	mdl.compiler.type.m	list.decl.ty
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+nil	.appty	list.nil	mdl.file.decl.t
+res	.lrecord	res	nil	|	_mdl.compiler.type.m_res.ty	list.decl.ty
+	.app	res
+	.enter	either.right	string.t	compile.res.list.decl.ty
 
 _ep_body_right_k	.forcecont
 either.prim.u	.tygvar
