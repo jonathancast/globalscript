@@ -225,6 +225,12 @@ record.empty	.tygvar	-- Temp
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
 e0	.karg	either.prim.u	string.t	compile.res.list.decl.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	ibio.prim.t	record.empty
+		.case	right
+r		.fkarg	0	_mdl.compiler.type.m_res.ty	list.decl.ty
 			.undef	ibio.prim.t	record.empty
 
 	.type
