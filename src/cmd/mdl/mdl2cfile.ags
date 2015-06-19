@@ -24,6 +24,7 @@ ibio.prim.env.args.get	.gvar
 parser.parse	.gvar
 parser.rune.advance	.gvar
 rune.print	.gvar
+parser.pos.initial	.gvar
 parser.*>	.gvar
 mdl.syntax.whitespace	.gvar
 mdl.file.parser	.gvar
@@ -35,7 +36,7 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.bind	.apply	ibio.prim.env.args.get
 fn	.closure	_ep_fn_c
 if	.bind	.closure	_ep_if_c
-pos	.undefined	parser.pos.t
+pos	.apply	parser.pos.initial	|	fn
 p	.apply	parser.*>	rune.t	string.t	mdl.file.t	|	mdl.syntax.whitespace	mdl.file.parser
 s	.bind	.closure	_ep_s_c
 ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
@@ -129,18 +130,23 @@ ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 	.enter	ibio.lex.receive	rune.t	string.t
 
 _ep_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
 mdl.file.t	.tygvar
 record.empty	.tygvar	-- Temp
 _ep_body_k	.subcode
 either.t.out	.cogvar
+eo	.fv	ibio.prim.oport	rune.t
 ef	.fv	either.t	parser.err.t	mdl.file.t
 	.force	_ep_body_k
 	.coerce	either.t.out	parser.err.t	mdl.file.t
 	.enter	ef
 
 _ep_body_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
 mdl.file.t	.tygvar
@@ -158,6 +164,7 @@ record.empty	.tygvar	-- Temp
 _mdl.file.process_res.ty	.tygvar	-- Temp
 graph.dependencies.t	.tygvar	-- Temp
 graph.lookup.t	.tygvar	-- Temp
+_ep_body_left_res_c	.subcode
 _ep_body_right_f_c	.subcode
 _ep_body_right_z_c	.subcode
 _ep_body_right_k	.subcode
@@ -170,11 +177,13 @@ scc.decl.key.decl.ty	.tylet	graph.scc.t	mdl.file.decl.key.decl.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.file.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-			.undef	ibio.prim.t	record.empty
+res			.closure	_ep_body_left_res_c
+			.enter	res
 		.case	right
 fl		.fkarg	0	mdl.file.t
 f			.closure	_ep_body_right_f_c
@@ -188,6 +197,25 @@ sccs			.apply	graph.tsort	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|	mdl.fil
 			.coerce	either.t.out	string.t	compile.res.list.decl.ty
 			.app	f	z	sccs
 			.enter	list.foldr scc.decl.key.decl.ty	compile.list.decl.ty
+
+_ep_body_left_res_c	.impprog	ibio.prim	ibio
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+parser.err.t	.tygvar
+string.t	.tygvar	-- Temp
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+ibio.prim.write	.gvar
+list.<>	.gvar
+parser.err.fmt	.gvar
+eo	.fv	ibio.prim.oport	rune.t
+err	.fv	parser.err.t
+	.lift
+s1	.apply	parser.err.fmt	|	err
+s2	.undefined	string.t
+err.s	.apply	list.<>	rune.t	|	s1	s2
+	.bind	.apply	ibio.prim.write	rune.t	|	eo	err.s
+	.body	.undefined	ibio.prim.t	record.empty
 
 _ep_body_right_f_c	.expr
 graph.scc.t	.tygvar
