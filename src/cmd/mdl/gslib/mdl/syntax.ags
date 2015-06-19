@@ -4,7 +4,9 @@
 	.data
 
 mdl.syntax.whitespace	.closure	_mdl.syntax.whitespace_c
-_mdl.syntax.whitespace_ws.re	.regex	[\s\n]*
+_mdl.syntax.whitespace_ws.re	.regex	§*	_mdl.syntax.whitespace_ws.re_sp.or.comment
+_mdl.syntax.whitespace_ws.re_sp.or.comment	.regex	[\s\n]|/\*§*\*/	_mdl.syntax.whitespace_ws.re_comment.char
+_mdl.syntax.whitespace_ws.re_comment.char	.regex	[^*]|*[^/]
 
 mdl.syntax.keyword	.closure	_mdl.syntax.keyword_c
 
