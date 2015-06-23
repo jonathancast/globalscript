@@ -1,0 +1,66 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.data
+
+mdl.compiler.compile.decls	.closure	_mdl.compiler.compile.decls_c
+
+	.code
+
+-- §section §gs{mdl.compiler.compile.decls}
+
+_mdl.compiler.compile.decls_c	.impprog	ibio.prim	ibio
+_mdl.compiler.compile.decls_f_ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+either.t	.tygvar
+diff.list.t	.tygvar
+clang.decl.t	.tygvar
+record.empty	.tygvar
+_mdl.compiler.compile.decls_id.ds_c	.subcode
+ibio.prim.write	.gvar
+diff.list.tolist	.gvar
+diff.list.concat	.gvar
+list.map	.gvar
+either.elim	.gvar
+clang.decl.print	.gvar
+mdl.compiler.compile.decl	.gvar
+ibio.prim.unit	.gvar
+record.empty	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+either.diff.string.clang.decl.t	.tylet	either.t	diff.list.rune.ty	clang.decl.t
+f	.larg	_mdl.compiler.compile.decls_f_ty
+r.ds	.larg	list.t	mdl.file.decl.t
+o	.larg	ibio.prim.oport	rune.t
+	.lift
+r.ds.c	.apply	list.map	mdl.file.decl.t	either.diff.string.clang.decl.t	|	f	r.ds
+id.ds	.closure	_mdl.compiler.compile.decls_id.ds_c
+eprint	.apply	either.elim	diff.list.rune.ty	clang.decl.t	diff.list.rune.ty	|	id.ds	clang.decl.print
+dss	.apply	list.map	either.diff.string.clang.decl.t	diff.list.rune.ty	|	eprint	r.ds.c
+ds	.apply	diff.list.concat	rune.t	|	dss
+s	.apply	diff.list.tolist	rune.t	|	ds
+	.bind	.apply	ibio.prim.write	rune.t	|	o	s
+	.body	.apply	ibio.prim.unit	record.empty	|	record.empty
+
+_mdl.compiler.compile.decls_id.ds_c	.expr
+diff.list.t	.tygvar
+rune.t	.tygvar
+ds	.larg	diff.list.t	rune.t
+	.enter	ds
+
+	.type
+
+-- §section §gs{mdl.compiler.compile.decls}
+
+_mdl.compiler.compile.decls_f_ty	.tyexpr
+mdl.file.decl.t	.tygvar
+either.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+clang.decl.t	.tygvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.tylift
+	.tyfun	mdl.file.decl.t
+	.tyref	either.t	diff.list.rune.ty	clang.decl.t
