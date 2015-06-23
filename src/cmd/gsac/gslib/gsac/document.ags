@@ -65,7 +65,7 @@ map.empty	.appty	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 nil	.appty	list.nil	gsdl.var.t
 	.force	_gsac.document.compile_right_k1
 	.coerce	either.t.out	string.t	_gsac.generator.doc.compile_res.ty
-	.app	pos	gs	set.empty	map.empty	nil	nil
+	.app	pos	gs	set.empty	map.empty	nil	set.empty	nil
 	.enter	gsac.generator.doc.compile
 
 _gsac.document.compile_right_k1	.forcecont
@@ -140,6 +140,7 @@ string.t	.tygvar
 _gsac.gsexpr.compileToDataItem_res.ty	.tygvar
 either.t	.tygvar	-- Temp
 gsdl.ags.file.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
 _gsac.document.compile_right_just_just_k	.subcode
 either.t.out	.cogvar
 ordered.set.empty	.gvar
@@ -159,10 +160,11 @@ ty		.fkarg	0	gsdl.cgs.gstype.t
 pos			.field	pos	doc0
 nothing			.apply	maybe.nothing	gsdl.var.t
 tyvs			.undefined	list.t	gsdl.var.t
+em			.undefined	ordered.set.t	gsdl.var.t
 svs			.undefined	list.t	gsdl.var.t
 			.force	_gsac.document.compile_right_just_just_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToDataItem_res.ty
-			.app	pos	nothing	e	ty	set.empty	map.empty	tyvs	svs
+			.app	pos	nothing	e	ty	set.empty	map.empty	tyvs	em	svs
 			.enter	gsac.gsexpr.compileToDataItem
 		.case	nothing
 			.undef	either.t	string.t	gsdl.ags.file.t

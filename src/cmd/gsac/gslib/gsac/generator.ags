@@ -861,9 +861,10 @@ gs	.larg	list.t	gsdl.cgs.gsexpr.generator.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
+em	.larg	ordered.set.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 f	.closure	_gsac.generator.doc.compile_f_c
-	.app	f	gs	tyem	pem	tysvs	svs
+	.app	f	gs	tyem	pem	tysvs	em	svs
 	.enter	gsac.gsexpr.compile.mapM.void	gsdl.cgs.gsexpr.generator.t
 
 _gsac.generator.doc.compile_f_c	.expr
@@ -879,6 +880,7 @@ g	.larg	gsdl.cgs.gsexpr.generator.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
+em	.larg	ordered.set.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 	.force	_gsac.generator.doc.compile_f_k
 	.coerce	gsdl.cgs.gsexpr.generator.t.out
@@ -1079,6 +1081,7 @@ vs	.larg	list.t	gsac.generator.varmap.t
 tyem	.larg	ordered.set.t	gsdl.var.t
 pem	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs	.larg	list.t	gsdl.var.t
+em	.larg	ordered.set.t	gsdl.var.t
 svs	.larg	list.t	gsdl.var.t
 	.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
