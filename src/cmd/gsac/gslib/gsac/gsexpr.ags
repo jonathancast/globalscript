@@ -1636,7 +1636,7 @@ v.ty.v	.apply	gsdl.var.<>	|	v	_gsac.gsexpr_ty.v
 tyem1			.apply	ordered.set.empty	gsdl.var.t
 pem1			.apply	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 tyvs1			.apply	gsdl.var.subvars	|	v
-em1			.undefined	ordered.set.t	gsdl.var.t
+em1			.appty	ordered.set.empty	gsdl.var.t
 svs1			.apply	_gsdl.var.vars_w	|	natural.0
 			.force	_gsac.gsexpr.compileToDataItem_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
