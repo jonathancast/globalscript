@@ -3308,10 +3308,18 @@ as0.cl			.cast	as0.l	list.t.in	gsdl.var.t
 			.undef	gsdl.ags.codeitem.expr.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k	.forcecont
+ordered.set.t	.tygvar
+gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToExpr_var.unlifted_right_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.var.compare	.gvar
+em	.fv	ordered.set.t	gsdl.var.t
+v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -3319,6 +3327,17 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 		.case	right
 as.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
+			.force	_gsac.gsexpr.compileFunToExpr_var.unlifted_right_k
+			.coerce	bool.t.out
+			.app	gsdl.var.compare	v	em
+			.enter	ordered.set.elem	gsdl.var.t
+
+_gsac.gsexpr.compileFunToExpr_var.unlifted_right_k	.forcecont
+bool.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
+b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToExpr}
