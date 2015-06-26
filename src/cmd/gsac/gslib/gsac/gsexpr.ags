@@ -3333,11 +3333,46 @@ as.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 			.enter	ordered.set.elem	gsdl.var.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_right_k	.forcecont
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar
 bool.prim.u	.tygvar
+string.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 either.t	.tygvar	-- Temp
-string.t	.tygvar	-- Temp
-_gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+gsdl.ags.codeitem.t	.tygvar	-- Temp
+gsdl.ags.coercionitem.t	.tygvar	-- Temp
+ordered.map.t	.tygvar	-- Temp
+_gsac.gstype_primname.t	.tygvar	-- Temp
+gsdl.var.t	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+ordered.set.t	.tygvar	-- Temp
+gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
+gsdl.ags.typeitem.t	.tygvar	-- Temp
+either.right	.gvar
+diff.list.:	.gvar
+as.r	.fv	_gsac.gsexpr.compileToExpr_res.ty
 b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
+	.analyze	b0	false	true
+		.case	false
+cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+ds			.lfield	dataitems	as.r
+v.gv			.undefined	gsdl.ags.codeitem.gvar.t
+as.r.gvs			.lfield	gvars	as.r
+gvs			.apply	diff.list.:	gsdl.ags.codeitem.gvar.t	|	v.gv	as.r.gvs
+pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+r			.lfield	res	as.r
+scs			.lfield	subcodes	as.r
+svs2			.undefined	list.t	gsdl.var.t
+tyem2			.undefined	ordered.set.t	gsdl.var.t
+tysvs2			.undefined	list.t	gsdl.var.t
+tygvs			.lfield	tygvars	as.r
+tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs2	ty.emitted	tyem2	ty.subvars	tysvs2	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
+			.app	res
+			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
+		.case	true
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToExpr}
