@@ -40,9 +40,12 @@ _mdl.file.decl.parser_c	.expr
 rune.t	.tygvar
 mdl.file.decl.t	.tygvar
 _mdl.file.decl.parser_inline.header.p_c	.subcode
-parser.fail	.gvar	-- Temp
+_mdl.file.decl.parser_inline.c.p_c	.subcode
+parser.<|>	.gvar
 inline.header.p	.closure	_mdl.file.decl.parser_inline.header.p_c
-	.enter	inline.header.p
+inline.c.p	.closure	_mdl.file.decl.parser_inline.c.p_c
+	.app	inline.header.p	inline.c.p
+	.enter	parser.<|>	rune.t	mdl.file.decl.t
 
 _mdl.file.decl.parser_inline.header.p_c	.expr
 rune.t	.tygvar
@@ -97,6 +100,47 @@ p2	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	h.p	p3
 p1	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	capital.c.p	p2
 	.app	percent.p	p1
 	.enter	parser.*>	rune.t	record.empty	diff.list.rune.ty
+
+_mdl.file.decl.parser_inline.c.p_c	.expr
+rune.t	.tygvar
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+mdl.file.decl.t	.tygvar
+record.empty	.tygvar
+_mdl.file.decl.parser_inline.c.p_f_c	.subcode
+parser.lift2	.gvar
+parser.pos.get	.gvar
+parser.*>	.gvar
+parser.symbol.literal	.gvar
+rune.≡	.gvar
+rune.percent	.gvar
+rune.capital.latin.letter.c	.gvar
+rune.left.curly	.gvar
+_mdl.file.inline.c_w.0	.gvar
+diff.list.nil	.gvar
+parser.fail	.gvar	-- Temp
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+f	.closure	_mdl.file.decl.parser_inline.c.p_f_c
+pos.get	.appty	parser.pos.get	rune.t
+percent.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.percent
+capital.c.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.capital.latin.letter.c
+lbrace.p	.apply	parser.symbol.literal	rune.t	|	rune.≡	rune.left.curly
+nil	.appty	diff.list.nil	rune.t
+w.0	.apply	_mdl.file.inline.c_w.0	|	nil
+p2	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	lbrace.p	w.0
+p1	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	capital.c.p	p2
+p	.apply	parser.*>	rune.t	record.empty	diff.list.rune.ty	|	percent.p	p1
+	.app	f	pos.get	p
+	.enter	parser.lift2	rune.t	parser.pos.t	diff.list.rune.ty	mdl.file.decl.t
+
+_mdl.file.decl.parser_inline.c.p_f_c	.expr
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+mdl.file.decl.t	.tygvar	-- Temp
+pos	.larg	parser.pos.t
+ds	.larg	diff.list.t	rune.t
+	.undef	mdl.file.decl.t
 
 -- §section §gs{mdl.file.inline.c}
 
