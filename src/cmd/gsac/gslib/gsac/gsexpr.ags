@@ -4683,11 +4683,17 @@ e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.enter	emit.var
 
 _gsac.gsexpr.compileFunToGenRHS_emit.var_c	.expr
+ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
+_gsac.gsexpr.compileFunToGenRHS_emit.var_right_k	.subcode
+bool.t.out	.cogvar
+ordered.set.elem	.gvar
+gsdl.var.compare	.gvar
+em	.fv	ordered.set.t	gsdl.var.t
 v	.larg	gsdl.var.t
 e0	.larg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
@@ -4696,6 +4702,21 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 		.case	right
 args.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
+			.force	_gsac.gsexpr.compileFunToGenRHS_emit.var_right_k
+			.coerce	bool.t.out
+			.app	gsdl.var.compare	v	em
+			.enter	ordered.set.elem	gsdl.var.t
+
+_gsac.gsexpr.compileFunToGenRHS_emit.var_right_k	.forcecont
+bool.prim.u	.tygvar
+either.t	.tygvar	-- Temp
+string.t	.tygvar	-- Temp
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
+b0	.karg	bool.prim.u	-- Has §gs{v} been emitted yet?
+	.analyze	b0	false	true
+		.case	false
+			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
+		.case	true
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 -- §section §gs{gsac.gsexpr.compileTyArgsToGenRHS}
