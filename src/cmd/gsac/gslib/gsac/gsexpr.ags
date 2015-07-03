@@ -3308,6 +3308,7 @@ as0.cl			.cast	as0.l	list.t.in	gsdl.var.t
 			.undef	gsdl.ags.codeitem.expr.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 ordered.set.t	.tygvar
 gsdl.var.t	.tygvar
 either.prim.u	.tygvar
@@ -3318,6 +3319,7 @@ _gsac.gsexpr.compileFunToExpr_var.unlifted_right_k	.subcode
 bool.t.out	.cogvar
 ordered.set.elem	.gvar
 gsdl.var.compare	.gvar
+pos	.fv	gsdl.sourcepos.t
 em	.fv	ordered.set.t	gsdl.var.t
 v	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -3333,6 +3335,8 @@ as.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 			.enter	ordered.set.elem	gsdl.var.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 bool.prim.u	.tygvar
 string.t	.tygvar
@@ -3343,13 +3347,15 @@ gsdl.ags.codeitem.t	.tygvar	-- Temp
 gsdl.ags.coercionitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
-gsdl.var.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.:	.gvar
+gsdl.ags.codeitem.gvar.gvar	.gvar
+pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
 as.r	.fv	_gsac.gsexpr.compileToExpr_res.ty
 b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
 	.analyze	b0	false	true
@@ -3357,7 +3363,7 @@ b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
 cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	as.r
-v.gv			.undefined	gsdl.ags.codeitem.gvar.t
+v.gv			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	v
 as.r.gvs			.lfield	gvars	as.r
 gvs			.apply	diff.list.:	gsdl.ags.codeitem.gvar.t	|	v.gv	as.r.gvs
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
