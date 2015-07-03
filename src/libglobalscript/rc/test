@@ -116,19 +116,19 @@ ok_grep_errors '-- non-empty records with empty signatures in expressions --' '.
 ok_diff '-- records with type signatures in expressions --' ./$O.test-gsi record-type-sig-expr.ags
 ok_diff '-- records with type signatures with type arguments in expressions --' ./$O.test-gsi record-type-sig-args.ags
 
+echo '# Version 0.7 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_6=1
+
 ok_diff '-- field extractions --' ./$O.test-gsi field-extraction.ags
 ok_diff_fail '-- lazy field extractions --' ./$O.test-gsi lazy-field-extraction.ags
 ok_diff_fail '-- lazy field extraction from undefined record --' ./$O.test-gsi lazy-field-extraction-undef-record.ags
 
 ok_diff '-- natural number literals --' ./$O.test-gsi natural-literal.ags
-ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural-literal-letter.ags:12: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
-ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:12: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
+ok_grep_errors '-- natural number literals: letters --' './test-fixtures/natural-literal-letter.ags:11: Invalid character ''x'' in natural number literal' ./$O.test-gsi natural-literal-letter.ags
+ok_grep_errors '-- natural number literals: negative number --' './test-fixtures/natural-literal-negative.ags:11: Invalid character ''-'' in natural number literal' ./$O.test-gsi natural-literal-negative.ags
 
 ok_diff '-- list literals --' ./$O.test-gsi list-literal.ags
-
-echo '# Version 0.7 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_6=1
 
 ok_diff '-- regex literals --' ./$O.test-gsi regex-literal.ags
 ok_diff '-- regex character class --' ./$O.test-gsi regex-class.ags
