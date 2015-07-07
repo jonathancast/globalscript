@@ -224,16 +224,19 @@ bool.prim.u	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
 diff.list.t	.tygvar
+_mdl.file.inline.c_w.s	.gvar
 parser.*>	.gvar
 mdl.syntax.whitespace	.gvar
 parser.unit	.gvar
 parser.fail	.gvar	-- Temp
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 ds	.fv	diff.list.rune.ty
+c	.fv	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.enter	parser.fail	rune.t	diff.list.rune.ty
+			.app	ds	c
+			.enter	_mdl.file.inline.c_w.s
 		.case	true
 unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
 			.app	mdl.syntax.whitespace	unit.ds
