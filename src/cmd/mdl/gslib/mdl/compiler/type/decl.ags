@@ -25,11 +25,15 @@ diff.list.t	.tygvar
 rune.t	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.decl_res.ty	.tygvar
-mdl.compiler.type.m	.tygvar	-- Temp
+either.t	.tygvar	-- Temp
 either.right	.gvar
 mdl.file.decl.inline.header	.gvar
 d0	.karg	mdl.file.decl.prim.u
-	.analyze	d0	inline.header
+	.analyze	d0	inline.c	inline.header
+		.case	inline.c
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+			.undef	either.t	string.t	_mdl.compiler.type.decl_res.ty
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
@@ -37,7 +41,7 @@ r			.apply	mdl.file.decl.inline.header	|	pos	ds
 res			.lrecord	res	r	|	_mdl.compiler.type.decl_res.ty
 			.app	res
 			.enter	either.right	string.t	_mdl.compiler.type.decl_res.ty
-	-- > :: mdl.compiler.type.m	mdl.file.decl.t
+	-- > :: either.t	string.t	_mdl.compiler.type.decl_res.ty
 
 	.type
 

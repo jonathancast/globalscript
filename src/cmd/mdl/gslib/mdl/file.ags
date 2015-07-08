@@ -16,6 +16,7 @@ mdl.file.process	.closure	_mdl.file.process_c
 _mdl.file.process_w	.closure	_mdl.file.process_w_c	_mdl.file.process_w_ty
 
 mdl.file.decl.inline.header	.closure	_mdl.file.decl.inline.header_c
+mdl.file.decl.inline.c	.closure	_mdl.file.decl.inline.c_c
 
 mdl.file.decl.key.compare	.closure	_mdl.file.decl.key.compare_c
 
@@ -330,6 +331,7 @@ mdl.file.decl.t	.tygvar
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 rune.t	.tygvar
+_mdl.file.process_res.ty	.tygvar	-- Temp
 mdl.file.decl.t.in	.cogvar
 mdl.file.decl.key.inline	.gvar
 _mdl.file.process_w	.gvar
@@ -346,7 +348,11 @@ ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
 d0.0.l	.lifted	d0.0
 d0.0.cl	.cast	d0.0.l	mdl.file.decl.t.in
-	.analyze	d0.0	inline.header
+	.analyze	d0.0	inline.c	inline.header
+		.case	inline.c
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+			.undef	_mdl.file.process_res.ty
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
@@ -414,6 +420,19 @@ mdl.file.decl.t.in	.cogvar
 pos	.larg	parser.pos.t
 ds	.larg	diff.list.t	rune.t
 res	.constr	mdl.file.decl.prim.u	inline.header	0	pos	1	ds
+	.coerce	mdl.file.decl.t.in
+	.lift
+	.yield	res
+
+_mdl.file.decl.inline.c_c	.expr
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+mdl.file.decl.prim.u	.tygvar
+mdl.file.decl.t.in	.cogvar
+pos	.larg	parser.pos.t
+ds	.larg	diff.list.t	rune.t
+res	.constr	mdl.file.decl.prim.u	inline.c	0	pos	1	ds
 	.coerce	mdl.file.decl.t.in
 	.lift
 	.yield	res
@@ -487,8 +506,16 @@ mdl.file.decl.prim.u	.tygvar
 	.tyref	mdl.file.decl.prim.u
 
 mdl.file.decl.prim.u	.tyexpr
+_mdl.file.decl.prim.u_inline.c_ty	.tygvar
 _mdl.file.decl.prim.u_inline.header_ty	.tygvar
-	.tysum	inline.header	_mdl.file.decl.prim.u_inline.header_ty
+	.tysum	inline.c	_mdl.file.decl.prim.u_inline.c_ty	inline.header	_mdl.file.decl.prim.u_inline.header_ty
+
+_mdl.file.decl.prim.u_inline.c_ty	.tyexpr
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+	.tyubproduct	0	parser.pos.t	1	diff.list.rune.ty
 
 _mdl.file.decl.prim.u_inline.header_ty	.tyexpr
 parser.pos.t	.tygvar

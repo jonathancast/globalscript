@@ -37,7 +37,11 @@ ibio.file.name.out	.gvar
 rune.new.line	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 d0	.karg	mdl.file.decl.prim.u
-	.analyze	d0	inline.header
+	.analyze	d0	inline.c	inline.header
+		.case	inline.c
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+			.undef	either.t	diff.list.rune.ty	clang.decl.t
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
