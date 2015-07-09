@@ -3535,6 +3535,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 		.case	right
 ty.r		.fkarg	0	_gsac.gstype.compileToVar_res.ty
+ty.r.r			.lfield	res	ty.r
 k1			.closure	_gsac.gsexpr.compileTyArgsToExpr_:_type_right_k1_c
 tyem1			.lfield	emitted	ty.r
 pem1			.lfield	prim.emitted	ty.r
@@ -3544,13 +3545,15 @@ tysvs1			.lfield	subvars	ty.r
 
 _gsac.gsexpr.compileTyArgsToExpr_:_type_right_k1_c	.expr
 _gsac.gsexpr.compileTyArgsToExpr_k_ty	.tygvar
-list.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
+list.:	.gvar
 k	.fv	_gsac.gsexpr.compileTyArgsToExpr_k_ty
+ty.r.r	.fv	gsdl.var.t
 tyas1	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
-tyas	.undefined	list.t	gsdl.var.t
+tyas	.apply	list.:	gsdl.var.t	|	ty.r.r	tyas1
 	.app	tyas	as
 	.enter	k
 
