@@ -354,7 +354,13 @@ d0.0.cl	.cast	d0.0.l	mdl.file.decl.t.in
 		.case	inline.c
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-			.undef	_mdl.file.process_res.ty
+num.inline.1			.undefined	natural.t
+k0			.apply	mdl.file.decl.key.inline	|	num.inline
+ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
+ktod1			.undefined	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
+ktoks1			.undefined	ordered.map.t	mdl.file.decl.key.t	list.key.ty
+			.app	num.inline.1	ks1	ktod1	ktoks1	ds1
+			.enter	_mdl.file.process_w
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
