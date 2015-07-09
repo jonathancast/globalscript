@@ -3368,7 +3368,7 @@ as.r	.fv	_gsac.gsexpr.compileToExpr_res.ty
 b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
 	.analyze	b0	false	true
 		.case	false
-cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
+cs			.lfield	codeitems	as.r
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 ds			.lfield	dataitems	as.r
 v.gv			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	v
