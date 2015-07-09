@@ -3277,10 +3277,13 @@ as	.larg	list.t	gsdl.var.t
 	.undef	gsdl.ags.codeitem.expr.t
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.expr
-list.t	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
+list.t	.tygvar
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_k	.subcode
 list.t.out	.cogvar
+pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
 	.force	_gsac.gsexpr.compileFunToExpr_var.unlifted_k_k
@@ -3288,14 +3291,19 @@ as	.larg	list.t	gsdl.var.t
 	.enter	as
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_k	.forcecont
-list.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
+list.prim.u	.tygvar
 gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 list.t.in	.cogvar
+gsdl.ags.codeitem.expr.yield	.gvar
 gsdl.ags.codeitem.expr.app	.gvar
+pos	.fv	gsdl.sourcepos.t
+v	.fv	gsdl.var.t
+tyas	.fv	list.t	gsdl.var.t
 as0	.karg	list.prim.u	gsdl.var.t
-e1	.undefined	gsdl.ags.codeitem.expr.t
+e1	.apply	gsdl.ags.codeitem.expr.yield	|	pos	v	tyas
 	.analyze	as0	:	nil
 		.case	:
 a0		.fkarg	0	gsdl.var.t
