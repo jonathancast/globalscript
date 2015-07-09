@@ -4733,20 +4733,21 @@ gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.t	.tygvar	-- Temp
 either.right	.gvar
+args.r	.fv	_gsac.gsexpr.compileToExpr_res.ty
 b0	.karg	bool.prim.u	-- Has §gs{v} been emitted yet?
 	.analyze	b0	false	true
 		.case	false
 cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
-ds			.undefined	diff.list.t	gsdl.ags.dataitem.t
+ds			.lfield	dataitems	args.r
 gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
-r			.undefined	_gsac.gsexpr.compileToExpr_res_res.t
+r			.lfield	res	args.r
 scs			.undefined	diff.list.t	gsdl.var.t
 svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
-tygvs			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+tygvs			.lfield	tygvars	args.r
 tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
