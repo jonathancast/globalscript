@@ -4581,7 +4581,6 @@ err		.fkarg	0	string.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.ds			.lfield	dataitems	e.r
-e.r.gvs			.lfield	gvars	e.r
 sv0			.apply	gsdl.var.<>	|	tv	sv
 sv.c			.apply	gsdl.var.<>	|	sv0	_gsac.gsexpr_c.v
 rhs			.apply	gsdl.ags.codeitem.alloc.rhs.closure	|	pos	sv.c
@@ -4607,7 +4606,6 @@ either.right	.gvar
 diff.list.<>	.gvar
 diff.list.:	.gvar
 e.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
-e.r.gvs	.fv	diff.list.t	gsdl.ags.codeitem.gvar.t
 sv.c	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
@@ -4620,8 +4618,7 @@ cs			.undefined	diff.list.t	gsdl.ags.codeitem.t
 cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
 k.r.ds			.lfield	dataitems	k.r
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	e.r.ds	k.r.ds
-k.r.gvs			.lfield	gvars	k.r
-gvs			.apply	diff.list.<>	gsdl.ags.codeitem.gvar.t	|	e.r.gvs	k.r.gvs
+gvs			.lfield	gvars	k.r
 pem1			.lfield	prim.emitted	k.r
 r			.lfield	res	k.r
 k.r.scs			.lfield	subcodes	k.r
