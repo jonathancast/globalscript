@@ -56,6 +56,7 @@ _gsdl.ags.codeitem.gvars.parser_natural.p_natural.re	.regex	.natural
 _gsdl.ags.codeitem.gvars.parser_rune.p_rune.re	.regex	.rune
 
 gsdl.ags.codeitem.gvar.print	.closure	_gsdl.ags.codeitem.gvar.print_c
+_gsdl.ags.codeitem.gvar.print_gvar_gvar.s	.string	\t.gvar\n
 
 gsdl.ags.codeitem.gvar.≡	.closure	_gsdl.ags.codeitem.gvar.≡_c
 
@@ -1518,10 +1519,22 @@ gv	.larg	gsdl.ags.codeitem.gvar.t
 
 _gsdl.ags.codeitem.gvar.print_k	.forcecont
 gsdl.ags.codeitem.gvar.prim.u	.tygvar
+gsdl.sourcepos.t	.tygvar
+gsdl.var.t	.tygvar
 diff.list.t	.tygvar	-- Temp
 rune.t	.tygvar	-- Temp
+diff.list.postpend	.gvar
+gsdl.ags.syntax.var.print	.gvar
+_gsdl.ags.codeitem.gvar.print_gvar_gvar.s	.gvar
 gv0	.karg	gsdl.ags.codeitem.gvar.prim.u
-	.undef	diff.list.t	rune.t
+	.analyze	gv0	gvar
+		.case	gvar
+pos		.fkarg	0	gsdl.sourcepos.t
+v		.fkarg	1	gsdl.var.t
+v.s			.apply	gsdl.ags.syntax.var.print	|	v
+			.app	v.s	_gsdl.ags.codeitem.gvar.print_gvar_gvar.s
+			.enter	diff.list.postpend	rune.t
+	-- > :: diff.list.t	rune.t
 
 -- §section §gs{gsdl.ags.codeitem.gvar.≡}
 
