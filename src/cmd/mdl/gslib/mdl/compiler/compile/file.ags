@@ -1,0 +1,189 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.data
+
+mdl.compiler.compile.file	.closure	_mdl.compiler.compile.file_c
+
+	.code
+
+-- §section §gs{mdl.compiler.compile.file}
+
+_mdl.compiler.compile.file_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_mdl.compiler.compile.decls_f_ty	.tygvar
+mdl.file.t	.tygvar
+graph.scc.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+mdl.compiler.type.m	.tygvar
+mdl.file.decl.key.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+_mdl.compiler.compile.file_f_c	.subcode
+_mdl.compiler.compile.file_z_c	.subcode
+_mdl.compiler.compile.file_k	.subcode
+either.t.out	.cogvar
+list.foldr	.gvar
+graph.tsort	.gvar
+mdl.file.decl.key.compare	.gvar
+mdl.file.process	.gvar
+o	.larg	ibio.prim.oport	rune.t
+decl.c	.larg	_mdl.compiler.compile.decls_f_ty
+fl	.larg	mdl.file.t
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+scc.decl.key.decl.ty	.tylet	graph.scc.t	mdl.file.decl.key.decl.t
+compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+f	.closure	_mdl.compiler.compile.file_f_c
+z	.closure	_mdl.compiler.compile.file_z_c
+fl.p	.apply	mdl.file.process	|	fl
+get	.lfield	get	fl.p
+deps	.lfield	deps	fl.p
+fl.keys	.lfield	keys	fl.p
+sccs	.apply	graph.tsort	mdl.file.decl.key.t	mdl.file.decl.key.decl.t	|	mdl.file.decl.key.compare	deps	get	fl.keys
+	.force	_mdl.compiler.compile.file_k
+	.coerce	either.t.out	string.t	compile.res.list.decl.ty
+	.app	f	z	sccs
+	.enter	list.foldr scc.decl.key.decl.ty	compile.list.decl.ty
+
+_mdl.compiler.compile.file_f_c	.expr
+graph.scc.t	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+_mdl.compiler.compile.file_f_k	.subcode
+graph.scc.t.out	.cogvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+scc	.larg	graph.scc.t	mdl.file.decl.key.decl.t
+k	.larg	mdl.compiler.type.m	list.decl.ty
+	.force	_mdl.compiler.compile.file_f_k
+	.coerce	graph.scc.t.out	mdl.file.decl.key.decl.t
+	.enter	scc
+
+_mdl.compiler.compile.file_f_k	.forcecont
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+graph.scc.prim.u	.tygvar
+mdl.file.decl.key.decl.t	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.decl_res.ty	.tygvar
+_mdl.compiler.compile.file_f_nonrecursive_k	.subcode
+either.t.out	.cogvar
+mdl.compiler.type.decl	.gvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+k	.fv	mdl.compiler.type.m	list.decl.ty
+scc0	.karg	graph.scc.prim.u	mdl.file.decl.key.decl.t
+	.analyze	scc0	nonrecursive
+		.case	nonrecursive
+kd		.fkarg	0	mdl.file.decl.key.decl.t
+kd.d			.lfield	1	kd
+			.force	_mdl.compiler.compile.file_f_nonrecursive_k
+			.coerce	either.t.out	string.t	_mdl.compiler.type.decl_res.ty
+			.app	kd.d
+			.enter	mdl.compiler.type.decl
+	-- > :: mdl.compiler.type.m	list.decl.ty
+
+_mdl.compiler.compile.file_f_nonrecursive_k	.forcecont
+mdl.compiler.type.m	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.decl_res.ty	.tygvar
+_mdl.compiler.compile.file_k_res.ty	.tygvar
+_mdl.compiler.compile.file_f_nonrecursive_right_k	.subcode
+either.t.out	.cogvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+k	.fv	mdl.compiler.type.m	list.decl.ty
+e0	.karg	either.prim.u	string.t	_mdl.compiler.type.decl_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	mdl.compiler.type.m	list.decl.ty
+		.case	right
+d.r		.fkarg	0	_mdl.compiler.type.decl_res.ty
+d.r.r			.lfield	res	d.r
+			.force	_mdl.compiler.compile.file_f_nonrecursive_right_k
+			.coerce	either.t.out	string.t	_mdl.compiler.compile.file_k_res.ty
+			.enter	k
+
+_mdl.compiler.compile.file_f_nonrecursive_right_k	.forcecont
+mdl.file.decl.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_mdl.compiler.compile.file_k_res.ty	.tygvar
+mdl.compiler.type.m	.tygvar	-- Temp
+list.t	.tygvar	-- Temp
+either.right	.gvar
+list.:	.gvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t	-- Temp
+d.r.r	.fv	mdl.file.decl.t
+e0	.karg	either.prim.u	string.t	_mdl.compiler.compile.file_k_res.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	mdl.compiler.type.m	list.decl.ty
+		.case	right
+k.r		.fkarg	0	_mdl.compiler.compile.file_k_res.ty
+k.r.r			.lfield	res	k.r
+r			.apply	list.:	mdl.file.decl.t	|	d.r.r	k.r.r
+res			.lrecord	res	r	|	_mdl.compiler.compile.file_k_res.ty
+			.app	res
+			.enter	either.right	string.t	_mdl.compiler.compile.file_k_res.ty
+
+_mdl.compiler.compile.file_z_c	.expr
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+either.right	.gvar
+list.nil	.gvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+nil	.appty	list.nil	mdl.file.decl.t
+res	.lrecord	res	nil	|	_mdl.compiler.type.m_res.ty	list.decl.ty
+	.app	res
+	.enter	either.right	string.t	compile.res.list.decl.ty
+
+_mdl.compiler.compile.file_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+_mdl.compiler.compile.decls_f_ty	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+ibio.prim.t	.tygvar	-- Temp
+record.empty	.tygvar	-- Temp
+mdl.compiler.compile.decls	.gvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+o	.fv	ibio.prim.oport	rune.t
+decl.c	.fv	_mdl.compiler.compile.decls_f_ty
+e0	.karg	either.prim.u	string.t	compile.res.list.decl.ty
+	.analyze	e0	left	right
+		.case	left
+err		.fkarg	0	string.t
+			.undef	ibio.prim.t	record.empty
+		.case	right
+r		.fkarg	0	_mdl.compiler.type.m_res.ty	list.decl.ty
+r.ds			.lfield	res	r
+			.app	decl.c	r.ds	o
+			.enter	mdl.compiler.compile.decls
+
+	.type
+
+-- §section §gs{mdl.compiler.compile.file}
+
+_mdl.compiler.compile.file_k_res.ty	.tyexpr
+_mdl.compiler.type.m_res.ty	.tygvar
+list.t	.tygvar
+mdl.file.decl.t	.tygvar
+list.decl.ty	.tylet	list.t	mdl.file.decl.t
+	.tyref	_mdl.compiler.type.m_res.ty	list.decl.ty
