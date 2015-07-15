@@ -4809,7 +4809,7 @@ svs1			.undefined	list.t	gsdl.var.t
 tyem1			.undefined	ordered.set.t	gsdl.var.t
 tysvs1			.undefined	list.t	gsdl.var.t
 tygvs			.lfield	tygvars	args.r
-tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+tyls			.lfield	tylets	args.r
 ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
