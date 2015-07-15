@@ -358,13 +358,15 @@ string.t	.tygvar
 list.prim.u	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 list.t	.tygvar
+_gsdl.ags.file.print_codeitems	.gvar
 tys.s	.fv	string.t
 cs1.0	.karg	list.prim.u	gsdl.ags.codeitem.t
 	.analyze	cs1.0	:	nil
 		.case	:
 c1		.fkarg	0	gsdl.ags.codeitem.t
 cs2		.fkarg	1	list.t	gsdl.ags.codeitem.t
-			.undef	string.t
+			.app	c1	cs2	tys.s
+			.yield	_gsdl.ags.file.print_codeitems
 		.case	nil
 			.enter	tys.s
 
