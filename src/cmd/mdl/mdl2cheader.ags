@@ -154,7 +154,7 @@ parser.err.t	.tygvar
 mdl.file.t	.tygvar
 _ep_body_left_res_c	.subcode
 mdl.compiler.compile.file	.gvar
-mdl.compiler.compile.decl	.gvar
+mdl.compiler.compile.tocheader.decl	.gvar
 o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.file.t
@@ -165,7 +165,7 @@ res			.closure	_ep_body_left_res_c
 			.enter	res
 		.case	right
 fl		.fkarg	0	mdl.file.t
-			.app	o	mdl.compiler.compile.decl	fl
+			.app	o	mdl.compiler.compile.tocheader.decl	fl
 			.enter	mdl.compiler.compile.file
 
 _ep_body_left_res_c	.impprog	ibio.prim	ibio

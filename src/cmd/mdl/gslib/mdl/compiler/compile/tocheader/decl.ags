@@ -3,23 +3,23 @@
 
 	.data
 
-mdl.compiler.compile.decl	.closure	_mdl.compiler.compile.decl_c
-_mdl.compiler.compile.decl_inline.header_line.s	.string	#line\s
+mdl.compiler.compile.tocheader.decl	.closure	_mdl.compiler.compile.tocheader.decl_c
+_mdl.compiler.compile.tocheader.decl_inline.header_line.s	.string	#line\s
 
 	.code
 
--- §section §gs{mdl.compiler.compile.decl}
+-- §section §gs{mdl.compiler.compile.tocheader.decl}
 
-_mdl.compiler.compile.decl_c	.expr
+_mdl.compiler.compile.tocheader.decl_c	.expr
 mdl.file.decl.t	.tygvar
-_mdl.compiler.compile.decl_k	.subcode
+_mdl.compiler.compile.tocheader.decl_k	.subcode
 mdl.file.decl.t.out	.cogvar
 d	.larg	mdl.file.decl.t
-	.force	_mdl.compiler.compile.decl_k
+	.force	_mdl.compiler.compile.tocheader.decl_k
 	.coerce	mdl.file.decl.t.out
 	.enter	d
 
-_mdl.compiler.compile.decl_k	.forcecont
+_mdl.compiler.compile.tocheader.decl_k	.forcecont
 mdl.file.decl.prim.u	.tygvar
 parser.pos.t	.tygvar
 diff.list.t	.tygvar
@@ -28,7 +28,7 @@ clang.decl.t	.tygvar
 either.t	.tygvar	-- Temp
 either.left	.gvar
 diff.list.prepend	.gvar
-_mdl.compiler.compile.decl_inline.header_line.s	.gvar
+_mdl.compiler.compile.tocheader.decl_inline.header_line.s	.gvar
 natural.fmtdecimal	.gvar
 diff.list.:	.gvar
 rune.space	.gvar
@@ -55,7 +55,7 @@ ds1.4			.apply	diff.list.prepend	rune.t	|	pos.fn.s	ds1.5
 ds1.3			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.4
 ds1.2			.apply	diff.list.:	rune.t	|	rune.space	ds1.3
 ds1.1			.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
-ds1			.apply	diff.list.prepend	rune.t	|	_mdl.compiler.compile.decl_inline.header_line.s	ds1.1
+ds1			.apply	diff.list.prepend	rune.t	|	_mdl.compiler.compile.tocheader.decl_inline.header_line.s	ds1.1
 			.app	ds1
 			.enter	either.left	diff.list.rune.ty	clang.decl.t
 	-- > :: either.t	diff.list.rune.ty	clang.decl.t

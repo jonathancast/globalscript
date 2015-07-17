@@ -26,7 +26,7 @@ diff.list.concat	.gvar
 list.map	.gvar
 either.elim	.gvar
 clang.decl.print	.gvar
-mdl.compiler.compile.decl	.gvar
+mdl.compiler.compile.tocheader.decl	.gvar
 ibio.prim.unit	.gvar
 record.empty	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
