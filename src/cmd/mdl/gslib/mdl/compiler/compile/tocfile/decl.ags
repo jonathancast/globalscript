@@ -1,0 +1,20 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.data
+
+mdl.compiler.compile.tocfile.decl	.closure	_mdl.compiler.compile.tocfile.decl_c
+
+	.code
+
+-- §section §gs{mdl.compiler.compile.tocfile.decl}
+
+_mdl.compiler.compile.tocfile.decl_c	.expr
+mdl.file.decl.t	.tygvar
+either.t	.tygvar	-- Temp
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+clang.decl.t	.tygvar	-- Temp
+d	.larg	mdl.file.decl.t
+diff.list.rune.ty	.tylet	diff.list.t	rune.t	-- Temp
+			.undef	either.t	diff.list.rune.ty	clang.decl.t
