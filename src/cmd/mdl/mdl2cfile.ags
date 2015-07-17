@@ -138,6 +138,7 @@ mdl.file.t	.tygvar
 record.empty	.tygvar	-- Temp
 _ep_body_k	.subcode
 either.t.out	.cogvar
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 ef	.fv	either.t	parser.err.t	mdl.file.t
 	.force	_ep_body_k
@@ -177,6 +178,7 @@ scc.decl.key.decl.ty	.tylet	graph.scc.t	mdl.file.decl.key.decl.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.list.decl.ty	.tylet	mdl.compiler.type.m	list.decl.ty
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.file.t
 	.analyze	e0	left	right
@@ -243,6 +245,8 @@ res	.lrecord	res	nil	|	_mdl.compiler.type.m_res.ty	list.decl.ty
 	.enter	either.right	string.t	compile.res.list.decl.ty
 
 _ep_body_right_k	.forcecont
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _mdl.compiler.type.m_res.ty	.tygvar
@@ -250,8 +254,11 @@ list.t	.tygvar
 mdl.file.decl.t	.tygvar
 ibio.prim.t	.tygvar	 -- Temp
 record.empty	.tygvar	-- Temp
+mdl.compiler.compile.decls	.gvar
+mdl.compiler.compile.tocfile.decl	.gvar
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
 compile.res.list.decl.ty	.tylet	_mdl.compiler.type.m_res.ty	list.decl.ty
+o	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	string.t	compile.res.list.decl.ty
 	.analyze	e0	left	right
 		.case	left
@@ -259,7 +266,9 @@ err		.fkarg	0	string.t
 			.undef	ibio.prim.t	record.empty
 		.case	right
 r		.fkarg	0	_mdl.compiler.type.m_res.ty	list.decl.ty
-			.undef	ibio.prim.t	record.empty
+r.r			.lfield	res	r
+			.app	mdl.compiler.compile.tocfile.decl	r.r	o
+			.enter	mdl.compiler.compile.decls
 
 	.type
 
