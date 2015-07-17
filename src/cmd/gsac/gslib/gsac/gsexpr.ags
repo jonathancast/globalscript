@@ -4582,6 +4582,11 @@ err		.fkarg	0	string.t
 e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.cs			.lfield	codeitems	e.r
 e.r.ds			.lfield	dataitems	e.r
+e.r.tygvs			.lfield	tygvars	e.r
+e.r.scs			.lfield	subcodes	e.r
+e.r.gvs			.lfield	gvars	e.r
+e.r.tyls			.lfield	tylets	e.r
+e.r.r			.lfield	res	e.r
 sv0			.apply	gsdl.var.<>	|	tv	sv
 sv.c			.apply	gsdl.var.<>	|	sv0	_gsac.gsexpr_c.v
 rhs			.apply	gsdl.ags.codeitem.alloc.rhs.closure	|	pos	sv.c
@@ -4591,11 +4596,15 @@ rhs			.apply	gsdl.ags.codeitem.alloc.rhs.closure	|	pos	sv.c
 			.enter	k
 
 _gsac.gsexpr.compileToGenRHS_default_right_k	.forcecont
+gsdl.sourcepos.t	.tygvar
 diff.list.t	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
-gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.var.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
+gsdl.ags.typeitem.decls.tylet.t	.tygvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.ty	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
@@ -4606,8 +4615,15 @@ gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
 diff.list.:	.gvar
+_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
+pos	.fv	gsdl.sourcepos.t
 e.r.cs	.fv	diff.list.t	gsdl.ags.codeitem.t
 e.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
+e.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+e.r.scs	.fv	diff.list.t	gsdl.var.t
+e.r.gvs	.fv	diff.list.t	gsdl.ags.codeitem.gvar.t
+e.r.tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+e.r.r	.fv	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 sv.c	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
@@ -4616,7 +4632,7 @@ err		.fkarg	0	string.t
 			.undef	either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 		.case	right
 k.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
-c0			.undefined	gsdl.ags.codeitem.t
+c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	sv.c	e.r.tygvs	e.r.scs	e.r.gvs	e.r.tyls	e.r.r
 cs0			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	e.r.cs
 k.r.cs			.lfield	codeitems	k.r
 cs			.apply	diff.list.<>	gsdl.ags.codeitem.t	|	cs0	k.r.cs
