@@ -3413,6 +3413,7 @@ em1			.lfield	emitted	ty.r
 pem1			.lfield	prim.emitted	ty.r
 ty.r.r			.lfield	res	ty.r
 gvs1			.lfield	subvars	ty.r
+ty.r.tyfvs			.lfield	tyfvs	ty.r
 ty.r.tygvs			.lfield	tygvars	ty.r
 ty.r.tyls			.lfield	tylets	ty.r
 ty.r.ts			.lfield	typeitems	ty.r
@@ -3441,6 +3442,7 @@ diff.list.:	.gvar
 diff.list.<>	.gvar
 v	.fv	gsdl.var.t
 ty.r.r	.fv	gsdl.var.t
+ty.r.tyfvs	.fv	diff.list.t	gsdl.var.t
 ty.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 ty.r.tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
 ty.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
@@ -3457,7 +3459,8 @@ f0			.lrecord	0	v	1	ty.r.r	|	gsdl.ags.typeitem.field.t
 fs1.r.r			.lfield	res	fs1.r
 r			.apply	diff.list.:	gsdl.ags.typeitem.field.t	|	f0	fs1.r.r
 svs1			.undefined	list.t	gsdl.var.t
-tyfvs			.undefined	diff.list.t	gsdl.var.t
+fs1.r.tyfvs			.lfield	tyfvs	fs1.r
+tyfvs			.apply	diff.list.<>	gsdl.var.t	|	ty.r.tyfvs	fs1.r.tyfvs
 fs1.r.tygvs			.lfield	tygvars	fs1.r
 tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	ty.r.tygvs	fs1.r.tygvs
 fs1.r.tyls			.lfield	tylets	fs1.r
