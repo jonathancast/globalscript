@@ -51,6 +51,7 @@ ok_gsac '-- gsac: either.t type signatures --' gsac-either-type-sig ./test-fixtu
 
 ok_gsac '-- gsac: Block statements --' gsac-empty-impprog ./test-fixtures/empty-impprog.cgs
 ok_gsac '-- gsac: Undefined variables in block statements --' gsac-undef-var-imp-for ./test-fixtures/undef-var-imp-for.cgs
+ok_gsac '-- gsac: Undefined variables of non-empty record type in block statements --' gsac-undef-var-non-empty-record-imp-for ./test-fixtures/undef-var-non-empty-record-imp-for.cgs
 ok_gsac '-- gsac: Undefined list.t list.t variables in block statements --' gsac-undef-list-list-var-imp-for ./test-fixtures/undef-list-list-var-imp-for.cgs
 ok_gsac '-- gsac: Expressions as for comprehension bodies --' gsac-var-body-imp-for ./test-fixtures/var-body-imp-for.cgs
 
