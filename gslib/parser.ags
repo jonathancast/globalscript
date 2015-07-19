@@ -4187,10 +4187,10 @@ cl0	.karg	regex.class.prim.u	s
 		.case	range
 c0		.fkarg	0	s
 c1		.fkarg	1	s
-                    	.force	_parser.match_worker_class_range_k1
-                    	.coerce	order.total.ord.t.out
-                    	.app	c	c1
-                    	.enter	cmp
+			.force	_parser.match_worker_class_range_k1
+			.coerce	order.total.ord.t.out
+			.app	c	c1
+			.enter	cmp
 		.case	sum
 cl0.0		.fkarg	0	regex.class.t	s
 cl0.1		.fkarg	1	regex.class.t	s
@@ -5686,7 +5686,7 @@ s	.tylambda	*
 α	.tylambda	*
 β	.tylambda	*
 	.tylift
-	.tyfun	α	
+	.tyfun	α
 	.tyref	parser.t	s	β
 
 -- §section §gs{parser.lift2}
