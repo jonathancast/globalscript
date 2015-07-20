@@ -4424,7 +4424,6 @@ either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.generator.imp.compile_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 gsdl.var.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
@@ -4441,7 +4440,7 @@ k.r		.fkarg	0	_gsac.gsexpr.generator.imp.compile_res.ty
 cs			.lfield	codeitems	k.r
 cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	k.r
 pem2			.lfield	prim.emitted	k.r
 r			.lfield	res	k.r
 scs			.undefined	diff.list.t	gsdl.var.t
