@@ -31,6 +31,8 @@ _gsac.gsexpr.compileToLambdaExpr_res_res_body.impprog	.closure	_gsac.gsexpr.comp
 
 _gsac.gsexpr.compileToExpr_w	.closure	_gsac.gsexpr.compileToExpr_w_c	_gsac.gsexpr.compileToExpr_w_ty
 _gsac.gsexpr.compileToExpr_impfor_right_w	.closure	_gsac.gsexpr.compileToExpr_impfor_right_w_c	_gsac.gsexpr.compileToExpr_impfor_right_w_ty
+_gsac.gsexpr.compileToExpr_impfor_body.v	.closure	_gsac.gsexpr.compileToExpr_impfor_body.v_c
+_gsac.gsexpr.compileToExpr_impfor_body.s	.string	body
 
 _gsac.gsexpr.compileToExpr_res_res.expr	.closure	_gsac.gsexpr.compileToExpr_res_res.expr_c
 _gsac.gsexpr.compileToExpr_res_res.impprog	.closure	_gsac.gsexpr.compileToExpr_res_res.impprog_c
@@ -2923,6 +2925,7 @@ string.t	.tygvar
 _gsac.gsexpr.body.compileToGenRHS_res.ty	.tygvar
 _gsac.gsexpr.compileToExpr_impfor_k_k_c	.subcode
 gsac.gsexpr.body.compileToGenRHS	.gvar
+_gsac.gsexpr.compileToExpr_impfor_body.v	.gvar
 pos	.fv	gsdl.sourcepos.t
 tv	.fv	gsdl.var.t
 b	.fv	gsdl.cgs.gsexpr.body.t
@@ -2934,9 +2937,8 @@ pem1	.larg	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
 tysvs1	.larg	list.t	gsdl.var.t
 em1	.larg	ordered.set.t	gsdl.var.t
 svs1	.larg	list.t	gsdl.var.t
-body.v	.undefined	gsdl.var.t
 k	.closure	_gsac.gsexpr.compileToExpr_impfor_k_k_c
-	.app	pos	tv	body.v	k	b	tyem1	pem1	tysvs1	em1	svs1
+	.app	pos	tv	_gsac.gsexpr.compileToExpr_impfor_body.v	k	b	tyem1	pem1	tysvs1	em1	svs1
 	.enter	gsac.gsexpr.body.compileToGenRHS
 
 _gsac.gsexpr.compileToExpr_impfor_k_k_c	.expr
@@ -3098,6 +3100,17 @@ svs2	.larg	list.t	gsdl.var.t
 gs.r	.apply	list.:	gsdl.ags.codeitem.impgen.t	|	g0.r	gs1.r
 	.app	gs.r	tyem2	pem2	tysvs2	em2	svs2
 	.enter	k
+
+_gsac.gsexpr.compileToExpr_impfor_body.v_c	.expr
+gsdl.var.component.t	.tygvar
+gsdl.var.basevar	.gvar
+list.singleton	.gvar
+gsdl.var.component.alphanum	.gvar
+_gsac.gsexpr.compileToExpr_impfor_body.s	.gvar
+c0	.apply	gsdl.var.component.alphanum	|	_gsac.gsexpr.compileToExpr_impfor_body.s
+cs	.apply	list.singleton	gsdl.var.component.t	|	c0
+	.app	cs
+	.enter	gsdl.var.basevar
 
 _gsac.gsexpr.compileToExpr_structure_k_c	.expr
 gsdl.sourcepos.t	.tygvar
