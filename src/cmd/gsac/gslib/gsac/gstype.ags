@@ -2402,6 +2402,7 @@ list.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gstype.compile_res.ty	.tygvar
+_gsac.gstype_primname.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 gsdl.ags.typeitem.gskind.t	.tygvar
 gsdl.ags.typeitem.decls.t	.tygvar
@@ -2413,11 +2414,11 @@ gsdl.ags.typeitem.decls.tylet.t	.tygvar
 either.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
-_gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tyforall.t	.tygvar	-- Temp
 either.right	.gvar
 ordered.set.singleton	.gvar
 gsdl.var.compare	.gvar
+ordered.map.empty	.gvar
 diff.list.:	.gvar
 gsdl.ags.typeitem.tyexpr	.gvar
 maybe.nothing	.gvar
@@ -2436,7 +2437,7 @@ err		.fkarg	0	string.t
 		.case	right
 res		.fkarg	0	_gsac.gstype.compile_res.ty
 em			.apply	ordered.set.singleton	gsdl.var.t	|	gsdl.var.compare	v
-pem			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
+pem			.appty	ordered.map.empty	_gsac.gstype_primname.t	gsdl.var.t
 tyfvs			.lfield	tyfvs	res
 tyas			.apply	diff.list.tolist	gsdl.var.t	|	tyfvs
 r.res			.lrecord	tyfun	v	typeargs	tyas	|	_gsac.gstype.compileToApp_res_res.ty
