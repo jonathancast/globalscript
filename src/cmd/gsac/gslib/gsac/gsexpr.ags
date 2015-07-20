@@ -5318,7 +5318,7 @@ e.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 cs			.lfield	codeitems	e.r
 cos			.lfield	coercionitems	e.r
 ds			.lfield	dataitems	e.r
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	e.r
 pem1			.lfield	prim.emitted	e.r
 res.r			.lfield	res	e.r
 scs			.lfield	subcodes	e.r
