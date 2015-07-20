@@ -3239,6 +3239,7 @@ either.t	.tygvar	-- Temp
 string.t	.tygvar	-- Temp
 _gsac.gsexpr.compileFunToExpr_emit.var_c	.subcode
 _gsac.gsexpr.compileFunToExpr_var.lifted_k_c	.subcode
+_gsac.gsexpr.compileFunToExpr_var.lifted_k	.subcode
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.subcode
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k	.subcode
 either.t.out	.cogvar
@@ -3272,6 +3273,8 @@ f1		.fkarg	1	gsdl.cgs.gsexpr.t
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
 k			.closure	_gsac.gsexpr.compileFunToExpr_var.lifted_k_c
+			.force	_gsac.gsexpr.compileFunToExpr_var.lifted_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
 			.app	pos	tv	k	as	tyem	pem	tyvs	em	svs
 			.enter	gsac.gsexpr.compileTyArgsToExpr
 		.case	var.unlifted
@@ -3290,6 +3293,18 @@ gsdl.ags.codeitem.expr.t	.tygvar	-- Temp
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
 	.undef	gsdl.ags.codeitem.expr.t
+
+_gsac.gsexpr.compileFunToExpr_var.lifted_k	.forcecont
+_gsac.gsexpr.compileFunToExpr_emit.var_ty	.tygvar
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar
+emit.var	.fv	_gsac.gsexpr.compileFunToExpr_emit.var_ty
+v	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
+	.app	v	e0
+	.enter	emit.var
 
 _gsac.gsexpr.compileFunToExpr_var.unlifted_k_c	.expr
 gsdl.sourcepos.t	.tygvar
