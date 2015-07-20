@@ -4784,6 +4784,7 @@ _gsac.gsexpr.compileToExpr_res.ty	.tygvar	-- Temp
 _gsac.gsexpr.compileTyArgsToGenRHS_k_ty	.tygvar	-- Temp
 _gsac.gsexpr.compileFunToGenRHS_v.k_c	.subcode
 _gsac.gsexpr.compileFunToGenRHS_emit.var_c	.subcode
+_gsac.gsexpr.compileFunToGenRHS_var.lifted_k	.subcode
 _gsac.gsexpr.compileFunToGenRHS_var.unlifted_k	.subcode
 either.t.out	.cogvar
 gsac.gsexpr.compileFunToGenRHS	.gvar
@@ -4818,6 +4819,8 @@ f1		.fkarg	1	gsdl.cgs.gsexpr.t
 		.case	var.lifted
 v		.fkarg	0	gsdl.var.t
 k			.undefined	_gsac.gsexpr.compileTyArgsToGenRHS_k_ty
+			.force	_gsac.gsexpr.compileFunToGenRHS_var.lifted_k
+			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
 			.app	pos	tv.sv	k	rhsk	as	tyem	pem	tysvs	em	svs
 			.enter	gsac.gsexpr.compileTyArgsToGenRHS
 		.case	var.unlifted
@@ -4837,6 +4840,18 @@ v	.larg	gsdl.var.t
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
 	.undef	gsdl.ags.codeitem.alloc.rhs.t
+
+_gsac.gsexpr.compileFunToGenRHS_var.lifted_k	.forcecont
+_gsac.gsexpr.compileFunToGenRHS_emit.var_ty	.tygvar
+gsdl.var.t	.tygvar
+either.prim.u	.tygvar
+string.t	.tygvar
+_gsac.gsexpr.compileToExpr_res.ty	.tygvar
+emit.var	.fv	_gsac.gsexpr.compileFunToGenRHS_emit.var_ty
+v	.fv	gsdl.var.t
+e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
+	.app	v	e0
+	.enter	emit.var
 
 _gsac.gsexpr.compileFunToGenRHS_var.unlifted_k	.forcecont
 _gsac.gsexpr.compileFunToGenRHS_emit.var_ty	.tygvar
