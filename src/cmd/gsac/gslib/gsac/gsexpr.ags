@@ -4052,6 +4052,9 @@ _gsac.gsexpr.compileToExpr_res_res.t	.tygvar	-- Temp
 _gsac.gsexpr.compileToExpr_res_res.expr	.gvar
 list.:	.gvar
 gsdl.ags.codeitem.alloc	.gvar
+_gsac.gsexpr.compileToExpr_res_res.impprog	.gvar
+gsdl.ags.codeitem.impgen.alloc	.gvar
+maybe.just	.gvar
 pos	.fv	gsdl.sourcepos.t
 sv0	.fv	gsdl.var.t
 rhs	.fv	gsdl.ags.codeitem.alloc.rhs.t
@@ -4069,7 +4072,11 @@ pn		.fkarg	0	gsdl.var.t
 ps		.fkarg	1	gsdl.var.t
 gs1		.fkarg	2	list.t	gsdl.ags.codeitem.impgen.t
 b		.fkarg	3	gsdl.ags.codeitem.impbody.t
-			.undef	_gsac.gsexpr.compileToExpr_res_res.t
+just.sv0			.apply	maybe.just	gsdl.var.t	|	sv0
+g0			.apply	gsdl.ags.codeitem.impgen.alloc	|	just.sv0	rhs
+gs			.apply	list.:	gsdl.ags.codeitem.impgen.t	|	g0	gs1
+			.app	pn	ps	gs	b
+			.enter	_gsac.gsexpr.compileToExpr_res_res.impprog
 	-- > :: _gsac.gsexpr.compileToExpr_res_res.t
 
 _gsac.gsexpr.compileToVar_pos_k	.forcecont
