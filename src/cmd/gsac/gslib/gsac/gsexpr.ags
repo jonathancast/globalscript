@@ -3442,7 +3442,7 @@ b0	.karg	bool.prim.u	-- Have we emitted (or otherwise declared) §gs{v}?
 	.analyze	b0	false	true
 		.case	false
 cs			.lfield	codeitems	as.r
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.lfield	coercionitems	as.r
 ds			.lfield	dataitems	as.r
 v.gv			.apply	gsdl.ags.codeitem.gvar.gvar	|	pos	v
 as.r.gvs			.lfield	gvars	as.r
@@ -3455,7 +3455,7 @@ tyem2			.undefined	ordered.set.t	gsdl.var.t
 tysvs2			.undefined	list.t	gsdl.var.t
 tygvs			.lfield	tygvars	as.r
 tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+ts			.lfield	typeitems	as.r
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs2	ty.emitted	tyem2	ty.subvars	tysvs2	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -4660,12 +4660,14 @@ err		.fkarg	0	string.t
 		.case	right
 e.r		.fkarg	0	_gsac.gsexpr.compileToLambdaExpr_res.ty
 e.r.cs			.lfield	codeitems	e.r
+e.r.cos			.lfield	coercionitems	e.r
 e.r.ds			.lfield	dataitems	e.r
 e.r.tygvs			.lfield	tygvars	e.r
 e.r.scs			.lfield	subcodes	e.r
 e.r.gvs			.lfield	gvars	e.r
 e.r.tyls			.lfield	tylets	e.r
 e.r.r			.lfield	res	e.r
+e.r.ts			.lfield	typeitems	e.r
 sv0			.apply	gsdl.var.<>	|	tv	sv
 sv.c			.apply	gsdl.var.<>	|	sv0	_gsac.gsexpr_c.v
 rhs			.apply	gsdl.ags.codeitem.alloc.rhs.closure	|	pos	sv.c
@@ -4697,11 +4699,13 @@ diff.list.:	.gvar
 _gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	.gvar
 pos	.fv	gsdl.sourcepos.t
 e.r.cs	.fv	diff.list.t	gsdl.ags.codeitem.t
+e.r.cos	.fv	diff.list.t	gsdl.ags.coercionitem.t
 e.r.ds	.fv	diff.list.t	gsdl.ags.dataitem.t
 e.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
 e.r.scs	.fv	diff.list.t	gsdl.var.t
 e.r.gvs	.fv	diff.list.t	gsdl.ags.codeitem.gvar.t
 e.r.tyls	.fv	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
+e.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
 e.r.r	.fv	_gsac.gsexpr.compileToLambdaExpr_res_res.ty
 sv.c	.fv	gsdl.var.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
@@ -4715,7 +4719,8 @@ c0			.apply	_gsac.gsexpr.compileToLambdaExpr_res_res.compileToCodeItem	|	pos	sv.
 cs0			.apply	diff.list.:	gsdl.ags.codeitem.t	|	c0	e.r.cs
 k.r.cs			.lfield	codeitems	k.r
 cs			.apply	diff.list.<>	gsdl.ags.codeitem.t	|	cs0	k.r.cs
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+k.r.cos			.lfield	coercionitems	k.r
+cos			.apply	diff.list.<>	gsdl.ags.coercionitem.t	|	e.r.cos	k.r.cos
 k.r.ds			.lfield	dataitems	k.r
 ds			.apply	diff.list.<>	gsdl.ags.dataitem.t	|	e.r.ds	k.r.ds
 gvs			.lfield	gvars	k.r
@@ -4728,7 +4733,8 @@ tyem1			.lfield	ty.emitted	k.r
 tysvs1			.lfield	ty.subvars	k.r
 tygvs			.lfield	tygvars	k.r
 tyls			.lfield	tylets	k.r
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+k.r.ts			.lfield	typeitems	k.r
+ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	e.r.ts	k.r.ts
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
