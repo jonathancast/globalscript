@@ -2954,13 +2954,13 @@ _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 gsdl.ags.codeitem.t	.tygvar
 gsdl.ags.coercionitem.t	.tygvar
 gsdl.ags.dataitem.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.codeitem.impbody.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.typeitem.t	.tygvar
 either.t	.tygvar	-- Temp
 diff.list.t	.tygvar	-- Temp
-gsdl.ags.codeitem.gvar.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.nil	.gvar
 _gsac.gsexpr.compileToExpr_res_res.impprog	.gvar
@@ -2976,7 +2976,7 @@ svs3	.larg	list.t	gsdl.var.t
 cs	.appty	diff.list.nil	gsdl.ags.codeitem.t
 cos	.appty	diff.list.nil	gsdl.ags.coercionitem.t
 ds	.appty	diff.list.nil	gsdl.ags.dataitem.t
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.appty	diff.list.nil	gsdl.ags.codeitem.gvar.t
 r.b	.lrecord	rhs	b.r	|	gsdl.ags.codeitem.impbody.t
 r	.apply	_gsac.gsexpr.compileToExpr_res_res.impprog	|	ps	pn	gs	r.b
 nil.var			.appty	diff.list.nil	gsdl.var.t
@@ -5407,7 +5407,7 @@ k.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 cs			.lfield	codeitems	k.r
 cos			.lfield	coercionitems	k.r
 ds			.lfield	dataitems	k.r
-gvs			.undefined	diff.list.t	gsdl.ags.codeitem.gvar.t
+gvs			.lfield	gvars	k.r
 pem2			.lfield	prim.emitted	k.r
 k.r.r			.lfield	res	k.r
 scs			.undefined	diff.list.t	gsdl.var.t
