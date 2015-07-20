@@ -966,6 +966,7 @@ _gsdl.ags.codeitem.prim.u_impprog_decls_ty	.tygvar
 rune.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
 diff.list.t	.tygvar
+gsdl.ags.codeitem.gvar.t	.tygvar
 gsdl.ags.typeitem.decls.tylet.t	.tygvar
 gsdl.ags.codeitem.arg.t	.tygvar
 gsdl.ags.codeitem.impgen.t	.tygvar
@@ -974,6 +975,7 @@ diff.list.<>	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
 gsdl.ags.typeitem.decls.tygvar.print	.gvar
+gsdl.ags.codeitem.gvar.print	.gvar
 gsdl.ags.typeitem.decls.tylet.print	.gvar
 gsdl.ags.codeitem.arg.print	.gvar
 gsdl.ags.codeitem.impgen.print	.gvar
@@ -982,6 +984,9 @@ diff.list.rune.ty	.tylet	diff.list.t	rune.t
 tygvs	.lfield	tygvars	ds
 tygvs.ss	.apply	list.map	gsdl.ags.typeitem.decls.tygvar.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tygvar.print	tygvs
 tygvs.s	.apply	diff.list.concat	rune.t	|	tygvs.ss
+gvs	.lfield	gvars	ds
+gvs.ss	.apply	list.map	gsdl.ags.codeitem.gvar.t	diff.list.rune.ty	|	gsdl.ags.codeitem.gvar.print	gvs
+gvs.s	.apply	diff.list.concat	rune.t	|	gvs.ss
 tyls	.lfield	tylets	ds
 tyls.ss	.apply	list.map	gsdl.ags.typeitem.decls.tylet.t	diff.list.rune.ty	|	gsdl.ags.typeitem.decls.tylet.print	tyls
 tyls.s	.apply	diff.list.concat	rune.t	|	tyls.ss
@@ -991,8 +996,9 @@ args.s	.apply	diff.list.concat	rune.t	|	args.ss
 gs	.lfield	gens	ds
 gs.ss	.apply	list.map	gsdl.ags.codeitem.impgen.t	diff.list.rune.ty	|	gsdl.ags.codeitem.impgen.print	gs
 gs.s	.apply	diff.list.concat	rune.t	|	gs.ss
-s2	.apply	diff.list.<>	rune.t	|	args.s	gs.s
-s1	.apply	diff.list.<>	rune.t	|	tyls.s	s2
+s3	.apply	diff.list.<>	rune.t	|	args.s	gs.s
+s2	.apply	diff.list.<>	rune.t	|	tyls.s	s3
+s1	.apply	diff.list.<>	rune.t	|	gvs.s	s2
 	.app	tygvs.s	s1
 	.enter	diff.list.<>	rune.t
 
