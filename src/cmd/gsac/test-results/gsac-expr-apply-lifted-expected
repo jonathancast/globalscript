@@ -1,0 +1,52 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 4 3
+f	.undefined	_f_ty
+
+	.code
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 1
+_ep_c	.expr
+_ep_0_c	.subcode
+f	.gvar
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 3
+0	.closure	_ep_0_c
+	.app	0
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 1
+	.enter	f
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 3
+_ep_0_c	.expr
+	.lift
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 4
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 4
+0	.record
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 4
+	.yield	0
+
+	.type
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 3 1
+_ep_ty	.tyexpr
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 4 3
+_f_ty	.tyexpr
+_f_ty_0	.tygvar
+	.tylift
+	.line	./test-fixtures/expr-apply-lifted.cgs 4 7
+	.tyfun	_f_ty_0
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/expr-apply-lifted.cgs 4 7
+_f_ty_0	.tyexpr
+	.tylift
+	.typroduct

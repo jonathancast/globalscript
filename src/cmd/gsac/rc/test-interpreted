@@ -45,6 +45,7 @@ ok_gsac '-- gsac: Lifted empty structure literals --' gsac-empty-structure ./tes
 ok_gsac '-- gsac: Lifted lambda-terms --' gsac-lifted-lambda ./test-fixtures/lifted-lambda.cgs
 ok_gsac '-- gsac: Casts with expression sources --' gsac-cast-source ./test-fixtures/cast-source.cgs
 ok_gsac '-- gsac: Lambda-terms with bodies --' gsac-lambda-body ./test-fixtures/lambda-body.cgs
+ok_gsac '-- gsac: Lifted Function applications --' gsac-expr-apply-lifted ./test-fixtures/expr-apply-lifted.cgs
 
 ok_gsac '-- gsac: Type signatures --' gsac-type-sig ./test-fixtures/type-sig.cgs
 ok_gsac '-- gsac: either.t type signatures --' gsac-either-type-sig ./test-fixtures/either-type-sig.cgs
