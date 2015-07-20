@@ -624,7 +624,7 @@ ky		.fkarg	0	gsdl.ags.typeitem.gskind.t
 _gsdl.ags.typeitem.fmtgs_c	.expr
 fmtgs.t	.tygvar	-- Temp
 gsdl.ags.typeitem.t	.tygvar	-- Temp
-	.undef	fmtgs.t gsdl.ags.typeitem.t
+	.undef	fmtgs.t	gsdl.ags.typeitem.t
 
 -- §section §gs{gsdl.ags.typeitem.decls.parser}
 
@@ -1495,7 +1495,7 @@ natural.1	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.field.ty	.tylet	list.t	gsdl.ags.typeitem.field.t
-f	.closure	_gsdl.ags.typeitem.expr.parser_typroduct.p_f_c	
+f	.closure	_gsdl.ags.typeitem.expr.parser_typroduct.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 typroduct.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_typroduct.p_typroduct.re
 field.f	.closure	_gsdl.ags.typeitem.expr.parser_typroduct.p_field.f_c
@@ -1558,7 +1558,7 @@ natural.1	.gvar
 gsdl.ags.syntax.whitespace	.gvar
 parser.fail	.gvar	-- Temp
 list.field.ty	.tylet	list.t	gsdl.ags.typeitem.field.t
-f	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_f_c	
+f	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_f_c
 pos.get	.apply	parser.pos.get	rune.t
 typroduct.p	.apply	parser.match	rune.t	|	rune.compare	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_tyubproduct.re
 field.f	.closure	_gsdl.ags.typeitem.expr.parser_tyubproduct.p_field.f_c
