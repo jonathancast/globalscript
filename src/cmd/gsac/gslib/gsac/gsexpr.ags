@@ -4443,7 +4443,7 @@ ds			.lfield	dataitems	k.r
 gvs			.lfield	gvars	k.r
 pem2			.lfield	prim.emitted	k.r
 r			.lfield	res	k.r
-scs			.undefined	diff.list.t	gsdl.var.t
+scs			.lfield	subcodes	k.r
 svs2			.lfield	subvars	k.r
 tyem2			.lfield	ty.emitted	k.r
 tysvs2			.lfield	ty.subvars	k.r
