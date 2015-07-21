@@ -4833,13 +4833,17 @@ k			.apply	v.k	|	v
 	-- > :: either.t	string.t	_gsac.gsexpr.compileToExpr_res.ty
 
 _gsac.gsexpr.compileFunToGenRHS_v.k_c	.expr
+gsdl.sourcepos.t	.tygvar
 gsdl.var.t	.tygvar
 list.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+gsdl.ags.codeitem.alloc.rhs.apply	.gvar
+pos	.fv	gsdl.sourcepos.t
 v	.larg	gsdl.var.t
 tyas	.larg	list.t	gsdl.var.t
 as	.larg	list.t	gsdl.var.t
-	.undef	gsdl.ags.codeitem.alloc.rhs.t
+	.app	pos	v	tyas	as
+	.enter	gsdl.ags.codeitem.alloc.rhs.apply
 
 _gsac.gsexpr.compileFunToGenRHS_var.lifted_k	.forcecont
 _gsac.gsexpr.compileFunToGenRHS_emit.var_ty	.tygvar
