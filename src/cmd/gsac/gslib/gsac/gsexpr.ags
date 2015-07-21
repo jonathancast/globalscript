@@ -3617,6 +3617,7 @@ tyem1			.lfield	emitted	ty.r
 pem1			.lfield	prim.emitted	ty.r
 tysvs1			.lfield	subvars	ty.r
 ty.r.tygvs			.lfield	tygvars	ty.r
+ty.r.ts			.lfield	typeitems	ty.r
 			.force	_gsac.gsexpr.compileTyArgsToExpr_:_type_right_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToExpr_res.ty
 			.app	pos	tv	k1	as1	tyem1	pem1	tysvs1	em	svs
@@ -3639,21 +3640,21 @@ tyas	.apply	list.:	gsdl.var.t	|	ty.r.r	tyas1
 _gsac.gsexpr.compileTyArgsToExpr_:_type_right_k	.forcecont
 diff.list.t	.tygvar
 gsdl.ags.typeitem.decls.tygvar.t	.tygvar
+gsdl.ags.typeitem.t	.tygvar
 either.prim.u	.tygvar
 string.t	.tygvar
 _gsac.gsexpr.compileToExpr_res.ty	.tygvar
 either.t	.tygvar	-- Temp
-gsdl.ags.coercionitem.t	.tygvar	-- Temp
 ordered.map.t	.tygvar	-- Temp
 _gsac.gstype_primname.t	.tygvar	-- Temp
 gsdl.var.t	.tygvar	-- Temp
 list.t	.tygvar	-- Temp
 ordered.set.t	.tygvar	-- Temp
 gsdl.ags.typeitem.decls.tylet.t	.tygvar	-- Temp
-gsdl.ags.typeitem.t	.tygvar	-- Temp
 either.right	.gvar
 diff.list.<>	.gvar
 ty.r.tygvs	.fv	diff.list.t	gsdl.ags.typeitem.decls.tygvar.t
+ty.r.ts	.fv	diff.list.t	gsdl.ags.typeitem.t
 e0	.karg	either.prim.u	string.t	_gsac.gsexpr.compileToExpr_res.ty
 	.analyze	e0	left	right
 		.case	left
@@ -3662,7 +3663,7 @@ err		.fkarg	0	string.t
 		.case	right
 as1.r		.fkarg	0	_gsac.gsexpr.compileToExpr_res.ty
 cs			.lfield	codeitems	as1.r
-cos			.undefined	diff.list.t	gsdl.ags.coercionitem.t
+cos			.lfield	coercionitems	as1.r
 ds			.lfield	dataitems	as1.r
 gvs			.lfield	gvars	as1.r
 pem1			.undefined	ordered.map.t	_gsac.gstype_primname.t	gsdl.var.t
@@ -3674,7 +3675,8 @@ tysvs1			.undefined	list.t	gsdl.var.t
 as1.r.tygvs			.lfield	tygvars	as1.r
 tygvs			.apply	diff.list.<>	gsdl.ags.typeitem.decls.tygvar.t	|	ty.r.tygvs	as1.r.tygvs
 tyls			.undefined	diff.list.t	gsdl.ags.typeitem.decls.tylet.t
-ts			.undefined	diff.list.t	gsdl.ags.typeitem.t
+as1.r.ts			.lfield	typeitems	as1.r
+ts			.apply	diff.list.<>	gsdl.ags.typeitem.t	|	ty.r.ts	as1.r.ts
 res			.lrecord	codeitems	cs	coercionitems	cos	dataitems	ds	gvars	gvs	prim.emitted	pem1	res	r	subcodes	scs	subvars	svs1	ty.emitted	tyem1	ty.subvars	tysvs1	tygvars	tygvs	tylets	tyls	typeitems	ts	|	_gsac.gsexpr.compileToExpr_res.ty
 			.app	res
 			.enter	either.right	string.t	_gsac.gsexpr.compileToExpr_res.ty
