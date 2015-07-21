@@ -1994,6 +1994,7 @@ gsdl.cgs.gsexpr.t.in	.cogvar
 either.t.out	.cogvar
 gsac.gsexpr.compileToLambdaExpr	.gvar
 gsdl.var.subvars	.gvar
+ordered.set.empty	.gvar
 gsac.gsexpr.compileToGlobalVar	.gvar
 pos	.fv	gsdl.sourcepos.t
 x	.fv	gsdl.var.t
@@ -2008,7 +2009,7 @@ e0.cl	.cast	e0.l	gsdl.cgs.gsexpr.t.in
 	.danalyze	e0	expr.heavy.cast	lambda	pos
 		.default
 tyvs1			.apply	gsdl.var.subvars	|	x
-em1			.undefined	ordered.set.t	gsdl.var.t
+em1			.appty	ordered.set.empty	gsdl.var.t
 svs1			.undefined	list.t	gsdl.var.t
 			.force	_gsac.gsexpr.compileToGlobalVar_default_k
 			.coerce	either.t.out	string.t	_gsac.gsexpr.compileToLambdaExpr_res.ty
