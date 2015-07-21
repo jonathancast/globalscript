@@ -124,6 +124,8 @@ gsdl.ags.codeitem.alloc.rhs.parser	.closure	_gsdl.ags.codeitem.alloc.rhs.parser_
 _gsdl.ags.codeitem.alloc.rhs.parser_closure.p_closure.re	.regex	.closure
 
 gsdl.ags.codeitem.alloc.rhs.print	.closure	_gsdl.ags.codeitem.alloc.rhs.print_c
+_gsdl.ags.codeitem.alloc.rhs.print_apply_apply.s	.string	.apply\t
+_gsdl.ags.codeitem.alloc.rhs.print_apply_pipe.s	.string	\t|
 _gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	.string	.appty\t
 _gsdl.ags.codeitem.alloc.rhs.print_closure_closure.s	.string	.closure\t
 _gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.string	.undefined\t
@@ -2922,11 +2924,13 @@ rune.t	.tygvar
 diff.list.t	.tygvar
 _gsdl.ags.codeitem.alloc.rhs.print_a.print_c	.subcode
 diff.list.prepend	.gvar
-_gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	.gvar
+_gsdl.ags.codeitem.alloc.rhs.print_apply_apply.s	.gvar
 diff.list.<>	.gvar
 gsdl.ags.syntax.var.print	.gvar
 diff.list.concat	.gvar
 list.map	.gvar
+_gsdl.ags.codeitem.alloc.rhs.print_apply_pipe.s	.gvar
+_gsdl.ags.codeitem.alloc.rhs.print_appty_appty.s	.gvar
 _gsdl.ags.codeitem.alloc.rhs.print_closure_closure.s	.gvar
 _gsdl.ags.codeitem.alloc.rhs.print_undefined_undefined.s	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
@@ -2938,7 +2942,16 @@ pos		.fkarg	0	gsdl.sourcepos.t
 f		.fkarg	1	gsdl.var.t
 tyas		.fkarg	2	list.t	gsdl.var.t
 as		.fkarg	3	list.t	gsdl.var.t
-			.undef	diff.list.t	rune.t
+f.s			.apply	gsdl.ags.syntax.var.print	|	f
+tyas.ss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	a.print	tyas
+tyas.s			.apply	diff.list.concat	rune.t	|	tyas.ss
+as.ss			.apply	list.map	gsdl.var.t	diff.list.rune.ty	|	a.print	as
+as.s			.apply	diff.list.concat	rune.t	|	as.ss
+s3			.apply	diff.list.prepend	rune.t	|	_gsdl.ags.codeitem.alloc.rhs.print_apply_pipe.s	as.s
+s2			.apply	diff.list.<>	rune.t	|	tyas.s	s3
+s1			.apply	diff.list.<>	rune.t	|	f.s	s2
+			.app	_gsdl.ags.codeitem.alloc.rhs.print_apply_apply.s	s1
+			.enter	diff.list.prepend	rune.t
 		.case	appty
 pos		.fkarg		0	gsdl.sourcepos.t
 f		.fkarg	1	gsdl.var.t
