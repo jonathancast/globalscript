@@ -5297,9 +5297,11 @@ _gsac.gsexpr.compileArgsToGenRHS_k_ty	.tygvar
 list.t	.tygvar
 gsdl.var.t	.tygvar
 gsdl.ags.codeitem.alloc.rhs.t	.tygvar	-- Temp
+list.:	.gvar
 ak	.fv	_gsac.gsexpr.compileArgsToGenRHS_k_ty
+av0	.fv	gsdl.var.t
 avs1	.larg	list.t	gsdl.var.t
-avs	.undefined	list.t	gsdl.var.t
+avs	.apply	list.:	gsdl.var.t	|	av0	avs1
 	.app	avs
 	.enter	ak
 
