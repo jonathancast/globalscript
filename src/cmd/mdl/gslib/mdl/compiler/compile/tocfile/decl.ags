@@ -27,13 +27,14 @@ clang.decl.t	.tygvar
 either.t	.tygvar	-- Temp
 either.left	.gvar
 diff.list.<>	.gvar
+mdl.compiler.c.pos.print	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 d0	.karg	mdl.file.decl.prim.u
 	.analyze	d0	inline.c	inline.header
 		.case	inline.c
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-pos.s			.undefined	diff.list.t	rune.t
+pos.s			.apply	mdl.compiler.c.pos.print	|	pos
 ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds
 			.app	ds1
 			.enter	either.left	diff.list.rune.ty	clang.decl.t
