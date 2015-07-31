@@ -11,10 +11,34 @@ mdl.compiler.compile.tocfile.decl	.closure	_mdl.compiler.compile.tocfile.decl_c
 
 _mdl.compiler.compile.tocfile.decl_c	.expr
 mdl.file.decl.t	.tygvar
-either.t	.tygvar	-- Temp
-diff.list.t	.tygvar	-- Temp
-rune.t	.tygvar	-- Temp
-clang.decl.t	.tygvar	-- Temp
+_mdl.compiler.compile.tocfile.decl_k	.subcode
+mdl.file.decl.t.out	.cogvar
 d	.larg	mdl.file.decl.t
-diff.list.rune.ty	.tylet	diff.list.t	rune.t	-- Temp
+	.force	_mdl.compiler.compile.tocfile.decl_k
+	.coerce	mdl.file.decl.t.out
+	.enter	d
+
+_mdl.compiler.compile.tocfile.decl_k	.forcecont
+mdl.file.decl.prim.u	.tygvar
+parser.pos.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+clang.decl.t	.tygvar
+either.t	.tygvar	-- Temp
+either.left	.gvar
+diff.list.<>	.gvar
+diff.list.rune.ty	.tylet	diff.list.t	rune.t
+d0	.karg	mdl.file.decl.prim.u
+	.analyze	d0	inline.c	inline.header
+		.case	inline.c
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
+pos.s			.undefined	diff.list.t	rune.t
+ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds
+			.app	ds1
+			.enter	either.left	diff.list.rune.ty	clang.decl.t
+		.case	inline.header
+pos		.fkarg	0	parser.pos.t
+ds		.fkarg	1	diff.list.t	rune.t
 			.undef	either.t	diff.list.rune.ty	clang.decl.t
+	-- > :: either.t	diff.list.rune.ty	clang.decl.t
