@@ -1,0 +1,37 @@
+#calculus: gsdl.string-code 0.7
+#type: prefix
+
+	.data
+
+mdl.compiler.c.pos.print	.closure	_mdl.compiler.c.pos.print_c
+_mdl.compiler.c.pos.print_line.s	.string	#line\s
+
+	.code
+
+-- §section §gs{mdl.compiler.c.pos.print}
+
+_mdl.compiler.c.pos.print_c	.expr
+parser.pos.t	.tygvar
+rune.t	.tygvar
+diff.list.prepend	.gvar
+_mdl.compiler.c.pos.print_line.s	.gvar
+natural.fmtdecimal	.gvar
+diff.list.:	.gvar
+rune.space	.gvar
+rune.double.quote	.gvar
+ibio.file.name.out	.gvar
+rune.new.line	.gvar
+diff.list.singleton	.gvar
+pos	.larg	parser.pos.t
+pos.n	.lfield	line	pos
+pos.n.s	.apply	natural.fmtdecimal	|	pos.n
+pos.fn	.lfield	file	pos
+pos.fn.s	.apply	ibio.file.name.out	|	pos.fn
+ds1.6	.apply	diff.list.singleton	rune.t	|	rune.new.line
+ds1.5	.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.6
+ds1.4	.apply	diff.list.prepend	rune.t	|	pos.fn.s	ds1.5
+ds1.3	.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.4
+ds1.2	.apply	diff.list.:	rune.t	|	rune.space	ds1.3
+ds1.1	.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
+	.app	_mdl.compiler.c.pos.print_line.s	ds1.1
+	.enter	diff.list.prepend	rune.t

@@ -4,7 +4,6 @@
 	.data
 
 mdl.compiler.compile.tocheader.decl	.closure	_mdl.compiler.compile.tocheader.decl_c
-_mdl.compiler.compile.tocheader.decl_inline.header_line.s	.string	#line\s
 
 	.code
 
@@ -27,14 +26,8 @@ rune.t	.tygvar
 clang.decl.t	.tygvar
 either.t	.tygvar	-- Temp
 either.left	.gvar
-diff.list.prepend	.gvar
-_mdl.compiler.compile.tocheader.decl_inline.header_line.s	.gvar
-natural.fmtdecimal	.gvar
-diff.list.:	.gvar
-rune.space	.gvar
-rune.double.quote	.gvar
-ibio.file.name.out	.gvar
-rune.new.line	.gvar
+diff.list.<>	.gvar
+mdl.compiler.c.pos.print	.gvar
 diff.list.rune.ty	.tylet	diff.list.t	rune.t
 d0	.karg	mdl.file.decl.prim.u
 	.analyze	d0	inline.c	inline.header
@@ -45,17 +38,8 @@ ds		.fkarg	1	diff.list.t	rune.t
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-pos.n			.lfield	line	pos
-pos.n.s			.apply	natural.fmtdecimal	|	pos.n
-pos.fn			.lfield	file	pos
-pos.fn.s			.apply	ibio.file.name.out	|	pos.fn
-ds1.6			.apply	diff.list.:	rune.t	|	rune.new.line	ds
-ds1.5			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.6
-ds1.4			.apply	diff.list.prepend	rune.t	|	pos.fn.s	ds1.5
-ds1.3			.apply	diff.list.:	rune.t	|	rune.double.quote	ds1.4
-ds1.2			.apply	diff.list.:	rune.t	|	rune.space	ds1.3
-ds1.1			.apply	diff.list.prepend	rune.t	|	pos.n.s	ds1.2
-ds1			.apply	diff.list.prepend	rune.t	|	_mdl.compiler.compile.tocheader.decl_inline.header_line.s	ds1.1
+pos.s			.apply	mdl.compiler.c.pos.print	|	pos
+ds1			.apply	diff.list.<>	rune.t	|	pos.s	ds
 			.app	ds1
 			.enter	either.left	diff.list.rune.ty	clang.decl.t
 	-- > :: either.t	diff.list.rune.ty	clang.decl.t
