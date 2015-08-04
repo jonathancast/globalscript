@@ -1,0 +1,3 @@
+#line 1 "./test-fixtures/inline-c-pct.mdl"
+
+    for (tid = 0; have_clients || have_threads; tid = (tid + 1) % IBIO_NUM_READ_THREADS) {

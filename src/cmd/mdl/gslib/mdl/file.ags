@@ -228,6 +228,8 @@ rune.t	.tygvar
 string.t	.tygvar
 diff.list.t	.tygvar
 _mdl.file.inline.c_w.s	.gvar
+diff.list.snoc	.gvar
+rune.percent	.gvar
 parser.*>	.gvar
 mdl.syntax.whitespace	.gvar
 parser.unit	.gvar
@@ -238,7 +240,8 @@ c	.fv	rune.t
 b0	.karg	bool.prim.u
 	.analyze	b0	false	true
 		.case	false
-			.app	ds	c
+ds1			.apply	diff.list.snoc	rune.t	|	ds	rune.percent
+			.app	ds1	c
 			.enter	_mdl.file.inline.c_w.s
 		.case	true
 unit.ds			.apply	parser.unit	rune.t	diff.list.rune.ty	|	ds
