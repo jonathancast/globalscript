@@ -1,2 +1,5 @@
+%.c:D:%.mdl
+	$GLOBALSCRIPT/bin/bootstrap mdl2cfile $stem.mdl > $stem.c
+
 %.h:D:%.mdi
 	$GLOBALSCRIPT/bin/bootstrap mdl2cheader $stem.mdi > $stem.h
