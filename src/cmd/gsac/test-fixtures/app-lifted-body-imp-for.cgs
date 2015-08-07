@@ -1,0 +1,6 @@
+#type: document
+
+⌊for @ibio.prim.m
+    . f ⌊"Π〈〉⌋
+⌋;
+f :: ⌊⌊"Π〈〉⌋ → ⌊ibio.prim.m ⌊"Π〈〉⌋⌋⌋;

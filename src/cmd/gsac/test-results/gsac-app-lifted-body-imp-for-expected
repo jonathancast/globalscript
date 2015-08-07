@@ -1,0 +1,67 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 6 3
+f	.undefined	_f_ty
+
+	.code
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 3 1
+_ep_c	.impprog	ibio.prim	ibio
+_ep_body_0_c	.subcode
+f	.gvar
+	.lift
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 3 2
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 9
+0	.closure	_ep_body_0_c
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 7
+	.body	.apply	f	|	0
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 9
+_ep_body_0_c	.expr
+	.lift
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 10
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 10
+0	.record
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 4 10
+	.yield	0
+
+	.type
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 3 1
+_ep_ty	.tyexpr
+_ep_ty_0	.tyextimpprim	ibio.prim	ibio	u?^
+_ep_ty_1	.tygvar
+	.tylift
+	.tyref	_ep_ty_0	_ep_ty_1
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 3 7
+_ep_ty_1	.tyexpr
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 6 3
+_f_ty	.tyexpr
+_f_ty_0	.tygvar
+_f_ty_1	.tyextimpprim	ibio.prim	ibio	u?^
+_f_ty_2	.tygvar
+	.tylift
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 6 7
+	.tyfun	_f_ty_0
+	.tylift
+	.tyref	_f_ty_1	_f_ty_2
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 6 7
+_f_ty_0	.tyexpr
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/app-lifted-body-imp-for.cgs 6 7
+_f_ty_2	.tyexpr
+	.tylift
+	.typroduct
