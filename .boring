@@ -34,4 +34,4 @@ bin/gscr$
 bin/gscr-deps$
 bin/gscr-targets$
 src/cmd/ibio/iport.h$
-src/cmd/ibio/iport.c$
+src/cmd/ibio/.*\.c$

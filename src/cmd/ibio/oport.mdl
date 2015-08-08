@@ -1,3 +1,4 @@
+%C{
 #include <u.h>
 #include <libc.h>
 #include <libglobalscript.h>
@@ -838,3 +839,4 @@ ibio_oport_evacuate_buf(struct gsstringbuilder *err, struct ibio_oport *oport)
 
     return 0;
 }
+%}
