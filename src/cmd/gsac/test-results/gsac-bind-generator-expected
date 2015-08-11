@@ -1,0 +1,49 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.line	./test-fixtures/bind-generator.cgs 3 1
+	.closure	_ep_c	_ep_ty
+
+	.code
+
+	.line	./test-fixtures/bind-generator.cgs 3 1
+_ep_c	.impprog	ibio.prim	ibio
+bool.t	.tyextabstype	*
+_ep_0	.tygvar
+ibio.prim.unit	.gvar
+	.lift
+	.line	./test-fixtures/bind-generator.cgs 3 2
+	.line	./test-fixtures/bind-generator.cgs 4 11
+x	.undefined	bool.t
+	.line	./test-fixtures/bind-generator.cgs 5 13
+y	.bind	.apply	ibio.prim.unit	bool.t	|	x
+	.line	./test-fixtures/bind-generator.cgs 6 7
+	.body	.undefined	_ep_0
+
+	.type
+
+	.line	./test-fixtures/bind-generator.cgs 6 7
+_ep_0	.tyexpr
+_ep_0_0	.tyextimpprim	ibio.prim	ibio	u?^
+_ep_0_1	.tygvar
+	.tylift
+	.tyref	_ep_0_0	_ep_0_1
+
+	.line	./test-fixtures/bind-generator.cgs 6 7
+_ep_0_1	.tyexpr
+	.tylift
+	.typroduct
+
+	.line	./test-fixtures/bind-generator.cgs 3 1
+_ep_ty	.tyexpr
+_ep_ty_0	.tyextimpprim	ibio.prim	ibio	u?^
+_ep_ty_1	.tygvar
+	.tylift
+	.tyref	_ep_ty_0	_ep_ty_1
+
+	.line	./test-fixtures/bind-generator.cgs 3 7
+_ep_ty_1	.tyexpr
+	.tylift
+	.typroduct

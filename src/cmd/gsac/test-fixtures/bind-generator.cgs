@@ -1,0 +1,7 @@
+#type: document
+
+⌊for @ibio.prim.m
+        x :: bool.t;
+        y ← ibio.prim.unit (type bool.t) x;
+    . :: ⌊ibio.prim.m ⌊"Π〈〉⌋⌋
+⌋;

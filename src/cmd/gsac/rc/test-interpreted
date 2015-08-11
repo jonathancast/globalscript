@@ -57,6 +57,7 @@ ok_gsac '-- gsac: Undefined variables of non-empty record type in block statemen
 ok_gsac '-- gsac: Undefined list.t list.t variables in block statements --' gsac-undef-list-list-var-imp-for ./test-fixtures/undef-list-list-var-imp-for.cgs
 ok_gsac '-- gsac: Expressions as for comprehension bodies --' gsac-var-body-imp-for ./test-fixtures/var-body-imp-for.cgs
 ok_gsac '-- gsac: Applications of lifted functions as for comprehension bodies --' gsac-app-lifted-body-imp-for ./test-fixtures/app-lifted-body-imp-for.cgs
+ok_gsac '-- gsac: Bind generators --' gsac-bind-generator ./test-fixtures/bind-generator.cgs
 
 ok_gsac '-- gsac: Type synonyms --' gsac-type-synonym ./test-fixtures/type-synonyms.cgs
 ok_gsac '-- gsac: Undefined variables --' gsac-undef-var-doc ./test-fixtures/undef-var-doc.cgs
