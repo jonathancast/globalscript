@@ -587,6 +587,10 @@ ace_return_to_force(struct ace_thread *thread, struct ace_eval_state *st, struct
 
     force = (struct gsbc_cont_force *)cont;
 
+    if (force->code->numfvs != force->numfvs) {
+        ace_thread_unimpl(thread, __FILE__, __LINE__, force->cont.pos, "Returning to %P, which has %d fvs, but continuation holds %d fvs instead", force->code->pos, force->code->numfvs, force->numfvs);
+        return 0;
+    }
     if (!ace_set_registers_from_bco(thread, st, force->code)) return 0;
     for (i = 0; i < force->numfvs; i++) ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, force->fvs[i], return 0);
     ACE_EVAL_STATE_ADD_REGISTER(st, cont->pos, *arg, return 0);
