@@ -33,5 +33,5 @@ bin/mdl2clib$
 bin/gscr$
 bin/gscr-deps$
 bin/gscr-targets$
-src/cmd/ibio/iport.h$
+src/cmd/ibio/.*\.h$
 src/cmd/ibio/.*\.c$
