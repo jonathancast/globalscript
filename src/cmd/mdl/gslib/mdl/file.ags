@@ -353,13 +353,13 @@ ktod	.fv	ordered.map.t	mdl.file.decl.key.t	mdl.file.decl.key.decl.t
 ktoks	.fv	ordered.map.t	mdl.file.decl.key.t	list.key.ty
 ds1	.fv	list.t	mdl.file.decl.t
 d0.0	.karg	mdl.file.decl.prim.u
+num.inline.1	.apply	natural.+	|	num.inline	natural.1
 d0.0.l	.lifted	d0.0
 d0.0.cl	.cast	d0.0.l	mdl.file.decl.t.in
 	.analyze	d0.0	inline.c	inline.header
 		.case	inline.c
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-num.inline.1			.apply	natural.+	|	num.inline	natural.1
 k0			.apply	mdl.file.decl.key.inline	|	num.inline
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
 k0.d0			.lrecord	0	k0	1	d0.0.cl	|	mdl.file.decl.key.decl.t
@@ -371,7 +371,6 @@ ktoks1			.apply	ordered.map.insert	mdl.file.decl.key.t	list.key.ty	|	mdl.file.de
 		.case	inline.header
 pos		.fkarg	0	parser.pos.t
 ds		.fkarg	1	diff.list.t	rune.t
-num.inline.1			.undefined	natural.t
 k0			.apply	mdl.file.decl.key.inline	|	num.inline
 ks1			.apply	diff.list.snoc	mdl.file.decl.key.t	|	ks.ds	k0
 k0.d0			.lrecord	0	k0	1	d0.0.cl	|	mdl.file.decl.key.decl.t

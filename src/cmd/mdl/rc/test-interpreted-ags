@@ -13,6 +13,7 @@ ok_diff_script '-- mdltype2c: Field in API prim --' type-api-prim-field ibio ./g
 ok_diff_script '-- mdl2cheader: Empty file --' header-empty-file ibio ./gslib ./mdl2cheader.ags ./test-fixtures/empty-header.mdi
 ok_diff_script '-- mdl2cheader: Only inline C --' header-inline-c ibio ./gslib ./mdl2cheader.ags ./test-fixtures/header-inline-c.mdi
 ok_diff_script '-- mdl2cheader: Non-empty inline C --' header-non-empty-inline-c ibio ./gslib ./mdl2cheader.ags ./test-fixtures/non-empty-inline-c.mdi
+ok_diff_script '-- mdl2cheader: Multiple pieces of inline C --' header-multiple-inline-c ibio ./gslib ./mdl2cheader.ags ./test-fixtures/multiple-inline-c.mdi
 
 ok_diff_script '-- mdl2cfile: Empty file --' cfile-empty-file ibio ./gslib ./mdl2cfile.ags ./test-fixtures/empty-cfile.mdl
 ok_diff_script '-- mdl2cfile: Only inline C --' inline-c ibio ./gslib ./mdl2cfile.ags ./test-fixtures/inline-c.mdl
