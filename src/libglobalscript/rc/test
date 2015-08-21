@@ -78,19 +78,19 @@ ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
 
 ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-fixtures/mis-kinded-abs-type.ags:16: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
+echo '# Version 0.7 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_6=1
+
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
 ok_grep_errors '-- an abstract type is different from its definition --' './test-fixtures/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
 
 ok_diff_fail '-- undefined abstract type expressions --' ./$O.test-gsi undef-abs-type-expr.ags
-ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-fixtures/invalid-abs-type-expr.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
+ok_grep_errors '-- an abstract type is different from its definition (in expressions) --' './test-fixtures/invalid-abs-type-expr.ags:14: I don''t think' ./$O.test-gsi invalid-abs-type-expr.ags
 
-ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:15: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
+ok_grep_errors '-- an abstract type is different from its definition (in generators) --' './test-fixtures/invalid-abs-type-gen.ags:14: I don''t think' ./$O.test-gsi invalid-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators --' ./$O.test-gsi undef-abs-type-gen.ags
 ok_diff_fail '-- undefined abstract type generators with type arguments --' ./$O.test-gsi undef-abs-type-gen-tyargs.ags
-
-echo '# Version 0.7 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_6=1
 
 ok_diff_fail '-- force undefined values of abstract types --' ./$O.test-gsi force-undef-abs-type.ags
 
