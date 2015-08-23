@@ -20,6 +20,7 @@ parser.t	.tygvar	-- Temp
 _ep_fn_c	.subcode
 _ep_if_c	.subcode
 _ep_s_c	.subcode
+_ep_fl_c	.subcode
 _ep_body_c	.subcode
 ibio.m.in	.cogvar
 ibio.prim.env.args.get	.gvar
@@ -42,6 +43,7 @@ pos	.apply	parser.pos.initial	|	fn
 p	.apply	parser.*>	rune.t	string.t	mdl.file.t	|	mdl.syntax.whitespace	mdl.file.parser
 s	.bind	.closure	_ep_s_c
 ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
+fl	.bind	.closure	_ep_fl_c
 	.body	.closure	_ep_body_c
 
 _ep_fn_c	.expr
@@ -131,50 +133,50 @@ ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
 	.app	ms	if
 	.enter	ibio.lex.receive	rune.t	string.t
 
-_ep_body_c	.expr
+_ep_fl_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.t	.tygvar
 parser.err.t	.tygvar
 mdl.file.t	.tygvar
-_ep_body_k	.subcode
+_ep_fl_k	.subcode
 either.t.out	.cogvar
 o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 ef	.fv	either.t	parser.err.t	mdl.file.t
-	.force	_ep_body_k
+	.force	_ep_fl_k
 	.coerce	either.t.out	parser.err.t	mdl.file.t
 	.enter	ef
 
-_ep_body_k	.forcecont
+_ep_fl_k	.forcecont
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 either.prim.u	.tygvar
 parser.err.t	.tygvar
 mdl.file.t	.tygvar
-_ep_body_left_res_c	.subcode
-mdl.compiler.compile.file	.gvar
-mdl.compiler.compile.tocheader.decl	.gvar
+_ep_fl_left_res_c	.subcode
+ibio.prim.unit	.gvar
 o	.fv	ibio.prim.oport	rune.t
 eo	.fv	ibio.prim.oport	rune.t
 e0	.karg	either.prim.u	parser.err.t	mdl.file.t
 	.analyze	e0	left	right
 		.case	left
 err		.fkarg	0	parser.err.t
-res			.closure	_ep_body_left_res_c
+res			.closure	_ep_fl_left_res_c
 			.enter	res
 		.case	right
 fl		.fkarg	0	mdl.file.t
-			.app	o	mdl.compiler.compile.tocheader.decl	fl
-			.enter	mdl.compiler.compile.file
+			.lift
+			.app	fl
+			.yield	ibio.prim.unit	mdl.file.t
 
-_ep_body_left_res_c	.impprog	ibio.prim	ibio
+_ep_fl_left_res_c	.impprog	ibio.prim	ibio
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
 parser.err.t	.tygvar
 string.t	.tygvar	-- Temp
 ibio.prim.t	.tygvar	-- Temp
-record.empty	.tygvar	-- Temp
+mdl.file.t	.tygvar	-- Temp
 ibio.prim.write	.gvar
 list.<>	.gvar
 parser.err.fmt	.gvar
@@ -185,7 +187,18 @@ s1	.apply	parser.err.fmt	|	err
 s2	.undefined	string.t
 err.s	.apply	list.<>	rune.t	|	s1	s2
 	.bind	.apply	ibio.prim.write	rune.t	|	eo	err.s
-	.body	.undefined	ibio.prim.t	record.empty
+	.body	.undefined	ibio.prim.t	mdl.file.t
+
+_ep_body_c	.expr
+ibio.prim.oport	.tygvar
+rune.t	.tygvar
+mdl.file.t	.tygvar
+mdl.compiler.compile.file	.gvar
+mdl.compiler.compile.tocheader.decl	.gvar
+o	.fv	ibio.prim.oport	rune.t
+fl	.fv	mdl.file.t
+	.app	o	mdl.compiler.compile.tocheader.decl	fl
+	.enter	mdl.compiler.compile.file
 
 	.type
 
