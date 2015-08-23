@@ -11,25 +11,11 @@ _ep_c	.impprog	ibio.prim	ibio
 ibio.prim.iport	.tygvar
 rune.t	.tygvar
 ibio.prim.oport	.tygvar
-mdl.file.t	.tygvar
-string.t	.tygvar
 record.empty	.tygvar
-list.t	.tygvar	-- Temp
-parser.pos.t	.tygvar	-- Temp
-parser.t	.tygvar	-- Temp
 _ep_fn_c	.subcode
-_ep_if_c	.subcode
-_ep_s_c	.subcode
-_ep_fl_c	.subcode
 ibio.m.in	.cogvar
 ibio.prim.env.args.get	.gvar
-parser.parse	.gvar
-parser.rune.advance	.gvar
-rune.print	.gvar
-parser.pos.initial	.gvar
-parser.*>	.gvar
-mdl.syntax.whitespace	.gvar
-mdl.file.parser	.gvar
+mdl.file.load	.gvar
 mdl.compiler.compile.file	.gvar
 mdl.compiler.compile.tocheader.decl	.gvar
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
@@ -39,12 +25,7 @@ eo	.larg	ibio.prim.oport	rune.t
 	.lift
 as	.bind	.apply	ibio.prim.env.args.get
 fn	.closure	_ep_fn_c
-if	.bind	.closure	_ep_if_c
-pos	.apply	parser.pos.initial	|	fn
-p	.apply	parser.*>	rune.t	string.t	mdl.file.t	|	mdl.syntax.whitespace	mdl.file.parser
-s	.bind	.closure	_ep_s_c
-ef	.apply	parser.parse	rune.t	mdl.file.t	|	parser.rune.advance	rune.print	pos	p	s
-fl	.bind	.closure	_ep_fl_c
+fl	.bind	.apply	mdl.file.load	|	eo	fn
 	.body	.apply	mdl.compiler.compile.file	|	o	mdl.compiler.compile.tocheader.decl	fl
 
 _ep_fn_c	.expr
@@ -72,123 +53,6 @@ as1		.fkarg	1	list.t	string.t
 			.enter	ibio.file.name.in
 		.case	nil
 			.undef	ibio.file.name.t
-
-_ep_if_c	.impprog	ibio.prim	ibio
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-ibio.file.name.t	.tygvar
-_ep_if_body_c	.subcode
-ibio.file.read.open.prim	.gvar
-ibio.rune.external.io	.gvar
-eo	.fv	ibio.prim.oport	rune.t
-fn	.fv	ibio.file.name.t
-eif	.bind	.apply	ibio.file.read.open.prim	rune.t	|	ibio.rune.external.io	fn
-	.body	.closure	_ep_if_body_c
-
-_ep_if_body_c	.expr
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-_ibio.prim.file.read.open_res.ty	.tygvar
-string.t	.tygvar
-ibio.prim.iport	.tygvar
-_ep_if_body_0_res_c	.subcode
-ibio.prim.unit	.gvar
-iport.rune.ty	.tylet	ibio.prim.iport	rune.t
-eo	.fv	ibio.prim.oport	rune.t
-eif	.efv	_ibio.prim.file.read.open_res.ty	rune.t
-	.analyze	eif	0	1
-		.case	0
-err		.karg	string.t
-res			.closure	_ep_if_body_0_res_c
-			.enter	res
-		.case	1
-if		.karg	ibio.prim.iport	rune.t
-			.lift
-			.app	if
-			.yield	ibio.prim.unit	iport.rune.ty
-
-_ep_if_body_0_res_c	.impprog	ibio.prim	ibio
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-string.t	.tygvar
-ibio.prim.t	.tygvar	-- Temp
-ibio.prim.iport	.tygvar	-- Temp
-ibio.prim.write	.gvar
-eo	.fv	ibio.prim.oport	rune.t
-err	.fv	string.t
-iport.rune.ty	.tylet	ibio.prim.iport	rune.t	-- Temp
-	.lift
-	.bind	.apply	ibio.prim.write	rune.t	|	eo	err
-	.body	.undefined	ibio.prim.t	iport.rune.ty
-
-_ep_s_c	.expr
-ibio.prim.iport	.tygvar
-rune.t	.tygvar
-string.t	.tygvar
-ibio.lex.receive	.gvar
-ibio.lex.receiver.many	.gvar
-ibio.lex.receiver.symbol	.gvar
-if	.efv	ibio.prim.iport	rune.t
-sym	.appty	ibio.lex.receiver.symbol	rune.t
-ms	.apply	ibio.lex.receiver.many	rune.t	rune.t	|	sym
-	.app	ms	if
-	.enter	ibio.lex.receive	rune.t	string.t
-
-_ep_fl_c	.expr
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-either.t	.tygvar
-parser.err.t	.tygvar
-mdl.file.t	.tygvar
-_ep_fl_k	.subcode
-either.t.out	.cogvar
-o	.fv	ibio.prim.oport	rune.t
-eo	.fv	ibio.prim.oport	rune.t
-ef	.fv	either.t	parser.err.t	mdl.file.t
-	.force	_ep_fl_k
-	.coerce	either.t.out	parser.err.t	mdl.file.t
-	.enter	ef
-
-_ep_fl_k	.forcecont
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-either.prim.u	.tygvar
-parser.err.t	.tygvar
-mdl.file.t	.tygvar
-_ep_fl_left_res_c	.subcode
-ibio.prim.unit	.gvar
-o	.fv	ibio.prim.oport	rune.t
-eo	.fv	ibio.prim.oport	rune.t
-e0	.karg	either.prim.u	parser.err.t	mdl.file.t
-	.analyze	e0	left	right
-		.case	left
-err		.fkarg	0	parser.err.t
-res			.closure	_ep_fl_left_res_c
-			.enter	res
-		.case	right
-fl		.fkarg	0	mdl.file.t
-			.lift
-			.app	fl
-			.yield	ibio.prim.unit	mdl.file.t
-
-_ep_fl_left_res_c	.impprog	ibio.prim	ibio
-ibio.prim.oport	.tygvar
-rune.t	.tygvar
-parser.err.t	.tygvar
-string.t	.tygvar	-- Temp
-ibio.prim.t	.tygvar	-- Temp
-mdl.file.t	.tygvar	-- Temp
-ibio.prim.write	.gvar
-list.<>	.gvar
-parser.err.fmt	.gvar
-eo	.fv	ibio.prim.oport	rune.t
-err	.fv	parser.err.t
-	.lift
-s1	.apply	parser.err.fmt	|	err
-s2	.undefined	string.t
-err.s	.apply	list.<>	rune.t	|	s1	s2
-	.bind	.apply	ibio.prim.write	rune.t	|	eo	err.s
-	.body	.undefined	ibio.prim.t	mdl.file.t
 
 	.type
 
