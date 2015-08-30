@@ -663,6 +663,12 @@ api_unpack_block_statement(struct api_thread *thread, struct gsclosure *cl)
                 pin = ACE_APPLY_SKIP(pinstr);
                 continue;
             }
+            case gsbc_op_lfield: {
+                CHECK_NREGS(pinstr->pos);
+                regs[nregs++] = gslfield(pinstr->pos, ACE_LFIELD_FIELD(pinstr), regs[ACE_LFIELD_RECORD(pinstr)]);
+                pin = ACE_LFIELD_SKIP(pinstr);
+                continue;
+            }
             case gsbc_op_bind_closure: {
                 struct gsbco *subexpr;
                 struct gsclosure *cl;

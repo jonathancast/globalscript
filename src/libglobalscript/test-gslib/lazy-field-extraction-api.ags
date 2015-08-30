@@ -1,0 +1,31 @@
+#calculus: gsdl.string-code 0.7
+#type: document
+
+	.data
+
+	.closure	_ep_c
+
+	.code
+
+_ep_c	.impprog	test.sequence	m
+_ep_r_c	.subcode
+_ep_body_c	.subcode
+r	.closure	_ep_r_c
+y	.lfield	1	r
+	.body	.closure	_ep_body_c
+
+_ep_r_c	.expr
+rune.t	.tygvar
+x	.undefined	rune.t
+y	.undefined	rune.t
+r	.record	0	x	1	y
+	.lift
+	.yield	r
+
+_ep_body_c	.expr
+sequence.unit.ty	.tygvar
+record.empty	.tygvar
+record.empty	.gvar
+	.lift
+res	.impprim	test.sequence	m	unit	sequence.unit.ty	record.empty	|	record.empty
+	.yield	res

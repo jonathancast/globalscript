@@ -1348,7 +1348,7 @@ gsparse_cont_arg(struct gsparse_input_pos *pos, struct gsparsedline *parsedline,
 int
 gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gsparsedline *p, int offset, char **fields, long n)
 {
-    static gsinterned_string gssymclosure, gssymundefined, gssymapply, gssymappty;
+    static gsinterned_string gssymclosure, gssymundefined, gssymapply, gssymappty, gssymlfield;
 
     int i;
 
@@ -1399,6 +1399,19 @@ gsparse_thunk_alloc_op(uint features, struct gsparse_input_pos *pos, struct gspa
         for (i = offset + 3; i < n; i++)
             p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i])
         ;
+    } else if (gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")) {
+        STORE_ALLOC_OP_LABEL(p->directive->name);
+        if (n < 3)
+            gsfatal("%P: Missing field on %y", p->pos, p->directive)
+        ;
+        p->arguments[2 - 2] = gsintern_string(gssymfieldlable, fields[2]);
+        if (n < 4)
+            gsfatal("%P: Missing record on %y", p->pos, p->directive)
+        ;
+        p->arguments[3 - 2] = gsintern_string(gssymdatalable, fields[3]);
+        if (n > 4)
+            gsfatal("%P: Too many arguments to %y", p->pos, p->directive)
+        ;
     } else {
         return 0;
     }
@@ -1409,7 +1422,7 @@ static
 int
 gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, char **fields, long n)
 {
-    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlfield, gssymlifted, gssymcast;
+    static gsinterned_string gssymprim, gssymimpprim, gssymconstr, gssymexconstr, gssymrecord, gssymlrecord, gssymfield, gssymlifted, gssymcast;
 
     int i;
 
@@ -1542,10 +1555,7 @@ gsparse_value_alloc_op(struct gsparse_input_pos *pos, struct gsparsedline *p, ch
             if (i >= n) gsfatal("%P: Missing type signature on %y (if you don't want a type signature omit the trailing |)", p->pos, p->directive);
             for (; i < n; i++) p->arguments[i - 2] = gsintern_string(gssymtypelable, fields[i]);
         }
-    } else if (
-        gssymceq(p->directive, gssymfield, gssymcodeop, ".field")
-        || gssymceq(p->directive, gssymlfield, gssymcodeop, ".lfield")
-    ) {
+    } else if (gssymceq(p->directive, gssymfield, gssymcodeop, ".field")) {
         STORE_ALLOC_OP_LABEL(p->directive->name);
         if (n < 3)
             gsfatal("%P: Missing field on %y", p->pos, p->directive)
