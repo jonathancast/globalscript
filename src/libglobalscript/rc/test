@@ -66,8 +66,12 @@ ok_grep_errors '-- a .tylet (of  type synonym) must have enough arguments --' 'u
 ok_grep_errors '-- incorrect kind signatures on .tyexprs --' 'tyexpr-wrong-kind-sig.ags:12: Incorrect kind: Expected ''\*''; got ''u''' ./$O.test-gsi tyexpr-wrong-kind-sig.ags
 ok_diff_fail '-- kind signatures on .tyexprs --' ./$O.test-gsi tyexpr-kind-sig.ags
 
+echo '# Version 0.7 and up:'
+
+SHOULD_DISABLE_STRING_CODE_0_6=1
+
 ok_diff_fail '-- let with undefined RHS --' ./$O.test-gsi undef-let.ags
-ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:7: I don''t think' ./$O.test-gsi mistyped-let.ags
+ok_grep_errors '-- a let can be mis-typed --' './test-fixtures/mistyped-let.ags:6: I don''t think' ./$O.test-gsi mistyped-let.ags
 ok_diff_fail '-- let with undefined FV --' ./$O.test-gsi undef-free-var.ags
 
 ok_diff_fail '-- alloc undefined with .undefined --' ./$O.test-gsi undef-op.ags
@@ -76,11 +80,7 @@ ok_diff '-- alloc application --' ./$O.test-gsi apply-op.ags
 
 ok_diff_fail '-- lifted generators --' ./$O.test-gsi lifted-gen.ags
 
-ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-fixtures/mis-kinded-abs-type.ags:16: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
-
-echo '# Version 0.7 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_6=1
+ok_grep_errors '-- abstract types with too few lambdas in definition --' './test-fixtures/mis-kinded-abs-type.ags:15: Incorrect kind: ' ./$O.test-gsi mis-kinded-abs-type.ags
 
 ok_diff_fail '-- undefined values of abstract types --' ./$O.test-gsi undef-abs-type.ags
 ok_grep_errors '-- an abstract type is different from its definition --' './test-fixtures/invalid-abs-type.ags:[0-9]*: I don''t think' ./$O.test-gsi invalid-abs-type.ags
