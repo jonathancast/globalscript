@@ -2150,7 +2150,7 @@ gsbc_byte_compile_alloc_op(struct gsparsedline *p, struct gsbc_byte_compile_code
         pcl->pout = ACE_FIELD_SKIP(pcode);
 
         ADD_LABEL_TO_REGS_WITH_TYPE(product->fields[fieldnum].type);
-    } else if (gssymceq(p->directive, gssymoplfield, gssymcodeop, ".field")) {
+    } else if (gssymceq(p->directive, gssymoplfield, gssymcodeop, ".lfield")) {
         struct gstype *type;
         struct gstype_product *product;
         int regarg, fieldnum;
