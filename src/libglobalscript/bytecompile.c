@@ -2258,7 +2258,7 @@ gsbc_find_field_in_product(struct gstype_product *prod, gsinterned_string field)
 int
 gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_or_api_op_closure *pcl)
 {
-    int i;
+    int i, j;
 
     if (
         gssymceq(p->directive, gssymopbind, gssymcodeop, ".bind")
@@ -2267,6 +2267,7 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
         struct gsbc *pcode;
         int creg = 0;
         struct gsbc_code_item_type *cty;
+        struct gstype *ty;
 
         pcode = (struct gsbc *)pcl->pout;
 
@@ -2274,19 +2275,39 @@ gsbc_byte_compile_bind_op(struct gsparsedline *p, struct gsbc_byte_compile_code_
             gsfatal("%P: Too many registers; max 0x%x", p->pos, MAX_NUM_REGISTERS)
         ;
 
-        pcl->regs[pcl->nregs] = p->label;
-
-        pcl->nregs++;
-
         creg = gsbc_find_register(p, pcl->subexprs, pcl->nsubexprs, p->arguments[1]);
-
-        pcode->pos = p->pos;
-        pcode->instr = gsbc_op_bind_closure;
-        ACE_BIND_CLOSURE_CODE(pcode) = (uchar)creg;
 
         if (!(cty = pcl->subexpr_types[creg]))
             gsfatal("%P: Cannot find type of %y", p->pos, p->arguments[1])
         ;
+        cty = gsbc_typecheck_copy_code_item_type(cty);
+
+        /* §paragraph{Calculate type of the bound variable} */
+        for (i = 2; i < p->numarguments; i++) {
+            struct gstype *type = pcl->tyregs[gsbc_find_register(p, pcl->tyregnames, pcl->ntyregs, p->arguments[i])];
+            for (j = i - 1 + 1; j < cty->numftyvs; j++)
+                if (gstypes_is_ftyvar(cty->tyfvs[j], type))
+                    gsfatal("%P: %y has a free type variable %y which is free in the binding for %y; please don't do that", p->pos, p->arguments[1], cty->tyfvs[j], p->arguments[i])
+            ;
+            cty->result_type = gstypes_subst(p->pos, cty->result_type, cty->tyfvs[i - 1], type);
+        }
+        ty = cty->result_type;
+        if (ty->node == gstype_lift) {
+          struct gstype_lift *lift = (struct gstype_lift *)ty;
+          ty = lift->arg;
+        }
+        if (ty->node == gstype_app) {
+          struct gstype_app *app = (struct gstype_app *)ty;
+          ty = app->arg;
+        } else {
+          gsfatal("%P: Type of %y is not a type application", p->pos, p->arguments[1]);
+        }
+
+        ADD_LABEL_TO_REGS_WITH_TYPE(ty);
+
+        pcode->pos = p->pos;
+        pcode->instr = gsbc_op_bind_closure;
+        ACE_BIND_CLOSURE_CODE(pcode) = (uchar)creg;
 
         ACE_BIND_CLOSURE_NUMFVS(pcode) = (uchar)cty->numfvs;
         for (i = 0; i < cty->numfvs; i++)
