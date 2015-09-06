@@ -23,7 +23,6 @@ ibio.file.name.t	.tygvar
 _gsdl.cgs.file.read_i_c	.subcode
 _gsdl.cgs.file.read_pragmas.pos_c	.subcode
 _gsdl.cgs.file.read_pragmas_c	.subcode
-_gsdl.cgs.file.read_pos_c	.subcode
 _gsdl.cgs.file.read_parser_c	.subcode
 _gsdl.cgs.file.read_s_c	.subcode
 _gsdl.cgs.file.read_body_c	.subcode
@@ -33,7 +32,7 @@ fn	.larg	ibio.file.name.t
 i	.bind	.closure	_gsdl.cgs.file.read_i_c
 pragmas.pos	.bind	.closure	_gsdl.cgs.file.read_pragmas.pos_c
 pragmas	.closure	_gsdl.cgs.file.read_pragmas_c
-pos	.closure	_gsdl.cgs.file.read_pos_c
+pos	.lfield	pos	pragmas.pos
 parser	.closure	_gsdl.cgs.file.read_parser_c
 s	.bind	.closure	_gsdl.cgs.file.read_s_c
 	.body	.closure	_gsdl.cgs.file.read_body_c
@@ -130,12 +129,6 @@ _gsdl.pragma.read_res.ty	.tygvar
 pragmas.pos	.fv	_gsdl.pragma.read_res.ty
 ps	.lfield	pragmas	pragmas.pos
 	.enter	ps
-
-_gsdl.cgs.file.read_pos_c	.expr
-_gsdl.pragma.read_res.ty	.tygvar
-pragmas.pos	.fv	_gsdl.pragma.read_res.ty
-pos	.lfield	pos	pragmas.pos
-	.enter	pos
 
 _gsdl.cgs.file.read_parser_c	.expr
 ibio.file.name.t	.tygvar
