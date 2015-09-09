@@ -1358,10 +1358,8 @@ again:
                 }
             case gstystack:
                 gsheap_unlock(hp);
-                ace_poison_thread(thread, ip->pos, UNIMPL("ace_instr_enter: gsheap_item: gstystack"));
-                gswarning("%s:%d: %P", __FILE__, __LINE__, ip->pos);
-                return;
                 stats->num_blocks_on_existing_thread++;
+                break;
             case gstywhnf:
                 gsheap_unlock(hp);
                 break;
