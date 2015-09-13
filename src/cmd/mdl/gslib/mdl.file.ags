@@ -672,6 +672,16 @@ list.t	.tygvar
 mdl.file.decl.t	.tygvar
 	.tyref	list.t	mdl.file.decl.t
 
+-- §section §gs{mdl.file.features.t}
+
+mdl.file.features.t	.tyexpr
+mdl.file.features.prim.u	.tygvar
+	.tylift
+	.tyref	mdl.file.features.prim.u
+
+mdl.file.features.prim.u	.tyexpr
+	.typroduct
+
 -- §section §gs{mdl.file.decl.t}
 
 mdl.file.decl.t	.tyabstract	*
