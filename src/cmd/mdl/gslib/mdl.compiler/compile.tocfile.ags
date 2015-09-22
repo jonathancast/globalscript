@@ -3,9 +3,20 @@
 
 	.data
 
+mdl.compiler.compile.tocfile.prefix	.closure	_mdl.compiler.compile.tocfile.prefix_c
+
 mdl.compiler.compile.tocfile.decl	.closure	_mdl.compiler.compile.tocfile.decl_c
 
 	.code
+
+-- §section §gs{mdl.compiler.compile.tocfile.prefix}
+
+_mdl.compiler.compile.tocfile.prefix_c	.expr
+mdl.file.features.t	.tygvar
+diff.list.t	.tygvar	-- Temp
+rune.t	.tygvar	-- Temp
+fs	.larg	mdl.file.features.t
+	.undef	diff.list.t	rune.t
 
 -- §section §gs{mdl.compiler.compile.tocfile.decl}
 

@@ -18,6 +18,7 @@ ibio.m.in	.cogvar
 ibio.prim.env.args.get	.gvar
 mdl.file.load	.gvar
 mdl.compiler.compile.file	.gvar
+mdl.compiler.compile.tocfile.prefix	.gvar
 mdl.compiler.compile.tocfile.decl	.gvar
 	.coerce	ibio.m.in	rune.t	rune.t	record.empty
 i	.larg	ibio.prim.iport	rune.t
@@ -27,7 +28,7 @@ eo	.larg	ibio.prim.oport	rune.t
 as	.bind	.apply	ibio.prim.env.args.get
 fn	.closure	_ep_fn_c
 fl	.bind	.apply	mdl.file.load	|	eo	fn
-	.body	.apply	mdl.compiler.compile.file	|	o	mdl.compiler.compile.tocfile.decl	fl
+	.body	.apply	mdl.compiler.compile.file	|	o	mdl.compiler.compile.tocfile.prefix	mdl.compiler.compile.tocfile.decl	fl
 
 _ep_fn_c	.expr
 list.t	.tygvar

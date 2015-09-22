@@ -12,6 +12,7 @@ mdl.compiler.compile.file	.closure	_mdl.compiler.compile.file_c
 _mdl.compiler.compile.file_c	.expr
 ibio.prim.oport	.tygvar
 rune.t	.tygvar
+_mdl.compiler.compile.file_pr.c_ty	.tygvar
 _mdl.compiler.compile.decls_f_ty	.tygvar
 mdl.file.t	.tygvar
 graph.scc.t	.tygvar
@@ -31,6 +32,7 @@ graph.tsort	.gvar
 mdl.file.decl.key.compare	.gvar
 mdl.file.process	.gvar
 o	.larg	ibio.prim.oport	rune.t
+pr.c	.larg	_mdl.compiler.compile.file_pr.c_ty
 decl.c	.larg	_mdl.compiler.compile.decls_f_ty
 fl	.larg	mdl.file.t
 list.decl.ty	.tylet	list.t	mdl.file.decl.t
@@ -180,6 +182,14 @@ r.ds			.lfield	res	r
 	.type
 
 -- §section §gs{mdl.compiler.compile.file}
+
+_mdl.compiler.compile.file_pr.c_ty	.tyexpr
+mdl.file.features.t	.tygvar
+diff.list.t	.tygvar
+rune.t	.tygvar
+	.tylift
+	.tyfun	mdl.file.features.t
+	.tyref	diff.list.t	rune.t
 
 _mdl.compiler.compile.file_k_res.ty	.tyexpr
 _mdl.compiler.type.m_res.ty	.tygvar
