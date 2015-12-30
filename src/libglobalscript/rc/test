@@ -2,12 +2,14 @@
 
 . $GLOBALSCRIPT/bin/test-fns
 
+SHOULD_DISABLE_STRING_CODE_0_6=1
+
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
-ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
-ok_grep_errors '-- invalid type op (declared position) --' 'invalid-type-op-declared-pos.ags:13: Unimplemented type op' ./$O.test-gsi invalid-type-op-declared-pos.ags
+ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:11: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
+ok_grep_errors '-- invalid type op (declared position) --' 'invalid-type-op-declared-pos.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op-declared-pos.ags
 touch ./test-gslib/invalid-type-op-core-source.gsac
-ok_grep_errors '-- invalid type op (core source) --' 'invalid-type-op-core-source.gsac:13: Unimplemented type op' ./$O.test-gsi invalid-type-op-core-source.cgs
+ok_grep_errors '-- invalid type op (core source) --' 'invalid-type-op-core-source.gsac:12: Unimplemented type op' ./$O.test-gsi invalid-type-op-core-source.cgs
 
 ok_grep_errors '-- pragma with no argument --' 'pragma-no-arg.ags:1: Can''t find argument to pragma' ./$O.test-gsi pragma-no-arg.ags
 ok_grep_errors '-- invalid pragma --' 'invalid-pragma.ags:1: Unsupported pragma' ./$O.test-gsi invalid-pragma.ags
@@ -16,8 +18,6 @@ ok_grep_errors '-- invalid calculus --' 'invalid-calculus.ags:1: Unknown calculu
 ok_grep_errors '-- invalid calculus version --' 'invalid-calculus-version.ags:1: Unsupported calculus version' ./$O.test-gsi invalid-calculus-version.ags
 
 echo '# Version 0.7 and up:'
-
-SHOULD_DISABLE_STRING_CODE_0_6=1
 
 ok_diff_fail '-- source-style comments --' ./$O.test-gsi undef-new-comments.ags
 
