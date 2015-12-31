@@ -277,7 +277,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         pos.real_lineno++;
         if ((n = gsbio_device_getline(chan, line, LINE_LENGTH)) < 0) gsfatal("%s: getline: %r", pos.real_filename);
         /* ↓ The return value from §ccode{gsbio_device_getline} includes the terminating nul, so it's 1 on EOF . . . */
-        if (n == 1) gsfatal("%s:$: EOF before %s", pos.real_filename, (features & gsstring_code_type_as_pragma) ? "first section" : ".document or .prefix");
+        if (n == 1) gsfatal("%s:$: EOF before first section", pos.real_filename);
     }
     if (!calculus_version) gsfatal("%s: Missing #calculus pragma", pos.real_filename);
 
@@ -288,18 +288,7 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
     if (n == 0) gsfatal("%s:%d: Whitespace in pragma section", pos.real_filename, pos.real_lineno);
     if (n == 1) gsfatal("%s:%d: Missing directive", pos.real_filename, pos.real_lineno);
 
-    if (features & gsstring_code_type_as_pragma) {
-        if (type == gsfileunknown) gsfatal("%s: Missing type: pragma", pos.real_filename);
-    } else {
-        if (!strcmp(fields[1], ".document")) {
-            type = gsfiledocument;
-        } else if (!strcmp(fields[1], ".prefix")) {
-            type = gsfileprefix;
-        } else {
-            gsfatal("%s:%d: Cannot understand directive '%s'", pos.real_filename, pos.real_lineno, fields[1]);
-            return 0;
-        }
-    }
+    if (type == gsfileunknown) gsfatal("%s: Missing type: pragma", pos.real_filename);
     if (type == gsfiledocument && skip_docs) {
         if (gsclosefile(chan, pid) < 0)
             gsfatal("%s: Error in closing file: %r", filename)
@@ -307,26 +296,26 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         *is_doc = 1;
         return 0;
     }
-    if (!strcmp(calculus_version, "0.6")) {
-        static int should_disable_string_code_0_6, should_disable_string_code_0_6_initialized;
+    if (!strcmp(calculus_version, "0.7")) {
+        static int should_disable_string_code_0_7, should_disable_string_code_0_7_initialized;
 
-        if (!should_disable_string_code_0_6_initialized) {
+        if (!should_disable_string_code_0_7_initialized) {
             struct uxio_ichannel *chan;
             char buf[0x10];
             long n;
-            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_6"))) {
-                should_disable_string_code_0_6_initialized = 1;
+            if (!(chan = gsbio_envvar_iopen("SHOULD_DISABLE_STRING_CODE_0_7"))) {
+                should_disable_string_code_0_7_initialized = 1;
                 goto decided_on_disabling;
             }
             if ((n = gsbio_get_contents(chan, buf, 0x10)) < 0)
-                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_6: %r")
+                gsfatal("Error reading $SHOULD_DISABLE_STRING_CODE_0_7: %r")
             ;
-            should_disable_string_code_0_6 = n > 0;
-            should_disable_string_code_0_6_initialized = 1;
-            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_6 fd: %r");
+            should_disable_string_code_0_7 = n > 0;
+            should_disable_string_code_0_7_initialized = 1;
+            if (gsbio_device_iclose(chan) < 0) gsfatal("Could not close $SHOULD_DISABLE_STRING_CODE_0_7 fd: %r");
         }
     decided_on_disabling:
-        if (should_disable_string_code_0_6) gsfatal("%s: Illegally old calculus string code 0.6", pos.real_filename);
+        if (should_disable_string_code_0_7) gsfatal("%s: Illegally old calculus string code 0.7", pos.real_filename);
     }
     if ((parsedfile = gsparsed_file_alloc(filename, relname, type, features)) < 0) {
         gsfatal("%s:%d: Cannot allocate input file: %r", pos.real_filename, pos.real_lineno);
@@ -339,16 +328,12 @@ gsreadfile(char *filename, char *relname, int skip_docs, int *is_doc, int is_ags
         The parse function is allowed to read in more lines if it needs them.
         It is always un-ambiguous whether more lines are needed;
         so when the parse function returns, we are ready to read in the next item (or section declaration).
+        The first line has already been read in, because that's how we know we're done with pragmas.
+        NB: IBIO is the only language I know of where the previous statement is un-true.  End NB.
     */
-    if (features & gsstring_code_type_as_pragma) {
-        do {
-            gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
-        } while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0);
-    } else {
-        while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0) {
-            gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
-        }
-    }
+    do {
+        gsparse_directive(&pos, is_ags, parsedfile, &section, chan, line, n, fields, symtable);
+    } while ((pos.is_artificial = 0, n = gsgrabline(features, &pos, chan, line, fields)) > 0);
     if (n < 0)
         gsfatal("%s:%d: Error in reading item: %r", pos.real_filename, pos.real_lineno)
     ;
@@ -391,19 +376,16 @@ gsparse_pragma(struct gsparse_input_pos pos, char *line, char **pcalculus_versio
             if (*s != '\n') gsfatal("%s:%d: Junk after calculus version", pos.real_filename, pos.real_lineno);
             *s++ = 0;
 
-            if (!strcmp(version, "0.6")) {
-                *pcalculus_version = "0.6";
-                *pfeatures = 0;
-            } else if (!strcmp(version, "0.7")) {
+            if (!strcmp(version, "0.7")) {
                 *pcalculus_version = "0.7";
-                *pfeatures = gsstring_code_type_as_pragma;
+                *pfeatures = 0;
             } else {
                 gsfatal("%s:%d: Unsupported calculus version '%s'", pos.real_filename, pos.real_lineno, version);
             }
         } else {
             gsfatal("%s:%d: Unknown calculus '%s'", pos.real_filename, pos.real_lineno, calculus);
         }
-    } else if ((*pfeatures & gsstring_code_type_as_pragma) && !strcmp(pragma, "type")) {
+    } else if (!strcmp(pragma, "type")) {
         char *type;
 
         while(*s && isspace(*s)) s++;
