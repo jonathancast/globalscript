@@ -168,3 +168,16 @@ ok_ptr_ge(char *srcfile, int srcline, void *p0, void *p1, char *err, ...)
 
     ok(srcfile, srcline, p0 >= p1, "%s: %p != %p", buf, p0, p1);
 }
+
+void
+ok_uintptr_eq(char *srcfile, int srcline, uintptr n0, uintptr n1, char *err, ...)
+{
+    char buf[0x100];
+    va_list arg;
+
+    va_start(arg, err);
+    vseprint(buf, buf+sizeof buf, err, arg);
+    va_end(arg);
+
+    ok(srcfile, srcline, n0 == n1, "%s: %p != %p", buf, n0, n1);
+}
