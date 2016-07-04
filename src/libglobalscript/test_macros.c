@@ -19,14 +19,13 @@ static
 void
 TEST_BLOCK_CONTAINING(void)
 {
-    ok_ulong_eq(__FILE__, __LINE__, (uintptr)BLOCK_CONTAINING(0x9300004), (uintptr)0x9300000, "BLOCK_CONTAINING incorrect");
-    ok_ulong_eq(__FILE__, __LINE__, (uintptr)BLOCK_CONTAINING(0x9300000), (uintptr)0x9300000, "BLOCK_CONTAINING incorrect");
+    ok_uintptr_eq(__FILE__, __LINE__, (uintptr)BLOCK_CONTAINING(0x30C0001 * sizeof(gsvalue)), (uintptr)(0x30C0000 * sizeof(gsvalue)), "BLOCK_CONTAINING incorrect");
+    ok_uintptr_eq(__FILE__, __LINE__, (uintptr)BLOCK_CONTAINING(0x30C0000 * sizeof(gsvalue)), (uintptr)(0x30C0000 * sizeof(gsvalue)), "BLOCK_CONTAINING incorrect");
 }
 
 static
 void
 TEST_END_OF_BLOCK()
 {
-    ok_ulong_eq(__FILE__, __LINE__, (uintptr)END_OF_BLOCK(0x9300000), (uintptr)0x9400000, "END_OF_BLOCK incorrect");
+    ok_uintptr_eq(__FILE__, __LINE__, (uintptr)END_OF_BLOCK(0x30C0000 * sizeof(gsvalue)), (uintptr)(0x3100000 * sizeof(gsvalue)), "END_OF_BLOCK incorrect");
 }
-
