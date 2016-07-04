@@ -10,7 +10,7 @@ struct uxio_ichannel {
     void *buf_beg;
     void *data_beg;
     void *data_end;
-    vlong offset;
+    off_t offset;
 };
 
 struct gs_sys_global_block_suballoc_info uxio_filename_info;
