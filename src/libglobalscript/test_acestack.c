@@ -27,14 +27,13 @@ TEST_ERASE_BOTTOM_OF_STACK()
     struct ace_cont *top;
     struct gsbc_cont_update *bottom_update, *top_update;
     gsvalue bottom_gsv, top_gsv, gctemp;
-    struct gsbc_cont_app *app;
     struct gsstringbuilder *err;
     int res;
 
     thread = ace_thread_alloc();
 
     test_fixture_update(thread, &bottom_update, &bottom_gsv);
-    app = ace_push_app(HERE, thread, 2, gserror(HERE, "First argument"), gserror(HERE, "Second argument"));
+    ace_push_app(HERE, thread, 2, gserror(HERE, "First argument"), gserror(HERE, "Second argument"));
     test_fixture_update(thread, &top_update, &top_gsv);
     thread->state = ace_thread_returning;
 
