@@ -88,7 +88,7 @@ gsbio_sys_read_stat(struct uxio_dir_ichannel *chan)
 }
 
 long
-gsbio_unix_read_directory(int fd, void *buf, void *end, vlong *poffset)
+gsbio_unix_read_directory(int fd, void *buf, void *end, off_t *poffset)
 {
     /*
         NB: Apparently this has to be done in a Linux-specific way;
