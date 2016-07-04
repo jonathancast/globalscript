@@ -1872,7 +1872,6 @@ gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parse
             parsedline->arguments[i - 2] = gsintern_string(gssymdatalable, fields[i])
         ;
     } else if (gssymceq(parsedline->directive, gsssymanalyze, gssymcodeop, ".analyze")) {
-        struct gsparsedline *p;
         int constrnum;
 
         gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
@@ -1884,12 +1883,10 @@ gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parse
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i])
         ;
-        p = parsedline;
         for (constrnum = 0; 3 + constrnum < n; constrnum++) {
             gsparse_case(pos, parsedfile, chan, parsedline->arguments[1 + constrnum], line, fields);
         }
     } else if (gssymceq(parsedline->directive, gsssymdanalyze, gssymcodeop, ".danalyze")) {
-        struct gsparsedline *p;
         int constrnum;
 
         gsparse_check_label_on_terminal_op(parsedfile, parsedline, fields);
@@ -1903,7 +1900,6 @@ gsparse_code_terminal_expr_op(struct gsparse_input_pos *pos, gsparsedfile *parse
         for (i = 3; i < n; i++)
             parsedline->arguments[i - 2] = gsintern_string(gssymconstrlable, fields[i])
         ;
-        p = parsedline;
         gsparse_default(pos, parsedfile, chan, line, fields);
         for (constrnum = 0; 3 + constrnum < n; constrnum++) {
             gsparse_case(pos, parsedfile, chan, parsedline->arguments[1 + constrnum], line, fields);
