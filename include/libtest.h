@@ -25,7 +25,7 @@ void ok_ulong_ne(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...)
 void ok_ulong_ge(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 void ok_ulong_le(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
 
-void ok_uintptr_eq(char *srcfile, int srcline, ulong n0, ulong n1, char *err, ...);
+void ok_uintptr_eq(char *srcfile, int srcline, uintptr n0, uintptr n1, char *err, ...);
 
 void ok_cstring_eq(char *srcfile, int srcline, char *s0, char *s1, char *err, ...);
 
