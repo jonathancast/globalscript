@@ -575,6 +575,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
             expected_group_descr = "an imptype";
         } else {
             gsfatal(UNIMPL("%P: Check primtype group of %y against registered primtype group"), ptype->pos, directive);
+            return;
         }
         if (type && type->prim_type_group != expected_group)
             gsfatal("%P: Primitive type %y in primitive set %y is not in fact %s", ptype->pos, ptype->arguments[1], ptype->arguments[0], expected_group_descr)
