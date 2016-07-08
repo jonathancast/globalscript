@@ -2039,8 +2039,6 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
 
     struct gstype *calculated_type;
 
-    struct gspos karg_pos;
-
     cont_arg_type = 0;
     fcl.nfields = 0;
     saved_stacksize = pcl->stacksize;
@@ -2049,7 +2047,6 @@ gsbc_typecheck_case(struct gspos case_pos, struct gsfile_symtable *symtable, str
     while (gsbc_typecheck_cont_type_arg_op(*pp, pcl, &excl)) *pp = gsinput_next_line(ppseg, *pp);
     while (gsbc_typecheck_code_type_let_op(*pp, pcl)) *pp = gsinput_next_line(ppseg, *pp);
     if (gsbc_typecheck_cont_arg_op(*pp, pcl, &cont_arg_type)) {
-        karg_pos = (*pp)->pos;
         *pp = gsinput_next_line(ppseg, *pp);
     } else {
         while (gsbc_typecheck_field_cont_arg_op(*pp, pcl, &fcl)) *pp = gsinput_next_line(ppseg, *pp);
