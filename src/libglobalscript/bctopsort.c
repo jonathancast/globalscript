@@ -543,7 +543,7 @@ gsbc_top_sort_subitems_of_type_item(struct gsfile_symtable *symtable, struct gsb
         || gssymceq(directive, gssymtyimpprim, gssymtypedirective, ".tyimpprim")
     ) {
         struct gsregistered_primset *prims;
-        struct gsregistered_primtype *type;
+        struct gsregistered_primtype *type = 0;
         enum gsprim_type_group expected_group;
         char *expected_group_descr;
 
