@@ -72,17 +72,17 @@ ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {
     void *newtop;
 
-    newtop = (uchar*)thread->stacktop - sz;
-    if ((uintptr)newtop % sizeof(gsvalue)) {
+    if (sz % sizeof(gsvalue)) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack mis-aligned (can't round down or we couldn't pop properly)");
         return 0;
     }
 
-    if ((uchar*)newtop < (uchar*)thread->stacklimit) {
+    if (sz > (uchar*)thread->stacktop - (uchar*)thread->stacklimit) {
         ace_thread_unimpl(thread, __FILE__, __LINE__, pos, "stack overflow in %P", thread->cureval->cont.pos);
         return 0;
     }
 
+    newtop = (uchar*)thread->stacktop - sz;
     thread->stacktop = newtop;
 
     return (struct ace_cont *)newtop;
