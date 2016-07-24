@@ -31,14 +31,6 @@ lock(Lock *lk)
 		sleep(1000);
 }
 
-int
-canlock(Lock *lk)
-{
-	if(_tas(&lk->val))
-		return 0;
-	return 1;
-}
-
 void
 unlock(Lock *lk)
 {

@@ -43,7 +43,6 @@ void gsstatprint(char *, ...);
 */
 #define lock rp9lock
 #define unlock rp9unlock
-#define canlock rp9canlock
 #define Lock rp9Lock
 
 typedef
@@ -53,7 +52,6 @@ struct Lock {
 
 extern	void	lock(Lock*);
 extern	void	unlock(Lock*);
-extern	int	canlock(Lock*);
 #endif
 
 int gscreate_thread_pool(void (*)(void *), void *, ulong);
