@@ -1347,8 +1347,10 @@ gsbc_bytecompile_data_item(struct gsfile_symtable *symtable, uint features, stru
                     } else while (*eos != ']') {
                         if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                         eos = gsbc_parse_rune_literal(p->pos, features, eos, &c0);
-                        if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
-                        else if (*eos == '-') {
+                        if (!*eos) {
+                            gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
+                            return;
+                        } else if (*eos == '-') {
                             eos++;
                             if (!*eos) gsfatal(UNIMPL("%P: Un-expected end of string in character class"), p->pos);
                             else if (*eos == ']') gsfatal(UNIMPL("%P: Un-expected end of class in character class"), p->pos);
