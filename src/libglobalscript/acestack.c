@@ -71,7 +71,6 @@ struct ace_cont *
 ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
 {
     void *newtop;
-    uint newsize;
 
     newtop = (uchar*)thread->stacktop - sz;
     if ((uintptr)newtop % sizeof(gsvalue)) {
@@ -85,8 +84,6 @@ ace_stack_alloc(struct ace_thread *thread, struct gspos pos, ulong sz)
     }
 
     thread->stacktop = newtop;
-
-    newsize = ((uchar*)thread->stackbot - (uchar*)thread->stacktop) + ((uchar*)thread->stacklimit - (uchar*)thread);
 
     return (struct ace_cont *)newtop;
 }
