@@ -1876,12 +1876,7 @@ ace_thread_gccopy(struct gsstringbuilder *err, struct ace_thread *thread)
                 returnvaluesize = sizeof(gsvalue);
                 break;
             case ace_stack_ubanalyze_cont: {
-                struct ace_stack_ubanalyze_cont *ubanalyze;
-                /* TODO: Change to use ACE_STACK_UBANALYZE_ARGS_SIZE */
-                int *pconstr;
-
-                ubanalyze = (struct ace_stack_ubanalyze_cont *)cont;
-                pconstr = (int*)((uchar*)thread->stacktop - sizeof(gsvalue));
+                int *pconstr = (int*)((uchar*)thread->stacktop - sizeof(gsvalue));
 
                 returnvaluesize = (1 + ACE_STACK_UBANALYZE_CONT(*cont, *pconstr)->numargs) * sizeof(gsvalue);
 
