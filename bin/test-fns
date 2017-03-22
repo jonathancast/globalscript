@@ -213,3 +213,32 @@ fn ok_grep_script_errors {
     }
     true
 }
+
+fn ok_diff_compiler {
+    nm=$1; cmd=$2; input=$3; output=$4
+    shift; shift; shift; shift
+    echo $nm
+    if (! test -f ./test-fixtures/$input) {
+        echo $cmd $input ': no such file' ./test-fixtures/$input >[1=2]
+        exit 1
+    }
+    if (! test -f ./test-results/$cmd^-^$input^-expected) {
+        echo $cmd $input ': no such file' ./test-results/$cmd^-^$input^-expected >[1=2]
+        exit 1
+    }
+    if (! ./$cmd ./test-fixtures/$input > ./test-results/$cmd^-^$input^-errors >[2=1]) {
+        echo 'The command ' >[1=2]
+        echo '    ' $cmd ./test-fixtures/$input >[1=2]
+        echo 'failed; should have succeeded' >[1=2]
+        cat ./test-results/$cmd^-^$input^-errors
+        exit 1
+    }
+    if (! diff ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >/dev/null) {
+        echo 'Incorrect output:' >[1=2]
+        echo '--- Any errors: ---' >[1=2]
+        cat ./test-results/$cmd^-^$input^-errors >[1=2]
+        echo '--- Diff: ---' >[1=2]
+        diff -c ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >[1=2]
+        exit 1
+    }
+}
