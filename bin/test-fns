@@ -241,4 +241,5 @@ fn ok_diff_compiler {
         diff -c ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >[1=2]
         exit 1
     }
+    true
 }
