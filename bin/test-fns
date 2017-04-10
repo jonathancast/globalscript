@@ -1,6 +1,4 @@
-fn ok {
-    nm=$1; prog=$2;
-    shift; shift
+fn setup_todo {
     if (~ $#TODO 0) {
         fn do_exit { exit 1 }
         todo_msg=()
@@ -9,6 +7,13 @@ fn ok {
         fn do_exit { true }
         todo_msg='# TODO '^$TODO
     }
+    true
+}
+
+fn ok {
+    nm=$1; prog=$2;
+    shift; shift
+    setup_todo
     echo $nm $todo_msg
     if (! $prog $*) {
         echo 'The command' >[1=2]
