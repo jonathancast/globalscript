@@ -110,18 +110,19 @@ fn ok_diff_case {
 fn ok_grep_errors {
     nm=$1; msg=$2; prog=$3; script=$4
     shift; shift; shift; shift
-    echo $nm
+    setup_todo
+    echo $nm $todo_msg
     if ($prog ./test-gslib ./test-fixtures/$script $* > ./test-results/$script^-actual >[2] ./test-results/$script^-errors) {
         echo $prog 'succeeded; should have failed' >[1=2]
         cat ./test-results/$script^-errors >[1=2]
         cat ./test-results/$script^-actual >[1=2]
-        exit 1
+        do_exit
     }
     if (! 9 grep -s $msg ./test-results/$script^-errors) {
         echo 'Can''t find expected error message '''^$msg^''' in output anywhere' >[1=2]
         cat ./test-results/$script^-errors >[1=2]
         cat ./test-results/$script^-actual >[1=2]
-        exit 1
+        do_exit
     }
     true
 }
