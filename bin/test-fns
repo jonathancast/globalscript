@@ -145,10 +145,11 @@ fn ok_script {
 fn ok_diff_script {
     nm=$1; casenm=$2
     shift; shift
-    echo $nm
+    setup_todo
+    echo $nm $todo_msg
     if (! test -f ./test-results/$casenm^-expected) {
         echo $casenm ': no such file' ./test-results/$casenm^-expected >[1=2]
-        exit 1
+        do_exit
     }
     if (! $* > ./test-results/$casenm^-actual >[2] ./test-results/$casenm^-errors) {
         echo 'The command' >[1=2]
@@ -159,7 +160,7 @@ fn ok_diff_script {
         if (test -s ./test-results/$casenm^-actual) {
             diff -c ./test-results/$casenm^-actual ./test-results/$casenm^-expected >[1=2]
         }
-        exit 1
+        do_exit
     }
     if (! diff ./test-results/$casenm^-actual ./test-results/$casenm^-expected >/dev/null) {
         echo 'Incorrect output:' >[1=2]
@@ -167,7 +168,7 @@ fn ok_diff_script {
         cat ./test-results/$casenm^-errors >[1=2]
         echo '--- Diff: ---' >[1=2]
         diff -c ./test-results/$casenm^-actual ./test-results/$casenm^-expected >[1=2]
-        exit 1
+        do_exit
     }
     true
 }
@@ -223,29 +224,32 @@ fn ok_grep_script_errors {
 fn ok_diff_compiler {
     nm=$1; cmd=$2; input=$3; output=$4
     shift; shift; shift; shift
-    echo $nm
+    setup_todo
+    echo $nm $todo_msg
     if (! test -f ./test-fixtures/$input) {
         echo $cmd $input ': no such file' ./test-fixtures/$input >[1=2]
-        exit 1
+        do_exit
     }
     if (! test -f ./test-results/$cmd^-^$input^-expected) {
         echo $cmd $input ': no such file' ./test-results/$cmd^-^$input^-expected >[1=2]
-        exit 1
+        do_exit
     }
     if (! ./$cmd ./test-fixtures/$input > ./test-results/$cmd^-^$input^-errors >[2=1]) {
         echo 'The command ' >[1=2]
         echo '    ' $cmd ./test-fixtures/$input >[1=2]
         echo 'failed; should have succeeded' >[1=2]
         cat ./test-results/$cmd^-^$input^-errors
-        exit 1
+        do_exit
     }
     if (! diff ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >/dev/null) {
         echo 'Incorrect output:' >[1=2]
         echo '--- Any errors: ---' >[1=2]
         cat ./test-results/$cmd^-^$input^-errors >[1=2]
         echo '--- Diff: ---' >[1=2]
-        diff -c ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >[1=2]
-        exit 1
+        diff -c ./test-fixtures/$output ./test-results/$cmd^-^$input^-expected >[1=2] || true
+        do_exit
+    }
+    true
     }
     true
 }
