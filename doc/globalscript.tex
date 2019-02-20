@@ -89,43 +89,69 @@ This document specifies the \defn{Global Script Program Calculus}, a purely-func
 
 The term `programming language' has an odd, and in the opinion of the developer of this system deleterious, definition in normal usage.
 `Programming language' clearly derives from the verb `program', (rather than the noun);
-it does not mean `language that is engaged in programming', so it must mean `language for the act of programming'.
+it clearly means `language for the act of programming'.
 But the verb `program' is a transitive verb: `program the i686 processor', `program the fuel injection system', `program the accounting system', etc.
 To \defn{program} a machine is to make it do what the programmer wishes;
 the act of programming makes no sense except in reference to a machine.
 So `machine-independent programming language' is, properly speaking, a nonsensical concept.
 
-Originally, it simply meant `programming language which targets multiple machines'
-(or, usually rather, `family of programming languages indexed by multiple machines'),
+Originally, this term simply meant `programming language which targets multiple machines'
+(or, rather, usually, `family of programming languages indexed by multiple machines'),
 which really means (if it means anything) `programming language which targets a family of machines sharing similar capabilities'.
 Typically this class of machines encompases most of the machines typically encountered by programmers
 (but not most programmable machines in use!),\footnote{Most software is actually embedded software, which lacks access to the familiar keyboard / screen / mouse facilities assumed by the typical definition of `general-purpose' language.}
 so the myth has grown up that typical languages `support all computers';
 and even that languages lacking I/O facilities are not Turing-complete!\footnote{The Intercal manual (implicitly) makes this claim.}
 
-Meanwhile, `programming language' has come to mean something like what this document intends by `program calculus':
+Meanwhile, `programming language' has come to mean something like `algorithmic language', i.e.,
 methods for algorithmic computation, variable naming, function definition, program partitioning, etc.
 I/O `isn't part of the language' or `shouldn't be part of the language' (!).\footnote{Thus excluding denotational semantics from `the language'\ldots.}
 The problem with this position\footnote{Beyond the fact that you can't interpret I/O operations in an arbitrary model of a language that lacks them!}
 is that it justifies the neglect of I/O that programming language designers have traditionally lavished on it.
 Almost every language has genuinely wretched I/O facilities,
-precisely because of the second-class status assigned to I/O by the concept of the `general-purpose programming language'.
-Global Script thus includes I/O in `the language', not only because that is the only way to give a denotation for I/O,
+precisely because of the second-class status assigned to I/O by the modern concept of `programming language'.
+Global Script thus includes I/O `in the language', not only because that is the only way to give a denotation for I/O,
 but because I/O deserves the same careful design as any other aspect of the language.
-The Global Script Program Calculus is thus a genuine programming language (to wit, environment-dependent and I/Oful)
-stripped of its environment-specific and I/O-related facilities.
-In fact, because the calculus and the I/O system are so largely orthogonal, it is several (distinct) languages so stripped of their environmental facilities;
-the list includes at least:
+
+The Global Script Program (not programming!) Calculus is a general syntax for writing programs,
+together with rules for manipulating them ---
+consisting of a static semantics (type system),
+denotational semantics,\footnote{Meaningful meaning\ldots}
+operational semantics (only for expression evaluation),
+and formal semantics (equational theory).
+The Global Script Program Calculus provides an `algorithmic language' in its expression syntax, data types, and operational semantics;
+it also provides a module system, including support for abstract data types and for encapsulating business logic,
+allowing for extensions, libraries, and allowing the large-scale structure of a program to be expressed within the language.
+It thus provides everything a programming language needs, \emph{except} the environment-specific features.
+In that sense, it is a genuinely environment-independent language.
+But not a \emph{programming} language, because you can't program anything with it!
+
+However, the Global Script Program Calculus can easily be extended with operations for programming a specific machine.
+To allow libraries to be universal,
+we use the classic pure-functional approach
+of adding a new type for programs in each environment,
+with operations that construct / return such programs,
+including so-called \emph{combinators} that take parts of programs
+and combine them into larger programs.
+Then, the type system distinguishes between different environments,
+allowing libraries to be used cross-environment,
+but not allowing subprograms for one environment to be invoked incorrectly within another environment
+which doesn't provide the operations they need.
+
+The type of programs for each environment, together with its operations,
+is called a `programming language' in Global Script,
+and, in general, the term `language' is used freely for the API for any specific area.
+
+Currently, the major programming languages provided include:
 \begin{itemize}
     \item Global Script Log --- a logical markup language;
     \item Global Script Set --- a page description language;
-    \item Global Script Type --- ditto, but for line printers;
+    \item Global Script Type --- ditto, but for Unix terminals;
     \item IBIO --- a concurrent stream I/O language, suitable for writing Unix filters (and, although not designed for them, compilers);
-    \item Cord --- a relational database language; and
-    \item Dance --- an FRP GUI language.
+    \item Cord --- a relational database language;
+    \item Dance --- an FRP GUI language; and
+    \item Guisen --- a procedural GUI language.
 \end{itemize}
-These share the same calculus; the type system distinguishes between the operations of different languages.
-An implementation of one language \emph{simpliciter} never need link in an implementation of any of the others.
 
 \section{Syntax}
 
