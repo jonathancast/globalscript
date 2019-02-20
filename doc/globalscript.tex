@@ -176,7 +176,7 @@ Global Script has a standard natural deduction-based type system, based on \defn
 \begin{displaymath}
     \Gamma \sequent \text{conclusion}
 \end{displaymath}
-The context \<\Gamma\> several classes of variables (type variables, object variables, views, etc.) to various sorts of meta-data (kinds, types, implicit arguments, macro properties, etc.).
+The context \<\Gamma\> maps several classes of variables (type variables, object variables, views, etcw.) to various sorts of meta-data (kinds, types, implicit arguments, macro properties, etc.).
 Nevertheless, the context will generally be treated as a single object, except in the denotational semantics,
 where it will be split into a kind context \<\Delta\> and a type context \<\Gamma\>.
 
@@ -187,7 +187,7 @@ Note: `semantics' means `meaning'; specifically, the kind of detailed meaning th
 So `denotational semantics' is redundant.
 End note.
 
-A \defn{model} of Global Script is a (directed-)complete partial order-enriched category $\mathcal{C}$ with:
+A \defn{model} of Global Script is a directed-complete partial order-enriched category $\mathcal{C}$ with:
 \begin{itemize}
     \item Finite products indexed by sets of Global Script identifiers (note that this implies in particular the existence of a terminal object \<\star\>);
     \item Finite coproducts indexed by sets of Global Script identifiers (note that this implies in particular the existence of an initial object \<\epsilon\>);
@@ -292,9 +292,9 @@ The judgment form for an expression $e$ in context $\Gamma$ is
 \begin{equation}
     \Gamma \sequent e :: \tau
 \end{equation}
-for some type $\tau$.
+for some type $\Gamma \sequent \tau :: \kappa$.
 
-The denotation of an expression will be a natural transformation $\Expr{\Delta, \Gamma \sequent e :: \tau} : \Den{\lambda\Delta.\Gamma} \to \Type{\lambda\Delta.\tau}$.
+The denotation of an expression will be a natural transformation $\Expr{\Delta, \Gamma \sequent e :: \tau} : \Den{\Delta \sequent \Gamma\;\text{context}} \to \Type{\Delta \sequent \tau :: \kappa}$.
 
 \section{Variables}
 \label{sec:variables}
