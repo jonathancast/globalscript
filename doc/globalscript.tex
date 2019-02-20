@@ -8,6 +8,8 @@
 \usepackage{MnSymbol}
 \usepackage{bussproofs}
 \usepackage{haskell}
+\usepackage[utf8]{inputenc}
+\frenchspacing
 
 \newcommand\sequent\vdash
 \newcommand\provides\rhd
@@ -200,7 +202,7 @@ universal quantifiers \<\forall\>
 (over Global Script type assignments, so \<\forall \pvar{x} :: \tau\> where \<x\> is a Global Script variable and \<\tau\> its type),
 and seven forms of atoms:
 \begin{itemize}
-    \item \defn{Equations} of the form \<e₀ = e₁\>, between two expressions of the same type;
+    \item \defn{Equations} of the form \<e_0 = e_1\>, between two expressions of the same type;
     \item \defn{Pattern match success assertions} of the form \<p \match e\>, read `\<p\> \defn{matches} \<e\>';
     \item \defn{Pattern match failure  assertions} of the form \<p \match e\fails\>, read `\<p\> \defn{fails to match} \<e\>';
     \item \defn{Pattern match divergence assertions} of the form \<p \match e\diverges\>, read `the match of \<p\> against \<e\> \defn{diverges}';
