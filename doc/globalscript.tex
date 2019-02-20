@@ -15,6 +15,8 @@
 \newcommand\provides\rhd
 \newcommand\match\propto
 
+\newcommand\sequence[1]{\left.\overline{#1}\right.}
+
 \hscommand\from{\leftarrow}
 
 \newcommand\type{\hskwd{type}}
@@ -301,11 +303,12 @@ The denotation of an expression will be a natural transformation $\Expr{\Delta, 
 
 The judgment form for a variable \<v\> in context \<\Gamma\> is
 \begin{equation}\label{eqn:var-judgment}
-    \Gamma \sequent v :: \overline{\tau_i :: \kappa_i}_{i=0}^{n-1}; \overline{a_j :: \tau_j}_{j=n}^{n+m-1}; \tau
-\end{equation}.
+    \Gamma \sequent v\;\sequence{\tau_{0,i} :: \kappa_i}_{i=0}^n\;\sequence{a_i :: \tau_{1,i}}_{i=0}^m :: \tau,
+\end{equation}
+where
 \begin{itemize}
-    \item $\overline{\tau_i :: \kappa_i}_{i=0}^{n-1}$ is a sequence of \defn{default type arguments} and their kinds,
-    \item $\overline{a_j :: \tau_j}_{j=n}^{n+m-1}$ is a sequence of \defn{default arguments} and their types, and
+    \item $\sequence{\tau_{0,i} :: \kappa_i}_{i=0}^n$ is a sequence of \defn{implicit type arguments} and their kinds,
+    \item $\sequence{a_i :: \tau_{1,i}}_{i=0}^m$ is a sequence of \defn{implicit value arguments} and their types, and
     \item $\tau$ is the (monomorphic) type of the variable term.
 \end{itemize}
 The meta-variable \<v\> can stand for a simple identifier (this case will be written \<x\>, \<x_i\>, etc.), or for an application (see below).
@@ -314,71 +317,53 @@ A variable has no denotation, but see section \ref{subsec:var-exprs} below.
 
 \subsection{Variables Without \kwd{implicit} Declarations}
 
+The derivation rule for simple identifiers without \<\implicit\> declarations is
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
-    \UnaryInfC{
-        \<\Gamma, x :: \forall\;\overline{'\alpha_i :: \kappa_i}. \tau \sequent x :: \overline{\tau_i :: \kappa_i}; ; \tau'\>
-    }
+    \AxiomC{\<'x :: \sequence{\forall\;'\alpha_i :: \kappa_i.}_{i=0}^n\tau_1[\sequence{\alpha_i}_{i=0}^n] \in \Gamma\>}
+    \AxiomC{\<\implicit\; 'x \not\in \Gamma\>}
+    \AxiomC{$\sequence{\Gamma \sequent \tau_{0,i} :: \kappa_i}_{i=0}^n$}
+    \TrinaryInfC{$\Gamma \sequent x \sequence{\tau_i :: \kappa_i}_{i=0}^n :: \tau_1[\sequence{\tau_{0,i}}_{i=0}^n]$}
 \end{prooftree}
-\begin{itemize}
-    \item $i \in [0, n)$;
-    \item $\Gamma$ does not contain an \<\implicit\> declaration for $x$;
-    \item $\tau'$ means $[\overline{\alpha_i\to\tau_i}]\tau$,
-        the result of substituting the type arguments for the $\forall$-bound variables in $\tau$.
-\end{itemize}
 
 \subsection{Variables With \kwd{implicit} Declarations}
 
+The derivation rule for simple identifiers with \<\implicit\> declarations is
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent \overline{\tau_i :: \kappa_i}$}
-    \AxiomC{$\Gamma \sequent \overline{e_j :: \tau'_j}$}
-    \BinaryInfC{
-        \<\Gamma, x :: \forall\;\overline{'\alpha_i :: \kappa_i}. \overline{\tau_j} \to \tau, \implicit\;x\;\overline{e_j} \sequent x :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau'_j}; \tau'\>
-    }
+    \AxiomC{\<'x :: \sequence{\forall'\alpha_i :: \kappa_i.}_{i=0}^n \sequence{\tau_{1,i}[\sequence{\alpha_j}_{j=0}^n] \to}_{i=0}^m \tau_2[\sequence{\alpha_i}_{i=0}^n] \in \Gamma\>}
+    \AxiomC{\<\implicit\; 'x = \sequence{e_i}_{i=0}^m \in \Gamma\>}
+    \AxiomC{$\sequence{\Gamma \sequent \tau_{0,i} :: \kappa_i}_{i=0}^n$}
+    \TrinaryInfC{\<\Gamma \sequent x \sequence{\tau_{0,i} :: \kappa_i}_{i=0}^n \sequence{e_i :: \tau_{1,i}[\sequence{\tau_{0,j}}_{j=0}^n]}_{i=0}^m :: \tau_2[\sequence{\tau_{0,i}}_{i=0}^n]\>}
 \end{prooftree}
-\begin{itemize}
-    \item $i \in [0, n)$, $j \in [n, n + m)$;
-    \item $\tau'_j$ means $[\overline{\alpha_i\to\tau_i}]\tau_j$,
-        the result of substituting the type arguments for the $\forall$-bound variables in $\tau_j$;
-    \item $\tau'$ means $[\overline{\alpha_i\to\tau_i}]\tau$,
-        the result of substituting the type arguments for the $\forall$-bound variables in $\tau$.
-\end{itemize}
 
 \subsection{Explicit Type Applications}
 
+Explicit type arguments only serve as documentation.
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent v :: \tau_0 :: \kappa_0, \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
-    \UnaryInfC{
-        \<\Gamma \sequent v\;@(\type\;\tau_0) :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau\>
-    }
+    \AxiomC{$\Gamma \sequent v \; \tau_{0,0} :: \kappa_0, \sequence{\tau_{0,i} :: \kappa_i}_{i=1}^n \sequence{e_i :: \tau_{1,i}}_{i=0}^m :: \tau$}
+    \UnaryInfC{\<\Gamma \sequent v\_(\type\;\tau_{0,0}) \sequence{\tau_{0,i} :: \kappa_i}_{i=1}^n \sequence{e_j :: \tau_{1,i}}_{i=0}^m :: \tau\>}
 \end{prooftree}
-($i \in [1, n)$, $j \in [n, n + m)$).
 
 \subsection{Explicit Applications}
 
+Explicit expression applications replace the implicit value arguments,
+negating them and removing them from the expression.
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; e_n :: \tau_n, \overline{e_j :: \tau_j}; \tau$}
-    \AxiomC{$\Gamma \sequent e :: \tau_n$}
+    \AxiomC{$\Gamma \sequent v \sequence{\tau_{0,i} :: \kappa_i}_{i=0}^{n-1} e_0 :: \tau_{1,0}, \sequence{e_i :: \tau_{1,i}}_{i=1}^{m-1} :: \tau$}
+    \AxiomC{$\Gamma \sequent e :: \tau_{1,0}$}
     \BinaryInfC{
-        $\Gamma \sequent v\;@e :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$
+        $\Gamma \sequent v\_e \sequence{\tau_{0,i} :: \kappa_i}_{i=0}^{n-1} \sequence{e_i :: \tau_{1,i}}_{i=1}^{m-1} :: \tau$
     }
 \end{prooftree}
-($i \in [1, n)$, $j \in [n + 1, n + m)$).
 
 \subsection{Variables Used as Expressions}
 \label{subsec:var-exprs}
 
+If the implicit arguments to a variable all type-check, the variable can be used as an expression:
 \begin{prooftree}
-    \AxiomC{$\Gamma \sequent v :: \overline{\tau_i :: \kappa_i}; \overline{e_j :: \tau_j}; \tau$}
-    \UnaryInfC{$\Gamma \sequent v :: \tau$}
+    \AxiomC{$\Gamma \sequent v \; \overline{\tau_i :: \kappa_i} \sequence{e_i :: \tau_{1,i}}_{i=0}^{m-1} :: \tau$}
+    \AxiomC{$\sequence{\Gamma \sequent e_i :: \tau_{1,i}}_{i=0}^{m-1}$}
+    \BinaryInfC{$\Gamma \sequent v :: \tau$}
 \end{prooftree}
-($i \in [1, n)$, $j \in [n, n + m)$).
-
-\subsection{TODOs}
-
-\begin{itemize}
-    \item Really shouldn't require explicit arguments to be well-typed unless they end up being used.
-\end{itemize}
 
 \section{Functions}
 
