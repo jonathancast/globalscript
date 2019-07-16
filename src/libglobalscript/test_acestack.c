@@ -1,6 +1,7 @@
 #include <u.h>
 #include <libc.h>
 #include <libtest.h>
+#include <stdatomic.h>
 #include <libglobalscript.h>
 
 #include "gsheap.h"

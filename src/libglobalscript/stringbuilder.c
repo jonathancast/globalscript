@@ -2,6 +2,7 @@
 
 #include <u.h>
 #include <libc.h>
+#include <stdatomic.h>
 #include <libglobalscript.h>
 
 static struct gs_block_class gsstringbuilder_descr = {

@@ -30,8 +30,7 @@ OFILES=\
 	iostat.$O \
 	stringbuilder.$O \
 	stats.$O \
-	$SYSTEM/lock.$O \
-	$SYSTEM/$CPU/tas.$O \
+	lock.$O \
 	$SYSTEM/gssysthreads.$O \
 	$SYSTEM/iodir.$O \
 	$SYSTEM/iosysconstants.$O \

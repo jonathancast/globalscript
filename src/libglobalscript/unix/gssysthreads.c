@@ -14,6 +14,7 @@
 
 #include <signal.h>
 
+#include <stdatomic.h>
 #include <libglobalscript.h>
 
 #include "../gsproc.h"

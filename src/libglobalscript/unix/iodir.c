@@ -1,6 +1,7 @@
 #include <u.h>
 #define NOPLAN9DEFINES
 #include <libc.h>
+#include <stdatomic.h>
 #include <libglobalscript.h>
 
 #include <sys/types.h>

@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include <libtest.h>
+#include <stdatomic.h>
 #include <libglobalscript.h>
 
 #include "iosysconstants.h"

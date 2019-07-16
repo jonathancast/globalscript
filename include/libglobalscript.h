@@ -37,22 +37,17 @@ void gsstatprint(char *, ...);
 
 /* §section Threading */
 
-#ifdef __UNIX__
-/* We always want to use the Plan 9 version of the locking routines;
-   so on Unix, use a local copy of those routines (§emph{not} the P9P versions).
-*/
-#define lock rp9lock
-#define unlock rp9unlock
-#define Lock rp9Lock
+#define lock gslock
+#define unlock gsunlock
+#define Lock gsLock
 
 typedef
 struct Lock {
-	int	val;
+    atomic_flag val;
 } Lock;
 
-extern	void	lock(Lock*);
-extern	void	unlock(Lock*);
-#endif
+extern void lock(Lock*);
+extern void unlock(Lock*);
 
 int gscreate_thread_pool(void (*)(void *), void *, ulong);
 
