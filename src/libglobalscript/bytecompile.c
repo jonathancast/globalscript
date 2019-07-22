@@ -583,7 +583,7 @@ void
 static
 gsbc_bytecode_size_check_natural_fits_in_one_word(struct gspos pos, gsinterned_string d)
 {
-    static int max_before_division = (GS_MAX_PTR - 9) / 10;
+    static intptr max_before_division = (GS_MAX_PTR - 9) / 10;
 
     char *s;
     int n;

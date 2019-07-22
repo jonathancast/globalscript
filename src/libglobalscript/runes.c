@@ -224,7 +224,7 @@ char *
 gsrunetochar(gsvalue v, char *buf, char *ebuf)
 {
     uint mask;
-    int test_bit;
+    uintptr test_bit;
     int nbytes;
     int i;
 

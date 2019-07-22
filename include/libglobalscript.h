@@ -227,8 +227,7 @@ extern void gscheck_program(char *, struct gsfile_symtable *, struct gspos, stru
 extern int gs_client_pre_ace_gc_trace_roots(struct gsstringbuilder *);
 extern void gsrun(char *, struct gspos, gsvalue, int, char **);
 
-#define GS_MAX_PTR 0x80000000UL
-    /* NOTE: 32-bit specific ↑↑↑.  Thought: would §ccode{1UL << (sizeof(gsvalue) * 8 - 1)} work? */
+#define GS_MAX_PTR (1UL << (sizeof(gsvalue) * 8 - 1))
 
 void *gsreserveheap(ulong);
 
