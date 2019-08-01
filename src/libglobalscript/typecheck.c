@@ -2534,7 +2534,7 @@ gsbc_typecheck_alloc_op(struct gsfile_symtable *symtable, struct gsparsedline *p
 
         gsargcheck(p, 1, "Coercion");
         coercion_type = pcl->regcoerciontypes[gsbc_find_register(p, pcl->regs, pcl->nregs, p->arguments[1])];
-        
+
         src_type = coercion_type->source;
         dest_type = coercion_type->dest;
         for (i = 2; i < p->numarguments; i++) {
@@ -3681,8 +3681,8 @@ gstypes_type_check(struct gsstringbuilder *err, struct gspos pos, struct gstype 
         gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
         return -1;
     }
-    if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= actual_buf + sizeof(actual_buf)) {
-        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing actual type %P"), pos, pactual->pos);
+    if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= expected_buf + sizeof(expected_buf)) {
+        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing expected type %P"), pos, pexpected->pos);
         return -1;
     }
 
