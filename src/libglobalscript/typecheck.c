@@ -3682,7 +3682,7 @@ gstypes_type_check(struct gsstringbuilder *err, struct gspos pos, struct gstype 
         return -1;
     }
     if (gstypes_eprint_type(expected_buf, expected_buf + sizeof(expected_buf), pexpected) >= expected_buf + sizeof(expected_buf)) {
-        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing expected type %P"), pos, pexpected->pos);
+        gsstring_builder_print(err, UNIMPL("%P: buffer overflow printing expected type %P (got: %s"), pos, pexpected->pos, expected_buf);
         return -1;
     }
 
