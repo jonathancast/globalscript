@@ -31,6 +31,7 @@ OFILES=\
 	stringbuilder.$O \
 	stats.$O \
 	lock.$O \
+	$SYSTEM/gssysmem.$O \
 	$SYSTEM/gssysthreads.$O \
 	$SYSTEM/iodir.$O \
 	$SYSTEM/iosysconstants.$O \
@@ -92,6 +93,7 @@ api.$O: api.h
 iochan.$O: iofile.h $SYSTEM/iosysconstants.h iomacros.h
 iostat.$O: $SYSTEM/iosysconstants.h iofile.h iostat.h iomacros.h
 stats.$O: gsstats.h
+unix/gssysmem.$O: gsmem.h
 unix/iodir.$O: iofile.h iostat.h iomacros.h unix/iodir.h
 unix/ioenv.$O: unix/iosysconstants.h iofile.h
 unix/gssysthreads.$O: gsproc.h

@@ -5,6 +5,7 @@
 #include <stdatomic.h>
 #include <libglobalscript.h>
 #include "gsproc.h"
+#include "gsmem.h"
 
 Lock gs_allocator_lock;
 
@@ -19,15 +20,12 @@ enum gs_sys_block_type {
 
 static enum gs_sys_block_type *blocks;
 static void *bottom_of_data;
-static void *what_we_think_is_break;
+static void *top_of_data;
 
-#define MAX_NUM_LEGAL_BLOCKS (BLOCK_SIZE / sizeof(*blocks))
-#define MAX_NUM_AVAILABLE_BLOCKS (BLOCK_SIZE / ((uchar*)GS_MAX_PTR - (uchar*)bottom_of_data)
-#define BLOCK_TYPE(p) (blocks[(uintptr)BLOCK_CONTAINING(p) / BLOCK_SIZE])
+#define NUM_BLOCKS (1 << 10)
+#define BLOCK_TYPE(p) (blocks[((uintptr)BLOCK_CONTAINING(p) - (uintptr)bottom_of_data) / BLOCK_SIZE])
 
-#define BLOCK_AT_INDEX(i) ((void*)(i * BLOCK_SIZE))
-#define FIRST_BLOCK_INDEX ((uintptr)bottom_of_data / BLOCK_SIZE)
-#define LAST_BLOCK_INDEX ((uintptr)what_we_think_is_break / BLOCK_SIZE)
+#define BLOCK_AT_INDEX(i) ((void*)((uintptr)bottom_of_data + i * BLOCK_SIZE))
 
 /* OK, this is confusing.
    §ccode{gs_sys_gc_running} means main process is somewhere in the GC code.
@@ -45,22 +43,13 @@ gs_sys_memory_init(void)
 
     if (blocks) gsfatal("gs_sys_memory_init called twice");
 
-    bottom_of_data = sbrk(0);
-    if ((uintptr)bottom_of_data % BLOCK_SIZE) {
-        bottom_of_data = (uchar*)bottom_of_data + BLOCK_SIZE - ((uintptr)bottom_of_data % BLOCK_SIZE);
-        if (brk(bottom_of_data) < 0) gsfatal("brk failed! %r");
-    }
-    if ((uintptr)bottom_of_data >= GS_MAX_PTR)
-        gsfatal("Out of memory in gs_sys_memory_init")
-    ;
+    gs_sys_alloc_blocks(NUM_BLOCKS + 1, &bottom_of_data, &top_of_data);
+
     blocks = bottom_of_data;
 
     bottom_of_data = (uchar*)bottom_of_data + BLOCK_SIZE;
-    if (brk(bottom_of_data) < 0) gsfatal("brk failed! %r");
 
-    what_we_think_is_break = bottom_of_data;
-
-    for (i = 0; i < FIRST_BLOCK_INDEX; i++) blocks[i] = gs_sys_block_not_ours;
+    for (i = 0; i < NUM_BLOCKS; i++) blocks[i] = gs_sys_block_free;
 }
 
 gsumemorysize
@@ -70,7 +59,7 @@ gs_sys_memory_allocated_size()
     int i;
 
     res = 0;
-    for (i = FIRST_BLOCK_INDEX; i < LAST_BLOCK_INDEX; i++)
+    for (i = 0; i < NUM_BLOCKS; i++)
         if (blocks[i] == gs_sys_block_allocated) res += BLOCK_SIZE
     ;
 
@@ -83,10 +72,7 @@ gs_sys_memory_exhausted()
     int res;
 
     lock(&gs_allocator_lock);
-    res =
-        (uintptr)what_we_think_is_break >= GS_MAX_PTR
-        || gs_sys_memory_allocated_size() >= 0x200 * 0x400 * 0x400
-    ;
+    res = gs_sys_memory_allocated_size() >= 0x200 * 0x400 * 0x400;
     unlock(&gs_allocator_lock);
 
     return res;
@@ -139,7 +125,7 @@ gs_sys_start_gc(struct gsstringbuilder *err)
 
     for (i = 0; i < gs_sys_gc_num_pre_callbacks; i++) gs_sys_gc_pre_callbacks[i]();
 
-    for (i = FIRST_BLOCK_INDEX; i < LAST_BLOCK_INDEX; i++) {
+    for (i = 0; i < NUM_BLOCKS; i++) {
         if (blocks[i] == gs_sys_block_allocated)
             blocks[i] = gs_sys_block_gc_from_space
         ;
@@ -179,7 +165,7 @@ gs_sys_finish_gc(struct gsstringbuilder *err)
             return -1
     ;
 
-    for (i = FIRST_BLOCK_INDEX; i < LAST_BLOCK_INDEX; i++) {
+    for (i = 0; i < NUM_BLOCKS; i++) {
         if (blocks[i] == gs_sys_block_gc_from_space) blocks[i] = gs_sys_block_free;
     }
 
@@ -220,7 +206,7 @@ gs_sys_gc_failed(char *err)
         gs_sys_gc_failure_callbacks[i]()
     ;
 
-    for (i = FIRST_BLOCK_INDEX; i < LAST_BLOCK_INDEX; i++) {
+    for (i = 0; i < NUM_BLOCKS; i++) {
         if (blocks[i] == gs_sys_block_gc_from_space) blocks[i] = gs_sys_block_allocated;
     }
 
@@ -306,14 +292,14 @@ gs_sys_gc_allow_collection(struct gsstringbuilder *err)
 int
 gs_sys_block_in_heap(uintptr p)
 {
-    return (p >= (uintptr)bottom_of_data && p < (uintptr)what_we_think_is_break);
+    return (p >= (uintptr)bottom_of_data && p < (uintptr)top_of_data);
 }
 
 int
 gs_sys_block_in_gc_from_space(void *p)
 {
     if (!gs_sys_in_gc) return 0;
-    if ((uintptr)p >= (uintptr)what_we_think_is_break) return 0;
+    if ((uintptr)p >= (uintptr)top_of_data) return 0;
     if ((uintptr)p < (uintptr)bottom_of_data) return 0;
     return BLOCK_TYPE(p) == gs_sys_block_gc_from_space;
 }
@@ -358,7 +344,7 @@ gs_sys_gc_failure_callback_register(gs_sys_gc_failure_callback *cb)
 void *
 gs_sys_block_alloc(registered_block_class cl)
 {
-    int i, j;
+    int i;
     struct gs_blockdesc *pres;
 
     lock(&gs_allocator_lock);
@@ -366,36 +352,18 @@ gs_sys_block_alloc(registered_block_class cl)
     if (!blocks) gs_sys_memory_init();
 
     /* Try to find a free block (TODO: linear scan can probably be improved) */
-    for (i = FIRST_BLOCK_INDEX; i < LAST_BLOCK_INDEX; i++) {
+    for (i = 0; i < NUM_BLOCKS; i++) {
         if (blocks[i] == gs_sys_block_free) break;
     }
 
     /* If we don't have a free block, try to extend available memory */
-    if (i == LAST_BLOCK_INDEX) {
-        gsumemorysize old_memory_size, break_size, new_free_segment_size;
-        void *actual_break;
-
-        actual_break = sbrk(0);
-        if ((uintptr)actual_break > (uintptr)what_we_think_is_break) {
-            gswarning(UNIMPL("Break moved when we weren't looking at it, from %p to %p; proceeding as if it never happened"), what_we_think_is_break, actual_break);
-        }
-
-        old_memory_size = (uchar*)what_we_think_is_break - (uchar*)bottom_of_data;
-        break_size = (uchar*)GS_MAX_PTR - (uchar*)what_we_think_is_break;
-        new_free_segment_size = old_memory_size;
-        
-        if (break_size <= 0) gswarning(UNIMPL("We've reached gs_sys_block_alloc even though memory is exhausted"));
-        if (new_free_segment_size == 0) new_free_segment_size = BLOCK_SIZE;
-        if (new_free_segment_size >= break_size) new_free_segment_size = break_size;
-        what_we_think_is_break = (uchar*)what_we_think_is_break + new_free_segment_size;
-        if (brk(what_we_think_is_break) < 0)
-            gswarning("Could not extend data segment: brk failed (allocated %p to %p, allocating %p)! %r", bottom_of_data, what_we_think_is_break, new_free_segment_size)
-        ;
-        for (j = i; j < LAST_BLOCK_INDEX; j++) blocks[j] = gs_sys_block_free;
+    if (i == NUM_BLOCKS) {
+        gswarning(UNIMPL("Warning: no free blocks! should never have gotten here!"));
+        unlock(&gs_allocator_lock);
+        return 0;
     }
 
-    if (i < LAST_BLOCK_INDEX) blocks[i] = gs_sys_block_allocated;
-    if (i >= LAST_BLOCK_INDEX) gswarning(UNIMPL("Warning: about to return %p as a block, which we think is illegally large"), BLOCK_AT_INDEX(i));
+    blocks[i] = gs_sys_block_allocated;
     pres = BLOCK_AT_INDEX(i);
     pres->class = cl;
 
