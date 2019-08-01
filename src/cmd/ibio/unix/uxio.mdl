@@ -77,7 +77,7 @@ struct ibio_dir_uxio {
     struct ibio_uxio uxio;
     char *dirname;
     void *bufbeg, *bufend;
-    vlong offset;
+    off_t offset;
 };
 
 struct ibio_uxio *
