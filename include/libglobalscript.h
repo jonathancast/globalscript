@@ -2,7 +2,7 @@
 #define _GLOBALSCRIPT_H_ 1
 #if defined(__cplusplus)
 extern "C" {
-#endif   
+#endif
 
 /* §section A few pre-declarations since C is idiotic */
 
