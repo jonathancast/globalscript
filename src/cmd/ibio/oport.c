@@ -1,4 +1,3 @@
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -645,7 +644,7 @@ ibio_oport_unlink_from_thread(struct api_thread *thread, struct ibio_oport *opor
 {
     struct ibio_thread_data *data;
     struct ibio_thread_to_oport_link **p;
-    
+
     api_take_thread(thread);
 
     data = api_thread_client_data(thread);
@@ -840,4 +839,3 @@ ibio_oport_evacuate_buf(struct gsstringbuilder *err, struct ibio_oport *oport)
 
     return 0;
 }
-%}

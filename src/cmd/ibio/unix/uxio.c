@@ -1,6 +1,5 @@
 /* §source.file Unix System Call-Level File I/O */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -193,4 +192,3 @@ ibio_uxio_trace(struct gsstringbuilder *err, struct ibio_uxio **puxio)
 
     return 0;
 }
-%}

@@ -1,6 +1,5 @@
 /* §source.file Files */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -121,4 +120,3 @@ void
 ibio_file_read_open_blocking_gccleanup(struct api_prim_blocking *blocking)
 {
 }
-%}

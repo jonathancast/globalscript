@@ -1,6 +1,5 @@
 /* §source.file Stat interface */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -148,4 +147,3 @@ ibio_parse_gsbio_dir(struct gspos pos, struct gsbio_dir *dir)
 
     return gsrecordv(pos, ibio_stat_num_fields, fields);
 }
-%}

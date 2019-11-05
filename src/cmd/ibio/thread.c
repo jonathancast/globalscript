@@ -1,6 +1,5 @@
 /* §source.file IBIO Threads (general stuff) */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -107,4 +106,3 @@ ibio_gc_failure_cleanup(void **pdata)
     if (data->writing_to_oport) ibio_thread_to_oport_link_cleanup(&data->writing_to_oport);
     if (data->reading_from_iport) ibio_thread_to_iport_link_cleanup(&data->reading_from_iport);
 }
-%}

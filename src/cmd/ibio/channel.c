@@ -1,6 +1,5 @@
 /* §source.file Channels (input- or output-end-independent code) */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -295,4 +294,3 @@ ibio_iptr_gc_trace(struct gsstringbuilder *err, gsvalue v)
 
     return (gsvalue)iptr;
 }
-%}

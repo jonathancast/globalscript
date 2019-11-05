@@ -1,6 +1,5 @@
 /* §section Interface Down to GS */
 
-%Ch{
 enum ibio_gsstring_eval_state {
     ibio_gsstring_eval_error,
     ibio_gsstring_eval_blocked,
@@ -16,11 +15,9 @@ void ibio_gsstring_eval_start(struct ibio_gsstring_eval *, gsvalue);
 enum ibio_gsstring_eval_state ibio_gsstring_eval_advance(struct api_thread *, struct gspos, struct ibio_gsstring_eval *);
 
 int ibio_gsstring_eval_evacuate(struct gsstringbuilder *, struct ibio_gsstring_eval *);
-%}
 
 /* §section Threads */
 
-%Ch{
 struct ibio_thread_data {
     gsvalue cmd_args;
     struct ibio_thread_to_oport_link *writing_to_oport;
@@ -37,17 +34,13 @@ void ibio_thread_to_oport_link_cleanup(struct ibio_thread_to_oport_link **);
 
 int ibio_thread_to_iport_link_trace(struct gsstringbuilder *, struct ibio_thread_to_iport_link **);
 void ibio_thread_to_iport_link_cleanup(struct ibio_thread_to_iport_link **);
-%}
 
 /* §section Environment */
 
-%Ch{
 api_prim_executor ibio_handle_prim_getargs;
-%}
 
 /* §section Stat */
 
-%Ch{
 #define IBIO_DIR_TYPE \
     "bool.t " \
     "list.t rune.t ` " \
@@ -65,11 +58,9 @@ enum {
 gsvalue ibio_parse_gsbio_dir(struct gspos, struct gsbio_dir *dir);
 
 api_prim_executor ibio_handle_prim_file_stat;
-%}
 
 /* §section Channels */
 
-%Ch{
 struct ibio_channel {
     Lock lock;
     struct ibio_channel *forward;
@@ -99,11 +90,9 @@ struct ibio_channel_segment *ibio_channel_segment_lookup_forward(struct ibio_cha
 gsvalue *ibio_iptr_lookup_forward(gsvalue *);
 
 gsvalue *ibio_channel_segment_limit(struct ibio_channel_segment *);
-%}
 
 /* §section File I/O */
 
-%Ch{
 struct ibio_external_io;
 
 typedef int ibio_external_canread(struct ibio_external_io *, void *, void *);
@@ -145,11 +134,9 @@ int ibio_uxio_trace(struct gsstringbuilder *, struct ibio_uxio **);
 gsprim_handler ibio_prim_external_io_handle_rune, ibio_prim_external_io_handle_dir;
 
 api_prim_executor ibio_handle_prim_file_read_open;
-%}
 
 /* §section Input */
 
-%Ch{
 void ibio_check_acceptor_type(struct gspos, struct gsfile_symtable *);
 
 struct ibio_iport {
@@ -184,11 +171,9 @@ api_prim_executor ibio_handle_prim_read;
 
 gsubprim_handler ibio_prim_iptr_handle_iseof;
 gslprim_handler ibio_prim_iptr_handle_deref, ibio_prim_iptr_handle_next;
-%}
 
 /* §section Output */
 
-%Ch{
 struct ibio_oport {
     Lock lock;
     int active;
@@ -207,4 +192,3 @@ gsvalue ibio_oport_fdopen(int, char *, char *);
 api_prim_executor ibio_handle_prim_write;
 
 int ibio_write_threads_init(char *, char *);
-%}

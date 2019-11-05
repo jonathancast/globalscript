@@ -1,6 +1,5 @@
 /* §source.file Environment Variables & Command-Line Arguments */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -17,4 +16,3 @@ ibio_handle_prim_getargs(struct api_thread *thread, struct gseprim *eprim, struc
     *res = data->cmd_args;
     return api_st_success;
 }
-%}

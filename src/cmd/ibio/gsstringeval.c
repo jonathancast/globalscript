@@ -1,6 +1,5 @@
 /* §source.file Turning GS Strings into C Strings */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -102,4 +101,3 @@ ibio_gsstring_eval_evacuate(struct gsstringbuilder *err, struct ibio_gsstring_ev
 
     return 0;
 }
-%}

@@ -1,7 +1,5 @@
 /* §source.file Input */
 
-%C{
-
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -1193,5 +1191,3 @@ ibio_iport_read_buffer_evacuate(struct gsstringbuilder *err, struct ibio_iport *
 
     return 0;
 }
-
-%}

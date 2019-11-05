@@ -1,6 +1,5 @@
 /* §source.file External File I/O */
 
-%C{
 #include <u.h>
 #include <libc.h>
 #include <stdatomic.h>
@@ -278,4 +277,3 @@ ibio_external_io_trace(struct gsstringbuilder *err, struct ibio_external_io **pi
 
     return 0;
 }
-%}
