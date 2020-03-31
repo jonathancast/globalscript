@@ -18,7 +18,7 @@ static api_prim_blocking_gcevacuate ibio_file_read_open_blocking_gcevacuate;
 static api_prim_blocking_gccleanup ibio_file_read_open_blocking_gccleanup;
 
 enum api_prim_execution_state
-ibio_handle_prim_file_read_open(struct api_thread *thread, struct gseprim *gsopen, struct api_prim_blocking **pblocking, gsvalue *pv)
+ibio_handle_prim_file_read_open(struct api_thread *thread, struct gsapiprim *gsopen, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
     struct ibio_file_read_open_blocking *file_read_open_blocking;
 

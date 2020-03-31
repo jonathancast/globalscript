@@ -1191,12 +1191,12 @@ static
 gsvalue
 gsapiprimgc(struct gsstringbuilder *err, gsvalue v)
 {
-    struct gseprim *ep, *newep;
+    struct gsapiprim *ep, *newep;
     ulong sz;
     gsvalue gctemp;
     int i;
 
-    ep = (struct gseprim *)v;
+    ep = (struct gsapiprim *)v;
 
     if (ep->type == eprim_forward) return (gsvalue)ep->f.dest;
 

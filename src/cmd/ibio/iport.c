@@ -627,7 +627,7 @@ static api_prim_blocking_gcevacuate ibio_read_blocking_gcevacuate;
 static api_prim_blocking_gccleanup ibio_read_blocking_gccleanup;
 
 enum api_prim_execution_state
-ibio_handle_prim_read(struct api_thread *thread, struct gseprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
+ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
     gsvalue res;
     struct ibio_read_blocking *read_blocking;

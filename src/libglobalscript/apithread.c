@@ -444,10 +444,10 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 return 0;
         }
     } else if (gsisapiprim_block(block)) {
-        struct gseprim *eprim;
+        struct gsapiprim *eprim;
         struct api_prim_table *table;
 
-        eprim = (struct gseprim *)instr;
+        eprim = (struct gsapiprim *)instr;
         table = thread->api_prim_table;
         if (eprim->p.index < 0) {
             api_abend(thread, "%P: Unknown primitive", eprim->pos);
@@ -1192,7 +1192,7 @@ api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *
 
 enum
 api_prim_execution_state
-api_thread_handle_prim_unit(struct api_thread *thread, struct gseprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
+api_thread_handle_prim_unit(struct api_thread *thread, struct gsapiprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
     *res = eprim->p.arguments[0];
     return api_st_success;

@@ -397,7 +397,7 @@ struct gsconstr {
     };
 };
 
-struct gseprim {
+struct gsapiprim {
     struct gspos pos;
     enum {
         eprim_prim,
@@ -410,7 +410,7 @@ struct gseprim {
             gsvalue arguments[];
         } p;
         struct {
-            struct gseprim *dest;
+            struct gsapiprim *dest;
         } f;
     };
 };
@@ -627,7 +627,7 @@ struct api_prim_blocking {
 
 void *api_blocking_alloc(ulong, api_prim_blocking_gccopy *, api_prim_blocking_gcevacuate *, api_prim_blocking_gccleanup *);
 
-typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gseprim *, struct api_prim_blocking **, gsvalue *);
+typedef enum api_prim_execution_state (api_prim_executor)(struct api_thread *, struct gsapiprim *, struct api_prim_blocking **, gsvalue *);
 
 struct api_prim_table {
     int numprims;

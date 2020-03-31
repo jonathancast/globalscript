@@ -1027,7 +1027,7 @@ void
 ace_instr_alloc_unknown_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
-    struct gseprim *prim;
+    struct gsapiprim *prim;
 
     ip = st->ip;
 
@@ -1050,7 +1050,7 @@ void
 ace_instr_alloc_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
 {
     struct gsbc *ip;
-    struct gseprim *prim;
+    struct gsapiprim *prim;
     int j;
 
     ip = st->ip;

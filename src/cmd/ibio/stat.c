@@ -32,7 +32,7 @@ static struct ibio_file_stat_blocking *ibio_file_stat_blocking_alloc(void);
 /* ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ */
 
 enum api_prim_execution_state
-ibio_handle_prim_file_stat(struct api_thread *thread, struct gseprim *stat, struct api_prim_blocking **pblocking, gsvalue *pv)
+ibio_handle_prim_file_stat(struct api_thread *thread, struct gsapiprim *stat, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
     struct api_prim_blocking *blocking;
     struct ibio_file_stat_blocking *file_stat_blocking;

@@ -226,7 +226,7 @@ static struct ibio_oport_write_blocker *ibio_oport_write_blocker_alloc(void);
 static void *ibio_write_blocking_alloc(void);
 
 enum api_prim_execution_state
-ibio_handle_prim_write(struct api_thread *thread, struct gseprim *write, struct api_prim_blocking **pblocking, gsvalue *pv)
+ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struct api_prim_blocking **pblocking, gsvalue *pv)
 {
     struct ibio_write_blocking *write_blocking;
 
