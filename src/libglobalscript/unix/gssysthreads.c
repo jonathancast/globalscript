@@ -10,6 +10,7 @@
 #ifdef  __linux__
 #include <sys/mman.h>
 #include <sched.h>
+#include <sys/prctl.h>
 #endif
 
 #include <signal.h>
@@ -90,4 +91,28 @@ gsthread_pool_main(void *arg)
     unlock(&gs_allocator_lock);
 
     return 0;
+}
+
+#define MAX_PROCESS_NAME 17
+
+void
+gssetprocessname(char *fmt, ...)
+{
+#ifdef __linux__
+    va_list arg;
+    int len;
+    char name[MAX_PROCESS_NAME];
+
+    prctl(PR_GET_NAME, name, 0, 0, 0);
+    name[MAX_PROCESS_NAME-1] = 0;
+
+    len = strlen(name);
+    if (len < MAX_PROCESS_NAME - 1) name[len++] = ':';
+
+    va_start(arg, fmt);
+    vseprint(name + len, name + MAX_PROCESS_NAME, fmt, arg);
+    va_end(arg);
+
+    prctl(PR_SET_NAME, name, 0, 0, 0);
+#endif
 }

@@ -50,6 +50,7 @@ extern void lock(Lock*);
 extern void unlock(Lock*);
 
 int gscreate_thread_pool(void (*)(void *), void *, ulong);
+void gssetprocessname(char *, ...);
 
 /* §section Internal error-reporting stuff */
 

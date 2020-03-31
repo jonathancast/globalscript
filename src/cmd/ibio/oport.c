@@ -367,6 +367,8 @@ ibio_write_process_main(void *p)
 
     oport = args->oport;
 
+    gssetprocessname("oport[%d]", oport->fd);
+
     tid = -1;
     lock(&ibio_write_thread_queue->lock);
     {

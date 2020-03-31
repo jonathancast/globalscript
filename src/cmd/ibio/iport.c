@@ -199,6 +199,8 @@ ibio_read_thread_main(void *p)
     struct ibio_iport *iport;
     vlong total_time_reading, num_reads;
 
+    gssetprocessname("iport");
+
     any_runnable = have_clients = have_threads = 1;
 
     total_time_reading = num_reads = 0;

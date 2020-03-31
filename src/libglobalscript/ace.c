@@ -99,6 +99,8 @@ ace_thread_pool_main(void *p)
     vlong outer_loops, outer_loops_without_threads, total_thread_load, num_timeslots, num_completed_timeslots, num_blocked_timeslots, num_finished_timeslots, num_instrs;
     vlong start_time, end_time, finding_thread_time, finding_thread_start_time, instr_time, instr_start_time, waiting_for_thread_time, waiting_for_thread_start_time;
 
+    gssetprocessname("ace");
+
     outer_loops = outer_loops_without_threads = total_thread_load = stats.numthreads_total = num_instrs = stats.num_blocked = stats.num_blocked_threads = num_timeslots = num_completed_timeslots = num_blocked_timeslots = num_finished_timeslots = stats.num_blocks_on_function = stats.num_blocks_on_new_stack = stats.num_blocks_on_existing_thread = 0;
     start_time = nsec();
     finding_thread_time = instr_time = stats.gc_time = stats.checking_thread_time = waiting_for_thread_time = waiting_for_thread_start_time = stats.time_lprim_blocked = stats.time_thunk_blocked = 0;
