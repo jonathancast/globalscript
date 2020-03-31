@@ -280,9 +280,9 @@ api_handle_gc_failed(struct gsstringbuilder *err)
     for (i = 0; i < API_NUMTHREADS; i++) {
         thread = &api_thread_queue->threads[i];
         if (thread->client_data) thread->api_thread_table->gc_failure_cleanup(&thread->client_data);
-        if (thread->eprim_blocking) {
-            if (thread->eprim_blocking->forward) thread->eprim_blocking = thread->eprim_blocking->forward;
-            thread->eprim_blocking->gccleanup(thread->eprim_blocking);
+        if (thread->api_prim_blocking) {
+            if (thread->api_prim_blocking->forward) thread->api_prim_blocking = thread->api_prim_blocking->forward;
+            thread->api_prim_blocking->gccleanup(thread->api_prim_blocking);
         }
     }
 
@@ -341,7 +341,7 @@ api_gc_copy_thread(struct gsstringbuilder *err, struct api_thread *dest_thread, 
     dest_thread->client_data = src_thread->client_data;
     dest_thread->status = src_thread->status;
     dest_thread->code = src_thread->code;
-    dest_thread->eprim_blocking = src_thread->eprim_blocking;
+    dest_thread->api_prim_blocking = src_thread->api_prim_blocking;
     dest_thread->forward = 0;
 
     src_thread->forward = dest_thread;
@@ -365,15 +365,15 @@ api_gc_evacuate_thread(struct gsstringbuilder *err, struct api_thread *thread)
 
     if (thread->code && api_gc_trace_code_segment(err, &thread->code) < 0) return -1;
 
-    if (thread->eprim_blocking && gs_sys_block_in_gc_from_space(thread->eprim_blocking)) {
-        if (thread->eprim_blocking->forward) {
-            thread->eprim_blocking = thread->eprim_blocking->forward;
+    if (thread->api_prim_blocking && gs_sys_block_in_gc_from_space(thread->api_prim_blocking)) {
+        if (thread->api_prim_blocking->forward) {
+            thread->api_prim_blocking = thread->api_prim_blocking->forward;
         } else {
             struct api_prim_blocking *newblocking;
 
-            if (!(newblocking = thread->eprim_blocking->gccopy(err, thread->eprim_blocking))) return -1;
-            thread->eprim_blocking = thread->eprim_blocking->forward = newblocking;
-            if (thread->eprim_blocking->gcevacuate(err, newblocking) < 0) return -1;
+            if (!(newblocking = thread->api_prim_blocking->gccopy(err, thread->api_prim_blocking))) return -1;
+            thread->api_prim_blocking = thread->api_prim_blocking->forward = newblocking;
+            if (thread->api_prim_blocking->gcevacuate(err, newblocking) < 0) return -1;
         }
     }
 
@@ -459,12 +459,12 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
             enum api_prim_execution_state st;
             gsvalue res;
 
-            st = table->execs[eprim->p.index](thread, eprim, &thread->eprim_blocking, &res);
+            st = table->execs[eprim->p.index](thread, eprim, &thread->api_prim_blocking, &res);
             switch (st) {
                 case api_st_success:
                     api_update_promise(thread->code->instrs[thread->code->ip].presult, res);
                     thread->code->ip++;
-                    thread->eprim_blocking = 0;
+                    thread->api_prim_blocking = 0;
                     if (thread->code->ip >= thread->code->size)
                         api_done(thread)
                     ;
@@ -835,7 +835,7 @@ have_thread:
     thread->status = 0;
 
     thread->code = api_alloc_code_segment(pos, thread, entry);
-    thread->eprim_blocking = 0;
+    thread->api_prim_blocking = 0;
 
     return thread;
 }

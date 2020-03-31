@@ -16,7 +16,7 @@ struct api_thread {
     void *client_data;
     struct gsstringbuilder *status;
     struct api_code_segment *code;
-    struct api_prim_blocking *eprim_blocking;
+    struct api_prim_blocking *api_prim_blocking;
     struct api_thread *forward;
 };
 
