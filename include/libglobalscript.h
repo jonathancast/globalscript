@@ -400,8 +400,8 @@ struct gsconstr {
 struct gsapiprim {
     struct gspos pos;
     enum {
-        eprim_prim,
-        eprim_forward,
+        apiprim_prim,
+        apiprim_forward,
     } type;
     union {
         struct {

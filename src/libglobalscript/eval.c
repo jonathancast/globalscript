@@ -1198,14 +1198,14 @@ gsapiprimgc(struct gsstringbuilder *err, gsvalue v)
 
     ep = (struct gsapiprim *)v;
 
-    if (ep->type == eprim_forward) return (gsvalue)ep->f.dest;
+    if (ep->type == apiprim_forward) return (gsvalue)ep->f.dest;
 
     sz = sizeof(*newep) + ep->p.numargs * sizeof(gsvalue);
     newep = gsreserveapiprims(sz);
 
     memcpy(newep, ep, sz);
 
-    ep->type = eprim_forward;
+    ep->type = apiprim_forward;
     ep->f.dest = newep;
 
     if (gs_gc_trace_pos(err, &newep->pos) < 0) return 0;
