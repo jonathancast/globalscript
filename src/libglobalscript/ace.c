@@ -1062,7 +1062,7 @@ ace_instr_alloc_api_prim(struct ace_thread *thread, struct ace_eval_state *st)
     prim->p.index = ACE_IMPPRIM_INDEX(ip);
     for (j = 0; j < ACE_IMPPRIM_NUMARGS(ip); j++) {
         if (ACE_IMPPRIM_ARG(ip, j) >= st->nregs) {
-            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".eprim argument too large");
+            ace_thread_unimpl(thread, __FILE__, __LINE__, ip->pos, ".impprim argument too large");
             return;
         }
         prim->p.arguments[j] = st->regs[ACE_IMPPRIM_ARG(ip, j)];
