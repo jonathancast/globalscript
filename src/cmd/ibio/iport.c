@@ -343,8 +343,8 @@ ibio_read_thread_main(void *p)
                                     }
                                 } else if (iport->nextseg->next) {
                                     struct ibio_channel_segment *nextseg = iport->nextseg->next;
-                                    iport->nextsym = nextseg->items;
                                     unlock(&iport->nextseg->lock);
+                                    iport->nextsym = nextseg->items;
                                     iport->nextseg = nextseg;
 
                                     iport->reading = eofk;
