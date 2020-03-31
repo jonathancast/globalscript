@@ -327,7 +327,7 @@ ibio_read_thread_main(void *p)
                                 iport->nextseg = ibio_channel_segment_containing(iport->nextsym);
 
                                 if (iport->nextsym < iport->nextseg->extent) {
-                                    iport->reading = gsapply(constr->pos, constr->a.arguments[0], *iport->nextsym);
+                                    iport->reading = gsapply(constr->pos, symk, *iport->nextsym);
                                     if (iport->nextsym + 1 < iport->nextseg->extent) {
                                         ibio_shutdown_iport_on_read_symbol_unimpl(__FILE__, __LINE__, constr->pos, iport, iport->nextseg, iport->nextsym, "ibio_read_process_main: symbol.bind: can advance within segment");
                                         active = runnable = 0;
