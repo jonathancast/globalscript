@@ -1192,9 +1192,9 @@ api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *
 
 enum
 api_prim_execution_state
-api_thread_handle_prim_unit(struct api_thread *thread, struct gsapiprim *eprim, struct api_prim_blocking **pblocking, gsvalue *res)
+api_thread_handle_prim_unit(struct api_thread *thread, struct gsapiprim *apiprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
-    *res = eprim->p.arguments[0];
+    *res = apiprim->p.arguments[0];
     return api_st_success;
 }
 
