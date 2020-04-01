@@ -392,8 +392,7 @@ api_at_termination(api_termination_callback *cb)
 }
 
 /* Move before §ccode{} §emph{only once the GC patch is done!} */
-struct
-api_thread *
+struct api_thread *
 api_thread_gc_forward(struct api_thread *thread)
 {
     return thread->forward ? thread->forward : thread;
@@ -1190,8 +1189,7 @@ api_thread_post_unimpl(struct api_thread *thread, char *file, int lineno, char *
 
 /* §section API primitive implementations */
 
-enum
-api_prim_execution_state
+enum api_prim_execution_state
 api_thread_handle_prim_unit(struct api_thread *thread, struct gsapiprim *apiprim, struct api_prim_blocking **pblocking, gsvalue *res)
 {
     *res = apiprim->p.arguments[0];
