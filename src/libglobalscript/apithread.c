@@ -53,7 +53,7 @@ static void api_thread_pool_shutdown(struct api_thread_stats *);
 
 /* Note: §c{apisetupmainthread} §emph{never returns; it calls §c{exits} */
 void
-apisetupmainthread(struct gspos pos, struct api_thread_table *api_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
+apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_table, void *api_main_thread_data, struct api_prim_table *api_prim_table, gsvalue entry)
 {
     struct api_thread *mainthread, *thread;
 
@@ -68,7 +68,7 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_thread_table, 
     api_thread_queue = gs_sys_global_block_suballoc(&api_thread_queue_info, sizeof(*api_thread_queue));
     memset(api_thread_queue, 0, sizeof(*api_thread_queue));
 
-    mainthread = api_add_thread(pos, api_thread_table, api_main_thread_data, api_prim_table, entry);
+    mainthread = api_add_thread(pos, api_main_thread_table, api_main_thread_data, api_prim_table, entry);
     mainthread->ismain = 1;
 
     api_release_thread(mainthread);
