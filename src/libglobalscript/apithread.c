@@ -28,6 +28,15 @@ static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
     },
 };
 
+/* Schedule thread to be currently run if possible.
+
+  Returns the argument if possible or 0 otherwise.
+
+  Returns the given thread only if it's in a state where the main loop can do something with it to make progress.
+
+  If it returns a thread, that thread has already been locked.
+  Otherwise, the input thread is locked, then released.
+*/
 static struct api_thread *api_try_schedule_thread(struct api_thread *);
 
 /* §section Main loop */
@@ -127,6 +136,9 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
 
         for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
             thread = 0;
+            /* TODO: I'm not sure if this inner loop is necessary.
+               The only effect of it is to reduce the number of times we take the thread queue lock AFAICS.
+            */
             api_take_thread_queue();
             for (; threadnum < API_NUMTHREADS && !thread; threadnum++) {
                 thread = api_try_schedule_thread(&api_thread_queue->threads[threadnum]);
