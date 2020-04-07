@@ -132,6 +132,9 @@ test-gsi.$O: gsinputfile.h gstypealloc.h
 $O.test-gsi:	$TEST_GSI_OFILES $GLOBALSCRIPT/lib/$LIB
 	$LD -o $target $prereq $LDFLAGS
 
+mdl:
+	$HSGLOBALSCRIPT/bin/mdlc . $SYSTEM
+
 %.$O:	%.c
 	$CC $CFLAGS -o $target $stem.c
 
