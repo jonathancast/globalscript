@@ -179,7 +179,7 @@ gsaddir_recursive(char *filename, char *relname, struct gsfile_symtable *symtabl
                     (**ppend)->file = file;
                     (**ppend)->next = 0;
                     *ppend = &(**ppend)->next;
-                } 
+                }
                 continue;
             }
             if (!strcmp(dir->d.name, "mkfile")) continue;
