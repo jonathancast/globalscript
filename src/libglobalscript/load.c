@@ -1762,7 +1762,7 @@ gsparse_bind_op(uint features, struct gsparse_input_pos *pos, struct gsparsedlin
             gsfatal("%s:%d: Missing sub-op on .bind", pos->real_filename, pos->real_lineno)
         ;
         if (!gsparse_thunk_alloc_op(features, pos, parsedline, 1, fields, n))
-            gsfatal("%s:%d: Un-recognized sub-op %y on .body", pos->real_filename, pos->real_lineno, parsedline->arguments[0])
+            gsfatal("%s:%d: Un-recognized sub-op %y on .bind", pos->real_filename, pos->real_lineno, parsedline->arguments[0])
         ;
     } else {
         return 0;
