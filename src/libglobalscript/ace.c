@@ -166,6 +166,7 @@ ace_thread_pool_main(void *p)
             unlock(&ace_thread_queue->lock);
         } else {
             unlock(&ace_thread_queue->lock);
+            sleep(1);
             if (gsflag_stat_collection && !waiting_for_thread_start_time) waiting_for_thread_start_time = nsec();
             outer_loops_without_threads++;
         }
