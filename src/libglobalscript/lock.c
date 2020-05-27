@@ -22,11 +22,11 @@ lock(Lock *lk)
     /* now nice and slow */
     for (i = 0; i < 1000; i++) {
         if (!atomic_flag_test_and_set(&lk->val)) return;
-        sleep(100);
+        sleep(100); /* Plan 9! milliseconds */
     }
 
     /* take your time */
-    while (atomic_flag_test_and_set(&lk->val)) sleep(1000);
+    while (atomic_flag_test_and_set(&lk->val)) sleep(1000); /* Plan 9! milliseconds */
 }
 
 void
