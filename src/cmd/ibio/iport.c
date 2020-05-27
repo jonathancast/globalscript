@@ -1173,12 +1173,10 @@ static
 int
 ibio_iport_read_buffer_evacuate(struct gsstringbuilder *err, struct ibio_iport *iport)
 {
-    void *oldbuf, *oldbufstart, *oldbufend, *oldbufextent;
+    void *oldbufstart, *oldbufend;
 
-    oldbuf = iport->buf;
     oldbufstart = iport->bufstart;
     oldbufend = iport->bufend;
-    oldbufextent = iport->bufextent;
 
     ibio_setup_iport_read_buffer(iport);
 
