@@ -1,15 +1,17 @@
 #define API_NUMTHREADS 0x100
 
+enum api_thread_status {
+    api_thread_st_unused,
+    api_thread_st_active,
+    api_thread_st_terminating_on_done,
+    api_thread_st_terminating_on_abend,
+};
+
 struct api_thread {
     struct Lock lock;
     int ismain;
     vlong start_time, prog_term_time;
-    enum {
-        api_thread_st_unused,
-        api_thread_st_active,
-        api_thread_st_terminating_on_done,
-        api_thread_st_terminating_on_abend,
-    } state;
+    enum api_thread_status state;
     struct api_thread_table *api_thread_table;
     struct api_prim_table *api_prim_table;
     void *client_data;
