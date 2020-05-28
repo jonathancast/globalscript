@@ -122,28 +122,23 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
 
         if (gs_sys_memory_exhausted()) {
             gswarning("%s:%d: About to terminate on out of memory (%dMB used)", __FILE__, __LINE__, gs_sys_memory_allocated_size() / 0x400 / 0x400);
-            api_take_thread_queue();
             for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
+                api_take_thread_queue();
                 thread = &api_thread_queue->threads[threadnum];
+                api_release_thread_queue();
                 api_take_thread(thread);
                 if (thread->state == api_thread_st_active)
                     api_abend(thread, UNIMPL("Terminate on out of memory"))
                 ;
                 api_release_thread(thread);
             }
-            api_release_thread_queue();
         }
 
         for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
-            thread = 0;
-            /* TODO: I'm not sure if this inner loop is necessary.
-               The only effect of it is to reduce the number of times we take the thread queue lock AFAICS.
-            */
             api_take_thread_queue();
-            for (; threadnum < API_NUMTHREADS && !thread; threadnum++) {
-                thread = api_try_schedule_thread(&api_thread_queue->threads[threadnum]);
-            }
+            thread = api_try_schedule_thread(&api_thread_queue->threads[threadnum]);
             api_release_thread_queue();
+
             if (thread) {
                 stats.loops++;
 
@@ -298,14 +293,14 @@ api_handle_gc_failed(struct gsstringbuilder *err)
         }
     }
 
-    api_take_thread_queue();
     for (i = 0; i < API_NUMTHREADS; i++) {
+        api_take_thread_queue();
         thread = &api_thread_queue->threads[i];
+        api_release_thread_queue();
         api_take_thread(thread);
         if (thread->state == api_thread_st_active) api_abend(thread, "%s", err->start);
         api_release_thread(thread);
     }
-    api_release_thread_queue();
 
     gs_sys_gc_failed(err->start);
 }
@@ -815,23 +810,23 @@ api_add_thread(struct gspos pos, struct api_thread_table *api_thread_table, void
     int i;
     struct api_thread *thread;
 
-    api_take_thread_queue();
-
     thread = 0;
     for (i = 0; i < API_NUMTHREADS; i++) {
-        api_take_thread(&api_thread_queue->threads[i]);
+        api_take_thread_queue();
+        thread = &api_thread_queue->threads[i];
+        api_release_thread_queue();
+        api_take_thread(thread);
         if (api_thread_queue->threads[i].state == api_thread_st_unused) {
             thread = &api_thread_queue->threads[i];
             api_thread_queue->numthreads++;
             goto have_thread;
         } else {
-            api_release_thread(&api_thread_queue->threads[i]);
+            api_release_thread(thread);
         }
     }
     gsfatal(UNIMPL("thread queue overflow"));
 
 have_thread:
-    api_release_thread_queue();
 
     if (gsflag_stat_collection) {
         thread->start_time = nsec();
@@ -1073,9 +1068,10 @@ api_try_schedule_thread(struct api_thread *thread)
         thread->state == api_thread_st_active
         || thread->state == api_thread_st_terminating_on_done
         || thread->state == api_thread_st_terminating_on_abend
-    )
-        return thread
-    ; else {
+    ) {
+        api_release_thread(thread);
+        return thread;
+    } else {
         api_release_thread(thread);
         return 0;
     }
