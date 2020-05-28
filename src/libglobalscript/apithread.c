@@ -28,17 +28,6 @@ static struct gs_sys_global_block_suballoc_info api_thread_queue_info = {
     },
 };
 
-/* Schedule thread to be currently run if possible.
-
-  Returns the argument if possible or 0 otherwise.
-
-  Returns the given thread only if it's in a state where the main loop can do something with it to make progress.
-
-  If it returns a thread, that thread has already been locked.
-  Otherwise, the input thread is locked, then released.
-*/
-static struct api_thread *api_try_schedule_thread(struct api_thread *);
-
 /* §section Main loop */
 
 static int api_exec_instr(struct api_thread *, gsvalue);
@@ -136,120 +125,123 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
 
         for (threadnum = 0; threadnum < API_NUMTHREADS; threadnum++) {
             api_take_thread_queue();
-            thread = api_try_schedule_thread(&api_thread_queue->threads[threadnum]);
+            thread = &api_thread_queue->threads[threadnum];
             api_release_thread_queue();
 
-            if (thread) {
-                stats.loops++;
+            api_take_thread(thread);
 
-                switch (thread->state) {
-                    case api_thread_st_active: {
-                        gstypecode st;
-                        gsvalue instr;
-                        struct api_code_segment *code;
+            switch (thread->state) {
+                case api_thread_st_unused: break;
+                case api_thread_st_active: {
+                    gstypecode st;
+                    gsvalue instr;
+                    struct api_code_segment *code;
 
-                        code = thread->code;
+                    stats.loops++;
 
-                        instr = code->instrs[code->ip].instr;
-                        st = GS_SLOW_EVALUATE(code->instrs[code->ip].pos, instr);
+                    code = thread->code;
 
-                        switch (st) {
-                            case gstywhnf:
-                                stats.instrs++;
-                                if (api_exec_instr(thread, instr) > 0)
-                                    suspended_runnable_thread = 1
-                                ;
-                                break;
-                            case gstyerr:
-                            case gstyimplerr:
-                                api_exec_err(thread, instr, st);
-                                break;
-                            case gstystack:
-                                stats.loops_waiting++;
-                                break;
-                            case gstyindir:
-                                code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
-                                suspended_runnable_thread = 1;
-                                break;
-                            case gstyenosys:
-                                api_abend(thread, "Un-implemented operation: %r");
-                                break;
-                            default:
-                                api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
-                                break;
-                        }
-                        break;
+                    instr = code->instrs[code->ip].instr;
+                    st = GS_SLOW_EVALUATE(code->instrs[code->ip].pos, instr);
+
+                    switch (st) {
+                        case gstywhnf:
+                            stats.instrs++;
+                            if (api_exec_instr(thread, instr) > 0)
+                                suspended_runnable_thread = 1
+                            ;
+                            break;
+                        case gstyerr:
+                        case gstyimplerr:
+                            api_exec_err(thread, instr, st);
+                            break;
+                        case gstystack:
+                            stats.loops_waiting++;
+                            break;
+                        case gstyindir:
+                            code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
+                            suspended_runnable_thread = 1;
+                            break;
+                        case gstyenosys:
+                            api_abend(thread, "Un-implemented operation: %r");
+                            break;
+                        default:
+                            api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
+                            break;
                     }
-                    case api_thread_st_terminating_on_done:
-                    case api_thread_st_terminating_on_abend: {
-                        enum api_prim_execution_state st;
-                        int thread_abended = thread->state == api_thread_st_terminating_on_abend;
+                    break;
+                }
+                case api_thread_st_terminating_on_done:
+                case api_thread_st_terminating_on_abend: {
+                    enum api_prim_execution_state st;
+                    int thread_abended = thread->state == api_thread_st_terminating_on_abend;
 
-                        if (gsflag_stat_collection && !thread->prog_term_time) {
-                            thread->prog_term_time = nsec();
-                            stats.thread_lifetime += thread->prog_term_time - thread->start_time;
-                        }
-                        st = thread->api_thread_table->thread_term_status(thread);
-                        switch (st) {
-                            case api_st_success: {
-                                int have_other_threads;
+                    stats.loops++;
 
-                                api_take_thread_queue();
-                                api_thread_queue->numthreads--;
-                                have_other_threads = api_thread_queue->numthreads > 0;
-                                api_release_thread_queue();
-                                thread->state = api_thread_st_unused;
+                    if (gsflag_stat_collection && !thread->prog_term_time) {
+                        thread->prog_term_time = nsec();
+                        stats.thread_lifetime += thread->prog_term_time - thread->start_time;
+                    }
+                    st = thread->api_thread_table->thread_term_status(thread);
+                    switch (st) {
+                        case api_st_success: {
+                            int have_other_threads;
 
-                                if (thread->ismain) {
-                                    if (have_other_threads) {
-                                        api_thread_pool_shutdown(&stats);
+                            api_take_thread_queue();
+                            api_thread_queue->numthreads--;
+                            have_other_threads = api_thread_queue->numthreads > 0;
+                            api_release_thread_queue();
+                            thread->state = api_thread_st_unused;
+
+                            if (thread->ismain) {
+                                if (have_other_threads) {
+                                    api_thread_pool_shutdown(&stats);
+                                    gs_sys_num_procs--;
+                                    gsfatal(UNIMPL("Thread is main thread and there are background threads --- fork into background.  Do not release ACE or run shutdown hooks yet."));
+                                } else {
+                                    api_thread_pool_shutdown(&stats);
+                                    if (thread_abended) {
+                                        fprint(2, "%s\n", thread->status->start);
                                         gs_sys_num_procs--;
-                                        gsfatal(UNIMPL("Thread is main thread and there are background threads --- fork into background.  Do not release ACE or run shutdown hooks yet."));
+                                        exits(thread->status->start);
                                     } else {
-                                        api_thread_pool_shutdown(&stats);
-                                        if (thread_abended) {
-                                            fprint(2, "%s\n", thread->status->start);
-                                            gs_sys_num_procs--;
-                                            exits(thread->status->start);
-                                        } else {
-                                            gs_sys_num_procs--;
-                                            exits("");
-                                        }
-                                    }
-                                } else { /* Thread is background thread */
-                                    if (have_other_threads) {
-                                        api_thread_pool_shutdown(&stats);
                                         gs_sys_num_procs--;
-                                        gsfatal(UNIMPL("Thread is background thread and there are other threads --- shut down thread and keep going.  Do not release ACE or run shutdown hooks yet."));
-                                    } else {
-                                        api_thread_pool_shutdown(&stats);
-                                        gs_sys_num_procs--;
-                                        gsfatal(UNIMPL("Thread is last background thread --- shut down.  Always exits(\"\") in this case; exit status doesn't matter anyway. Complication: Need to run the stuff at the bottom of this thread, too."));
+                                        exits("");
                                     }
                                 }
-                                break;
+                            } else { /* Thread is background thread */
+                                if (have_other_threads) {
+                                    api_thread_pool_shutdown(&stats);
+                                    gs_sys_num_procs--;
+                                    gsfatal(UNIMPL("Thread is background thread and there are other threads --- shut down thread and keep going.  Do not release ACE or run shutdown hooks yet."));
+                                } else {
+                                    api_thread_pool_shutdown(&stats);
+                                    gs_sys_num_procs--;
+                                    gsfatal(UNIMPL("Thread is last background thread --- shut down.  Always exits(\"\") in this case; exit status doesn't matter anyway. Complication: Need to run the stuff at the bottom of this thread, too."));
+                                }
                             }
-                            case api_st_blocked:
-                                break;
-                            default:
-                                thread->state = api_thread_st_unused;
-                                api_thread_pool_shutdown(&stats);
-                                gs_sys_num_procs--;
-                                gsfatal(UNIMPL("Handle state %d from thread terminator next"), st);
-                                break;
+                            break;
                         }
-                        break;
+                        case api_st_blocked:
+                            break;
+                        default:
+                            thread->state = api_thread_st_unused;
+                            api_thread_pool_shutdown(&stats);
+                            gs_sys_num_procs--;
+                            gsfatal(UNIMPL("Handle state %d from thread terminator next"), st);
+                            break;
                     }
-                    default: {
-                        thread->state = api_thread_st_unused;
-                        api_thread_pool_shutdown(&stats);
-                        gs_sys_num_procs--;
-                        gsfatal(UNIMPL("Handle thread state %d next"), thread->state);
-                        break;
-                    }
+                    break;
                 }
-                api_release_thread(thread);
+                default: {
+                    thread->state = api_thread_st_unused;
+                    api_thread_pool_shutdown(&stats);
+                    gs_sys_num_procs--;
+                    gsfatal(UNIMPL("Handle thread state %d next"), thread->state);
+                    break;
+                }
             }
+            api_release_thread(thread);
         }
         if (!suspended_runnable_thread)
             if (sleep(1) < 0)
@@ -1058,24 +1050,6 @@ api_gc_trace_promise(struct gsstringbuilder *err, struct api_promise **ppromise)
 }
 
 /* §section Helper Functions */
-
-static
-struct api_thread *
-api_try_schedule_thread(struct api_thread *thread)
-{
-    api_take_thread(thread);
-    if (
-        thread->state == api_thread_st_active
-        || thread->state == api_thread_st_terminating_on_done
-        || thread->state == api_thread_st_terminating_on_abend
-    ) {
-        api_release_thread(thread);
-        return thread;
-    } else {
-        api_release_thread(thread);
-        return 0;
-    }
-}
 
 static
 void
