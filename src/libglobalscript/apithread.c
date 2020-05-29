@@ -130,7 +130,8 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
 
             api_take_thread(thread);
             switch (thread->state) {
-                case api_thread_st_unused: {
+                case api_thread_st_unused:
+                case api_thread_st_running: {
                     api_release_thread(thread);
                     break;
                 }
@@ -138,6 +139,14 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                     gstypecode st;
                     gsvalue instr;
                     struct api_code_segment *code;
+
+                    /* Don't run arbitrary code while holding a lock!
+                       §emph{But} we want to prevent this thread from being scheduled by another CPU while it's unlocked
+                    */
+                    thread->state = api_thread_st_running;
+                    api_release_thread(thread);
+
+                    api_take_thread(thread);
 
                     stats.loops++;
 
@@ -159,10 +168,12 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                             break;
                         case gstystack:
                             stats.loops_waiting++;
+                            thread->state = api_thread_st_active;
                             break;
                         case gstyindir:
                             code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
                             suspended_runnable_thread = 1;
+                            thread->state = api_thread_st_active;
                             break;
                         case gstyenosys:
                             api_abend(thread, "Un-implemented operation: %r");
@@ -437,6 +448,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 switch (cl->cl.code->tag) {
                     case gsbc_impprog:
                         api_unpack_block_statement(thread, cl);
+                        thread->state = api_thread_st_active;
                         return 1;
                     default:
                         api_abend(thread, UNIMPL("API instruction execution (%d closures)"), cl->cl.code->tag);
@@ -471,6 +483,8 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     thread->api_prim_blocking = 0;
                     if (thread->code->ip >= thread->code->size)
                         api_done(thread)
+                    ; else
+                        thread->state = api_thread_st_active
                     ;
                     return 1;
                 case api_st_error:
@@ -478,6 +492,7 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     return 0;
                 case api_st_blocked:
                     /* Loop and try again next time */
+                    thread->state = api_thread_st_active;
                     return 0;
                 default:
                     api_abend(thread, UNIMPL("API instruction execution with state %d"), st);

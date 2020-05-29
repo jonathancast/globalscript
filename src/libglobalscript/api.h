@@ -3,6 +3,7 @@
 enum api_thread_status {
     api_thread_st_unused,
     api_thread_st_active,
+    api_thread_st_running,
     api_thread_st_terminating_on_done,
     api_thread_st_terminating_on_abend,
 };
