@@ -462,7 +462,6 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     case gsbc_impprog:
                         api_take_thread(thread);
                         api_unpack_block_statement(thread, cl);
-                        thread->state = api_thread_st_active;
                         api_release_thread(thread);
                         return 1;
                     default:
@@ -839,6 +838,7 @@ got_statements:
         thread->code->instrs[thread->code->ip].pos = poss[nstatements];
         thread->code->instrs[thread->code->ip].presult = lhss[nstatements];
     }
+    thread->state = api_thread_st_active;
 }
 
 /* §section Adding threads */
