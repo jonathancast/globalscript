@@ -129,9 +129,11 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
             api_release_thread_queue();
 
             api_take_thread(thread);
-
             switch (thread->state) {
-                case api_thread_st_unused: break;
+                case api_thread_st_unused: {
+                    api_release_thread(thread);
+                    break;
+                }
                 case api_thread_st_active: {
                     gstypecode st;
                     gsvalue instr;
@@ -169,12 +171,15 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                             api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
                             break;
                     }
+                    api_release_thread(thread);
                     break;
                 }
                 case api_thread_st_terminating_on_done:
                 case api_thread_st_terminating_on_abend: {
                     enum api_prim_execution_state st;
-                    int thread_abended = thread->state == api_thread_st_terminating_on_abend;
+                    int thread_abended;
+
+                    thread_abended = thread->state == api_thread_st_terminating_on_abend;
 
                     stats.loops++;
 
@@ -231,6 +236,7 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                             gsfatal(UNIMPL("Handle state %d from thread terminator next"), st);
                             break;
                     }
+                    api_release_thread(thread);
                     break;
                 }
                 default: {
@@ -238,10 +244,10 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                     api_thread_pool_shutdown(&stats);
                     gs_sys_num_procs--;
                     gsfatal(UNIMPL("Handle thread state %d next"), thread->state);
+                    api_release_thread(thread);
                     break;
                 }
             }
-            api_release_thread(thread);
         }
         if (!suspended_runnable_thread)
             if (sleep(1) < 0)
