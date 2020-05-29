@@ -137,8 +137,8 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                 }
                 case api_thread_st_active: {
                     gstypecode st;
+                    struct gspos pos;
                     gsvalue instr;
-                    struct api_code_segment *code;
 
                     /* Don't run arbitrary code while holding a lock!
                        §emph{But} we want to prevent this thread from being scheduled by another CPU while it's unlocked
@@ -146,43 +146,55 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                     thread->state = api_thread_st_running;
                     api_release_thread(thread);
 
-                    api_take_thread(thread);
-
                     stats.loops++;
 
-                    code = thread->code;
+                    api_take_thread(thread);
 
-                    instr = code->instrs[code->ip].instr;
-                    st = GS_SLOW_EVALUATE(code->instrs[code->ip].pos, instr);
+                    pos = thread->code->instrs[thread->code->ip].pos;
+                    instr = thread->code->instrs[thread->code->ip].instr;
+                    api_release_thread(thread);
+
+                    st = GS_SLOW_EVALUATE(pos, instr);
 
                     switch (st) {
                         case gstywhnf:
                             stats.instrs++;
+                            api_take_thread(thread);
                             if (api_exec_instr(thread, instr) > 0)
                                 suspended_runnable_thread = 1
                             ;
+                            api_release_thread(thread);
                             break;
                         case gstyerr:
                         case gstyimplerr:
+                            api_take_thread(thread);
                             api_exec_err(thread, instr, st);
+                            api_release_thread(thread);
                             break;
                         case gstystack:
                             stats.loops_waiting++;
+                            api_take_thread(thread);
                             thread->state = api_thread_st_active;
+                            api_release_thread(thread);
                             break;
                         case gstyindir:
-                            code->instrs[code->ip].instr = GS_REMOVE_INDIRECTION(code->instrs[code->ip].pos, instr);
+                            api_take_thread(thread);
+                            thread->code->instrs[thread->code->ip].instr = GS_REMOVE_INDIRECTION(pos, instr);
                             suspended_runnable_thread = 1;
                             thread->state = api_thread_st_active;
+                            api_release_thread(thread);
                             break;
                         case gstyenosys:
+                            api_take_thread(thread);
                             api_abend(thread, "Un-implemented operation: %r");
+                            api_release_thread(thread);
                             break;
                         default:
+                            api_take_thread(thread);
                             api_abend_unimpl(thread, __FILE__, __LINE__, "API thread advancement (state = %d)", st);
+                            api_release_thread(thread);
                             break;
                     }
-                    api_release_thread(thread);
                     break;
                 }
                 case api_thread_st_terminating_on_done:
