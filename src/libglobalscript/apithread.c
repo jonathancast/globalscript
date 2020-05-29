@@ -159,11 +159,10 @@ apisetupmainthread(struct gspos pos, struct api_thread_table *api_main_thread_ta
                     switch (st) {
                         case gstywhnf:
                             stats.instrs++;
-                            api_take_thread(thread);
+
                             if (api_exec_instr(thread, instr) > 0)
                                 suspended_runnable_thread = 1
                             ;
-                            api_release_thread(thread);
                             break;
                         case gstyerr:
                         case gstyimplerr:
@@ -446,7 +445,9 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
 
         p = (struct gsimplementation_failure *)instr;
         gsimplementation_failure_format(buf, buf + sizeof(buf), p);
+        api_take_thread(thread);
         api_abend(thread, "%s", buf);
+        api_release_thread(thread);
         return 0;
     } else if (gsisheap_block(block)) {
         struct gsheap_item *hp;
@@ -459,16 +460,22 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                 cl = (struct gsclosure *)hp;
                 switch (cl->cl.code->tag) {
                     case gsbc_impprog:
+                        api_take_thread(thread);
                         api_unpack_block_statement(thread, cl);
                         thread->state = api_thread_st_active;
+                        api_release_thread(thread);
                         return 1;
                     default:
+                        api_take_thread(thread);
                         api_abend(thread, UNIMPL("API instruction execution (%d closures)"), cl->cl.code->tag);
+                        api_release_thread(thread);
                         return 0;
                 }
             }
             default:
+                api_take_thread(thread);
                 api_abend(thread, UNIMPL("API instruction execution (%d exprs)"), hp->type);
+                api_release_thread(thread);
                 return 0;
         }
     } else if (gsisapiprim_block(block)) {
@@ -476,12 +483,15 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         struct api_prim_table *table;
 
         apiprim = (struct gsapiprim *)instr;
+        api_take_thread(thread);
         table = thread->api_prim_table;
         if (apiprim->p.index < 0) {
             api_abend(thread, "%P: Unknown primitive", apiprim->pos);
+            api_release_thread(thread);
             return 0;
         } else if (apiprim->p.index >= table->numprims) {
             api_abend(thread, "%P: Primitive out of bounds", apiprim->pos);
+            api_release_thread(thread);
             return 0;
         } else {
             enum api_prim_execution_state st;
@@ -498,21 +508,27 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     ; else
                         thread->state = api_thread_st_active
                     ;
+                    api_release_thread(thread);
                     return 1;
                 case api_st_error:
                     /* We assume the exec function called api_abend */
+                    api_release_thread(thread);
                     return 0;
                 case api_st_blocked:
                     /* Loop and try again next time */
                     thread->state = api_thread_st_active;
+                    api_release_thread(thread);
                     return 0;
                 default:
                     api_abend(thread, UNIMPL("API instruction execution with state %d"), st);
+                    api_release_thread(thread);
                     return 0;
             }
         }
     } else {
+        api_take_thread(thread);
         api_abend(thread, UNIMPL("API instruction execution (%s)"), block->class->description);
+        api_release_thread(thread);
         return 0;
     }
 }
