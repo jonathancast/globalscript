@@ -833,11 +833,10 @@ static
 int
 ibio_oport_evacuate_buf(struct gsstringbuilder *err, struct ibio_oport *oport)
 {
-    void *oldbuf, *oldbufend, *oldbufextent;
+    void *oldbuf, *oldbufend;
 
     oldbuf = oport->buf;
     oldbufend = oport->bufend;
-    oldbufextent = oport->bufextent;
 
     ibio_setup_oport_write_buffer(oport);
 
