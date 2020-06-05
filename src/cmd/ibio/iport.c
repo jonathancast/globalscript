@@ -632,7 +632,6 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
     gsvalue res;
     struct ibio_read_blocking *read_blocking;
 
-    api_take_thread(thread);
     if (*pblocking) {
         read_blocking = (struct ibio_read_blocking *)*pblocking;
     } else {
@@ -647,8 +646,9 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
     lock(&read_blocking->iport->lock);
 
     if (!read_blocking->iport->active) {
-        api_abend(thread, "read on inactive iport: %p", read_blocking->iport);
         unlock(&read_blocking->iport->lock);
+        api_take_thread(thread);
+        api_abend(thread, "read on inactive iport: %p", read_blocking->iport);
         api_release_thread(thread);
         return api_st_error;
     }
@@ -663,7 +663,6 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
                 ;
             } else {
                 unlock(&read_blocking->iport->lock);
-                api_release_thread(thread);
                 return api_st_blocked;
             }
         }
@@ -683,7 +682,6 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
 
         unlock(&read_blocking->iport->lock);
         *pv = res;
-        api_release_thread(thread);
         return api_st_success;
     } else if (!read_blocking->blocking) {
         read_blocking->blocking =
@@ -695,11 +693,9 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
         read_blocking->blocking->next = 0;
 
         unlock(&read_blocking->iport->lock);
-        api_release_thread(thread);
         return api_st_blocked;
     } else {
         unlock(&read_blocking->iport->lock);
-        api_release_thread(thread);
         return api_st_blocked;
     }
 }
@@ -1023,6 +1019,8 @@ ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
     struct ibio_thread_data *data;
     struct ibio_thread_to_iport_link *link;
 
+    api_take_thread(thread);
+
     data = api_thread_client_data(thread);
 
     link = gs_sys_global_block_suballoc(&ibio_thread_to_iport_link_info, sizeof(*link));
@@ -1030,6 +1028,8 @@ ibio_iport_link_to_thread(struct api_thread *thread, struct ibio_iport *iport)
     link->next = data->reading_from_iport;
     link->iport = iport;
     data->reading_from_iport = link;
+
+    api_release_thread(thread);
 }
 
 int
