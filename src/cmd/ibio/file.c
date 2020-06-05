@@ -22,6 +22,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gsapiprim *gso
 {
     struct ibio_file_read_open_blocking *file_read_open_blocking;
 
+    api_take_thread(thread);
     if (*pblocking) {
         file_read_open_blocking = (struct ibio_file_read_open_blocking *)*pblocking;
     } else {
@@ -37,13 +38,16 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gsapiprim *gso
             st = ibio_gsstring_eval_advance(thread, gsopen->pos, &file_read_open_blocking->fn);
             switch (st) {
                 case ibio_gsstring_eval_error:
+                    api_release_thread(thread);
                     return api_st_error;
                 case ibio_gsstring_eval_blocked:
+                    api_release_thread(thread);
                     return api_st_blocked;
                 case ibio_gsstring_eval_success:
                     break;
                 default:
                     api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_read_open: ibio_gsstring_eval_advance st %d"), gsopen->pos, st);
+                    api_release_thread(thread);
                     return api_st_error;
             }
         } else {
@@ -64,6 +68,7 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gsapiprim *gso
 
                 gserr = gscstringtogsstring(gsopen->pos, err->start);
                 *pv = gsconstr(gsopen->pos, 0, 1, gserr);
+                api_release_thread(thread);
                 return api_st_success;
             }
 
@@ -77,10 +82,12 @@ ibio_handle_prim_file_read_open(struct api_thread *thread, struct gsapiprim *gso
 
                 gserr = gscstringtogsstring(gsopen->pos, err->start);
                 *pv = gsconstr(gsopen->pos, 0, 1, gserr);
+                api_release_thread(thread);
                 return api_st_success;
             }
 
             *pv = gsconstr(gsopen->pos, 1, 1, res);
+            api_release_thread(thread);
             return api_st_success;
         }
     }

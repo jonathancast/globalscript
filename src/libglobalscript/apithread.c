@@ -482,13 +482,14 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
         struct api_prim_table *table;
 
         apiprim = (struct gsapiprim *)instr;
-        api_take_thread(thread);
         table = thread->api_prim_table;
         if (apiprim->p.index < 0) {
+            api_take_thread(thread);
             api_abend(thread, "%P: Unknown primitive", apiprim->pos);
             api_release_thread(thread);
             return 0;
         } else if (apiprim->p.index >= table->numprims) {
+            api_take_thread(thread);
             api_abend(thread, "%P: Primitive out of bounds", apiprim->pos);
             api_release_thread(thread);
             return 0;
@@ -502,23 +503,27 @@ api_exec_instr(struct api_thread *thread, gsvalue instr)
                     api_update_promise(thread->code->instrs[thread->code->ip].presult, res);
                     thread->code->ip++;
                     thread->api_prim_blocking = 0;
-                    if (thread->code->ip >= thread->code->size)
-                        api_done(thread)
-                    ; else
-                        thread->state = api_thread_st_active
-                    ;
-                    api_release_thread(thread);
+                    if (thread->code->ip >= thread->code->size) {
+                        api_take_thread(thread);
+                        api_done(thread);
+                        api_release_thread(thread);
+                    } else {
+                        api_take_thread(thread);
+                        thread->state = api_thread_st_active;
+                        api_release_thread(thread);
+                    }
                     return 1;
                 case api_st_error:
                     /* We assume the exec function called api_abend */
-                    api_release_thread(thread);
                     return 0;
                 case api_st_blocked:
                     /* Loop and try again next time */
+                    api_take_thread(thread);
                     thread->state = api_thread_st_active;
                     api_release_thread(thread);
                     return 0;
                 default:
+                    api_take_thread(thread);
                     api_abend(thread, UNIMPL("API instruction execution with state %d"), st);
                     api_release_thread(thread);
                     return 0;

@@ -232,6 +232,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struc
 
     struct gs_blockdesc *block;
 
+    api_take_thread(thread);
     if (*pblocking) {
         write_blocking = (struct ibio_write_blocking *)*pblocking;
     } else {
@@ -246,6 +247,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struc
         block = BLOCK_CONTAINING(oportv);
         if (block->class != &ibio_oport_segment_info.descr) {
             api_abend(thread, "ibio_handle_prim_write: o is a %s not an oport", block->class->description);
+            api_release_thread(thread);
             return api_st_error;
         }
 
@@ -258,6 +260,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struc
     if (!write_blocking->oport->active) {
         api_abend(thread, "write on inactive oport: %p", write_blocking->oport);
         unlock(&write_blocking->oport->lock);
+        api_release_thread(thread);
         return api_st_error;
     }
     if (!write_blocking->oport->writing) {
@@ -270,6 +273,7 @@ ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struc
             } else {
                 api_abend_unimpl(thread, __FILE__, __LINE__, "ibio_handle_prim_write: still blocking on previous write(s)");
                 unlock(&write_blocking->oport->lock);
+                api_release_thread(thread);
                 return api_st_error;
             }
         }
@@ -280,15 +284,18 @@ ibio_handle_prim_write(struct api_thread *thread, struct gsapiprim *write, struc
 
         unlock(&write_blocking->oport->lock);
         *pv = gsemptyrecord(write->pos);
+        api_release_thread(thread);
         return api_st_success;
     } else if (!write_blocking->blocking) {
         write_blocking->blocking = *write_blocking->oport->waiting_to_write_end = ibio_oport_write_blocker_alloc();
 
         write_blocking->oport->waiting_to_write_end = &write_blocking->blocking->next;
         unlock(&write_blocking->oport->lock);
+        api_release_thread(thread);
         return api_st_blocked;
     } else {
         unlock(&write_blocking->oport->lock);
+        api_release_thread(thread);
         return api_st_blocked;
     }
 }

@@ -37,6 +37,7 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gsapiprim *stat, st
     struct api_prim_blocking *blocking;
     struct ibio_file_stat_blocking *file_stat_blocking;
 
+    api_take_thread(thread);
     if (blocking = *pblocking) {
         file_stat_blocking = (struct ibio_file_stat_blocking *)blocking;
     } else {
@@ -51,11 +52,13 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gsapiprim *stat, st
             st = ibio_gsstring_eval_advance(thread, stat->pos, &file_stat_blocking->fn);
             switch (st) {
                 case ibio_gsstring_eval_blocked:
+                    api_release_thread(thread);
                     return api_st_blocked;
                 case ibio_gsstring_eval_success:
                     break;
                 default:
                     api_abend(thread, UNIMPL("%P: ibio_handle_prim_file_stat: ibio_gsstring_eval_advance st %d"), stat->pos, st);
+                    api_release_thread(thread);
                     return api_st_error;
             }
         } else {
@@ -68,10 +71,12 @@ ibio_handle_prim_file_stat(struct api_thread *thread, struct gsapiprim *stat, st
                 gsstring_builder_print(err, "%r");
                 gsfinish_string_builder(err);
                 api_abend(thread, "%P: %s", stat->pos, err->start);
+                api_release_thread(thread);
                 return api_st_error;
             }
 
             *pv = ibio_parse_gsbio_dir(stat->pos, dir);
+            api_release_thread(thread);
             return api_st_success;
         }
     }

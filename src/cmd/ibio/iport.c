@@ -632,6 +632,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
     gsvalue res;
     struct ibio_read_blocking *read_blocking;
 
+    api_take_thread(thread);
     if (*pblocking) {
         read_blocking = (struct ibio_read_blocking *)*pblocking;
     } else {
@@ -648,6 +649,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
     if (!read_blocking->iport->active) {
         api_abend(thread, "read on inactive iport: %p", read_blocking->iport);
         unlock(&read_blocking->iport->lock);
+        api_release_thread(thread);
         return api_st_error;
     }
     if (!read_blocking->iport->reading) {
@@ -661,6 +663,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
                 ;
             } else {
                 unlock(&read_blocking->iport->lock);
+                api_release_thread(thread);
                 return api_st_blocked;
             }
         }
@@ -680,6 +683,7 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
 
         unlock(&read_blocking->iport->lock);
         *pv = res;
+        api_release_thread(thread);
         return api_st_success;
     } else if (!read_blocking->blocking) {
         read_blocking->blocking =
@@ -691,9 +695,11 @@ ibio_handle_prim_read(struct api_thread *thread, struct gsapiprim *read, struct 
         read_blocking->blocking->next = 0;
 
         unlock(&read_blocking->iport->lock);
+        api_release_thread(thread);
         return api_st_blocked;
     } else {
         unlock(&read_blocking->iport->lock);
+        api_release_thread(thread);
         return api_st_blocked;
     }
 }
