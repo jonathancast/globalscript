@@ -53,15 +53,12 @@ gsmain(int argc, char **argv)
             if (gsisdir(cur_arg)) {
                 gsadddir(cur_arg, &symtable);
             } else {
-                /* Get memory for the gslib directory name */
+                /* Get the name of the §fn{gslib} directory in the same directory as §ccode{cur_arg} */
                 struct gsstringbuilder *gslib = gsreserve_string_builder();
-                gsextend_string_builder(gslib, strlen(cur_arg) + strlen("/gslib") + 1); /* More than needed but not too much more and certainly enough */
+                gsstring_builder_print(gslib, "%s", cur_arg);
+                while (gslib->end > gslib->start  && *gslib->end != '/') gslib->end--;
+                if (*gslib->end == '/') gsstring_builder_print(gslib, "/gslib"); else gsstring_builder_print(gslib, "gslib");
                 gsfinish_string_builder(gslib);
-
-                /* Put the name of the gslib directory in the same directory as the argument in it */
-                char *gslib_end = stpcpy(gslib->start, cur_arg);
-                while (gslib_end > gslib->start  && *gslib_end != '/') gslib_end--;
-                if (*gslib_end == '/') strcpy(gslib_end, "/gslib"); else strcpy(gslib_end, "gslib");
 
                 /* Try to load that gslib directory if it exists */
                 if (gsisdir(gslib->start)) gsadddir(gslib->start, &symtable);
