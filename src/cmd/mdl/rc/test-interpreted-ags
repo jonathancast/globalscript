@@ -1,7 +1,7 @@
 #! /usr/local/plan9/bin/rc
 
 . $GLOBALSCRIPT/bin/globalscript
-. test-fns
+. $GS_SPEC/bin/test-fns
 
 ok_grep_script_errors '-- mdltype2c: Empty file --' type-empty-file '/dev/stdin:\$: Un-expected EOF' ibio ./gslib ./mdltype2c.ags < /dev/null
 ok_diff_script '-- mdltype2c: Empty stack frame --' type-empty-stackframe ibio ./gslib ./mdltype2c.ags < ./test-fixtures/empty-stackframe.mdltype

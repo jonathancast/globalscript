@@ -1,6 +1,6 @@
 #! /usr/local/plan9/bin/rc -e
 
-. $GLOBALSCRIPT/bin/test-fns
+. $GS_SPEC/bin/test-fns
 
 ok_grep_errors '-- ill-typed gstype programs --' './test-fixtures/mistyped.type.ags: Bad type: I don''t think' ./$O.gstype mistyped.type.ags
 
