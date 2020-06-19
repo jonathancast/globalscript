@@ -1,0 +1,17 @@
+This is a project to build a family of pure-functional languages.
+
+The general idea is to do everything the right way, not the popular way.
+This is more work (a lot more work!), but this project is just for fun / exploration.
+
+If anything has to be compromised, the most important things to keep are:
+
+1. Functional purity all the way down, even at run time
+   (make a run-time distinction between thunks that represent pure expressions
+   and closures that represent I/O code).
+2. Extensibility all the way down;
+   make it easy for third parties to write their own languages as part of this.
+
+This is *alpha quality* software.
+It works for me on my machine; it hasn't been tested on anything else.
+Use at your own risk.
+
