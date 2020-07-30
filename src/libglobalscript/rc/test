@@ -4,7 +4,7 @@
 
 SHOULD_DISABLE_STRING_CODE_0_6=1
 
-if (! [ -d ./test-fixtures/gslib ]) ln -s ../test-gslib/gslib ./test-fixtures
+if (! [ -d ./test-gslib/gslib ]) ln -s ../test-fixtures/gslib ./test-gslib
 
 ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not load' ./$O.test-gsi no-such-file.ags
 
