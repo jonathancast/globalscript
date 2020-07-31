@@ -2,7 +2,7 @@
 
 < $GLOBALSCRIPT/src/mkhdr
 
-TEST_GSAC_FILES=`{$GLOBALSCRIPT/bin/gsac-targets ./test-gslib; $GLOBALSCRIPT/bin/gsac-targets ./test-fixtures}
+TEST_GSAC_FILES=`{$GLOBALSCRIPT/bin/gsac-targets ./test-fixtures}
 
 integration-test:V: test-rc
 
@@ -10,4 +10,4 @@ test-rc:V: rc/test-core-source $TEST_GSAC_FILES
     ./rc/test-core-source
 
 %.gsac:D: %.cgs
-	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l ./test-gslib $stem.cgs > $stem.gsac
+	$GLOBALSCRIPT/bin/gsac -l $GLOBALSCRIPT/gslib -l ./test-fixtures/gslib $stem.cgs > $stem.gsac
