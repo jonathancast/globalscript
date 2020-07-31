@@ -3,5 +3,5 @@
 
 	.data
 
-	.line	./test-gslib/undef.cgs 3 1
+	.line	./test-fixtures/undef.cgs 3 1
 	.undefined	rune.t

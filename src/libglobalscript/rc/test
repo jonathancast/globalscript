@@ -10,7 +10,7 @@ ok_grep_errors '-- non-existent source file --' 'no-such-file.ags: Could not loa
 
 ok_grep_errors '-- invalid type op --' 'invalid-type-op.ags:11: Unimplemented type op' ./$O.test-gsi invalid-type-op.ags
 ok_grep_errors '-- invalid type op (declared position) --' 'invalid-type-op-declared-pos.ags:12: Unimplemented type op' ./$O.test-gsi invalid-type-op-declared-pos.ags
-touch ./test-gslib/invalid-type-op-core-source.gsac
+touch ./test-fixtures/invalid-type-op-core-source.gsac
 ok_grep_errors '-- invalid type op (core source) --' 'invalid-type-op-core-source.gsac:12: Unimplemented type op' ./$O.test-gsi invalid-type-op-core-source.cgs
 
 ok_grep_errors '-- pragma with no argument --' 'pragma-no-arg.ags:1: Can''t find argument to pragma' ./$O.test-gsi pragma-no-arg.ags
