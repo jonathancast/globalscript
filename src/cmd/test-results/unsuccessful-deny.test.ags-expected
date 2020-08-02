@@ -1,2 +1,2 @@
-./test-gslib/unsuccessful-deny.test.ags: Failed:
+./test-fixtures/unsuccessful-deny.test.ags: Failed:
     Condition is true

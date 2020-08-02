@@ -1,2 +1,2 @@
-./test-gslib/false.test.ags: Failed:
+./test-fixtures/false.test.ags: Failed:
     Unsuccessful test

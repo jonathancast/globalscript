@@ -1,4 +1,4 @@
-./test-gslib/test-suite-both-tests-fail.test.ags: Failed:
+./test-fixtures/test-suite-both-tests-fail.test.ags: Failed:
     First test:
         Test failed
     Second test:
